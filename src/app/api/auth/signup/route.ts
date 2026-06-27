@@ -3,6 +3,9 @@ import { db } from "@/lib/db";
 import { hashPassword } from "@/lib/password";
 import { createSession } from "@/lib/auth";
 import { signupSchema } from "@/lib/validation";
+import { issueToken } from "@/lib/tokens";
+import { sendVerificationEmail } from "@/lib/email";
+import { track } from "@/lib/analytics";
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
@@ -15,7 +18,7 @@ export async function POST(req: Request) {
   }
 
   const { email, password, name } = parsed.data;
-  const existing = db.users.findByEmail(email);
+  const existing = await db.users.findByEmail(email);
   if (existing) {
     return NextResponse.json(
       { error: "An account with that email already exists." },
@@ -24,12 +27,19 @@ export async function POST(req: Request) {
   }
 
   const passwordHash = await hashPassword(password);
-  const user = db.users.create({
+  const user = await db.users.create({
     email,
     passwordHash,
     name: name || null,
   });
 
   await createSession(user.id);
+
+  // Send email verification (non-blocking for the response path).
+  const token = await issueToken(user.id, "verify");
+  await sendVerificationEmail(user.email, user.name, token);
+
+  await track({ type: "signup", userId: user.id });
+
   return NextResponse.json({ ok: true });
 }

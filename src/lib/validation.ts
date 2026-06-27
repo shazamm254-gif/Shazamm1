@@ -11,6 +11,15 @@ export const loginSchema = z.object({
   password: z.string().min(1).max(200),
 });
 
+export const forgotSchema = z.object({
+  email: z.string().email().max(200),
+});
+
+export const resetSchema = z.object({
+  token: z.string().min(1).max(200),
+  password: z.string().min(8).max(200),
+});
+
 export const companySchema = z.object({
   name: z.string().min(1).max(160),
   website: z.string().max(200).optional().or(z.literal("")),
@@ -57,4 +66,11 @@ export const updateProposalSchema = z.object({
 
 export const acceptSchema = z.object({
   acceptedBy: z.string().min(1).max(160),
+});
+
+// Only client-observable events may be sent from the browser.
+export const trackSchema = z.object({
+  type: z.enum(["page_view", "proposal_viewed"]),
+  anonId: z.string().min(8).max(64),
+  proposalId: z.string().max(64).optional(),
 });

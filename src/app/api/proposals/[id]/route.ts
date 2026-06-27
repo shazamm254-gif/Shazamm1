@@ -2,11 +2,15 @@ import { NextResponse } from "next/server";
 import { db, type Proposal } from "@/lib/db";
 import { getUserId } from "@/lib/auth";
 import { updateProposalSchema } from "@/lib/validation";
+import { track } from "@/lib/analytics";
 
 type Params = { params: Promise<{ id: string }> };
 
-function ownedProposal(userId: string, id: string): Proposal | null {
-  const proposal = db.proposals.findById(id);
+async function ownedProposal(
+  userId: string,
+  id: string,
+): Promise<Proposal | null> {
+  const proposal = await db.proposals.findById(id);
   if (!proposal || proposal.userId !== userId) return null;
   return proposal;
 }
@@ -17,7 +21,7 @@ export async function GET(_req: Request, { params }: Params) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const { id } = await params;
-  const proposal = ownedProposal(userId, id);
+  const proposal = await ownedProposal(userId, id);
   if (!proposal) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
@@ -30,7 +34,7 @@ export async function PATCH(req: Request, { params }: Params) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const { id } = await params;
-  const proposal = ownedProposal(userId, id);
+  const proposal = await ownedProposal(userId, id);
   if (!proposal) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
@@ -54,7 +58,13 @@ export async function PATCH(req: Request, { params }: Params) {
     data.currency = parsed.data.content.currency;
   }
 
-  const updated = db.proposals.update(id, data);
+  const updated = await db.proposals.update(id, data);
+
+  // Record a send the first time a proposal transitions to "sent".
+  if (parsed.data.status === "sent" && proposal.status !== "sent") {
+    await track({ type: "proposal_sent", userId, proposalId: id });
+  }
+
   return NextResponse.json({ proposal: updated });
 }
 
@@ -64,10 +74,10 @@ export async function DELETE(_req: Request, { params }: Params) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const { id } = await params;
-  const proposal = ownedProposal(userId, id);
+  const proposal = await ownedProposal(userId, id);
   if (!proposal) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
-  db.proposals.delete(id);
+  await db.proposals.delete(id);
   return NextResponse.json({ ok: true });
 }

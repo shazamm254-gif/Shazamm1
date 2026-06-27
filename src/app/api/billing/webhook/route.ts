@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { verifyWebhook } from "@/lib/billing";
+import { sendBillingNotification } from "@/lib/email";
+import { track } from "@/lib/analytics";
 
 // Stripe webhook: on successful checkout / active subscription, upgrade the
 // user to Pro. Verified via the Stripe signature header.
@@ -22,10 +24,13 @@ export async function POST(req: Request) {
     const customerId =
       typeof data.customer === "string" ? data.customer : undefined;
     if (userId) {
-      db.users.update(userId, {
+      await db.users.update(userId, {
         plan: "pro",
         ...(customerId ? { stripeCustomerId: customerId } : {}),
       });
+      const user = await db.users.findById(userId);
+      if (user) await sendBillingNotification(user.email, user.name, "upgraded");
+      await track({ type: "subscription_started", userId });
     }
   }
 
@@ -33,9 +38,10 @@ export async function POST(req: Request) {
     const customerId =
       typeof data.customer === "string" ? data.customer : undefined;
     if (customerId) {
-      const user = db.users.findByStripeCustomer(customerId);
+      const user = await db.users.findByStripeCustomer(customerId);
       if (user) {
-        db.users.update(user.id, { plan: "free" });
+        await db.users.update(user.id, { plan: "free" });
+        await sendBillingNotification(user.email, user.name, "downgraded");
       }
     }
   }

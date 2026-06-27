@@ -55,7 +55,8 @@ export type UserWithCompany = User & { company: Company | null };
 export async function getCurrentUser(): Promise<UserWithCompany | null> {
   const userId = await getUserId();
   if (!userId) return null;
-  const user = db.users.findById(userId);
+  const user = await db.users.findById(userId);
   if (!user) return null;
-  return { ...user, company: db.companies.findByUser(user.id) };
+  const company = await db.companies.findByUser(user.id);
+  return { ...user, company };
 }

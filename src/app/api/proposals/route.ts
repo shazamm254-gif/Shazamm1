@@ -8,7 +8,8 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const proposals = db.proposals.listByUser(userId).map((p) => ({
+  const all = await db.proposals.listByUser(userId);
+  const proposals = all.map((p) => ({
     id: p.id,
     title: p.title,
     clientName: p.clientName,

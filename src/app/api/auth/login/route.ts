@@ -15,7 +15,7 @@ export async function POST(req: Request) {
   }
 
   const { email, password } = parsed.data;
-  const user = db.users.findByEmail(email);
+  const user = await db.users.findByEmail(email);
   if (!user || !(await verifyPassword(password, user.passwordHash))) {
     return NextResponse.json(
       { error: "Incorrect email or password." },

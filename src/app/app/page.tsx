@@ -17,7 +17,7 @@ export default async function DashboardPage() {
   const user = await getCurrentUser();
   if (!user) return null;
 
-  const proposals = db.proposals.listByUser(user.id);
+  const proposals = await db.proposals.listByUser(user.id);
 
   const remaining =
     user.plan === "pro"

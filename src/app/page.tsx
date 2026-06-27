@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
+import { AnalyticsBeacon } from "@/components/AnalyticsBeacon";
 
 const features = [
   {
@@ -48,6 +49,7 @@ const faqs = [
 export default function HomePage() {
   return (
     <div className="min-h-screen">
+      <AnalyticsBeacon type="page_view" />
       <header className="border-b border-slate-100">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
           <Logo />

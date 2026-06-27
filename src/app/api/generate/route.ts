@@ -4,6 +4,7 @@ import { getUserId } from "@/lib/auth";
 import { generateSchema } from "@/lib/validation";
 import { generateProposal, MissingApiKeyError } from "@/lib/ai";
 import { FREE_GENERATION_LIMIT } from "@/lib/billing";
+import { track } from "@/lib/analytics";
 
 export async function POST(req: Request) {
   const userId = await getUserId();
@@ -20,11 +21,11 @@ export async function POST(req: Request) {
     );
   }
 
-  const user = db.users.findById(userId);
+  const user = await db.users.findById(userId);
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const company = db.companies.findByUser(userId);
+  const company = await db.companies.findByUser(userId);
 
   // Enforce the free-tier generation quota.
   if (user.plan !== "pro" && user.generationsUsed >= FREE_GENERATION_LIMIT) {
@@ -75,7 +76,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const proposal = db.proposals.create({
+  const proposal = await db.proposals.create({
     userId,
     title: title || `Proposal for ${clientCompany || clientName || "Client"}`,
     clientName: clientName || null,
@@ -86,7 +87,13 @@ export async function POST(req: Request) {
     currency: content.currency,
   });
 
-  db.users.incrementGenerations(userId);
+  await db.users.incrementGenerations(userId);
+
+  await track({
+    type: "proposal_generated",
+    userId,
+    proposalId: proposal.id,
+  });
 
   return NextResponse.json({ id: proposal.id });
 }

@@ -22,6 +22,22 @@ propose improvements, prioritize by business impact, keep building.
 - ✅ Business assets: pricing, launch checklist, onboarding emails, growth
   engine (`docs/GROWTH.md`), automation plan (`docs/AUTOMATION.md`).
 
+## Completed (milestone 2)
+
+- ✅ **Production PostgreSQL adapter** behind the existing `Repository` interface
+  (`src/lib/db.ts` selects file vs Postgres by `DATABASE_URL`); verified
+  end-to-end against a real Postgres 16 instance.
+- ✅ **Transactional email** (Resend HTTP API, dev console fallback): email
+  verification, welcome, password reset, proposal-accepted notification, and
+  billing upgrade/downgrade notifications — with single-use hashed tokens.
+- ✅ **Product analytics**: anonymous visitor + proposal-view beacons and
+  server-side events (signup, generation, send, accept, subscription); an
+  `/app/analytics` dashboard with visitors, signups, generations, views,
+  acceptances, subscriptions, activation rate, free→paid conversion, and a
+  full conversion funnel.
+- ✅ **Deployment guide** (`docs/DEPLOYMENT.md`) covering Postgres, Stripe,
+  Resend, env vars, hosting, and a post-deploy smoke test.
+
 ## Biggest current bottleneck
 
 **Distribution, not product.** The core value loop works; nothing ships revenue
@@ -31,28 +47,29 @@ compounding acquisition channels (SEO/content) and the conversion plumbing
 
 ## Prioritized next steps (by expected business impact)
 
-1. **Production data layer** — implement the Postgres adapter behind the `db`
-   interface in `src/lib/db.ts` (the only swap point). *Unblocks launch.*
-2. **Transactional email + lifecycle sequence** — welcome, activation nudge,
-   near-limit upgrade, accept celebration. *Drives activation + conversion.*
-3. **Analytics on the activation funnel** — signup → first generation → send →
-   accept → upgrade. *You can't improve what you can't see.*
-4. **SEO foundation** — sitemap, 10 seed landing/blog pages targeting high-intent
-   queries, programmatic industry pages. *Compounding acquisition.*
-5. **PDF export + email send with view tracking** — top requested utility;
-   strengthens the "send and close" loop.
-6. **Templates** — save a generated proposal as a reusable template (Pro hook).
-7. **Streaming generation UX** — stream the draft token-by-token for a faster
-   perceived experience (SDK streaming is already available).
-8. **E-signature + line-item editor polish**, then **CRM integrations** and
+1. **Launch** — deploy per `docs/DEPLOYMENT.md` (Postgres + Stripe + Resend +
+   Anthropic), run the smoke test, go live. The three launch-blocking
+   milestones (Postgres, email, analytics) are done.
+2. **Lifecycle email sequence (scheduled)** — activation nudge if no proposal in
+   24h, near-limit upgrade prompt. (Transactional emails already exist; this adds
+   the time-based drip via a scheduled worker.)
+3. **App-level rate limiting** — `/api/auth/*`, `/api/generate`, `/api/track`.
+4. **SEO foundation** — sitemap, 10 seed landing/blog pages, programmatic
+   industry pages. *Compounding acquisition.*
+5. **PDF export + email send with view tracking**; **templates** (Pro hook).
+6. **Streaming generation UX** (SDK streaming is available).
+7. **E-signature + line-item polish**, then **CRM integrations** and
    **follow-up automation** (v2).
 
 ## Known limitations to address before scale
 
-- File-backed store is single-process (dev/demo only) → Postgres (step 1).
-- No rate limiting on auth/generate endpoints yet → add per-IP/user limits.
-- No email verification / password reset yet → add with the email provider.
-- Add automated tests (auth, quota enforcement, ownership checks) + CI.
+- No app-level rate limiting on auth/generate/track yet → add per-IP/user limits
+  (mitigate at the edge/proxy in the meantime).
+- Add automated tests (auth, quota enforcement, ownership checks, repository
+  parity) + CI.
+- `events` table needs a retention/rollup job at high volume.
+- The file-backed adapter remains for local/dev only; production uses Postgres
+  (selected automatically by `DATABASE_URL`).
 
 ## Operating principle
 

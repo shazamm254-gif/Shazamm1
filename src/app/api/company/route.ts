@@ -28,7 +28,7 @@ export async function PUT(req: Request) {
     defaultCurrency: parsed.data.defaultCurrency || "USD",
   };
 
-  const company = db.companies.upsert(userId, data);
+  const company = await db.companies.upsert(userId, data);
 
   return NextResponse.json({ company });
 }

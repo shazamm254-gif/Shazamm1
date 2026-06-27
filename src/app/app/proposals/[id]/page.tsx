@@ -13,7 +13,7 @@ export default async function ProposalPage({ params }: Params) {
   if (!user) return null;
   const { id } = await params;
 
-  const proposal = db.proposals.findById(id);
+  const proposal = await db.proposals.findById(id);
   if (!proposal || proposal.userId !== user.id) notFound();
 
   let parsedContent: unknown;

@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { parseProposalContent } from "@/lib/types";
 import { formatCurrency } from "@/lib/format";
 import { AcceptBox } from "@/components/AcceptBox";
+import { AnalyticsBeacon } from "@/components/AnalyticsBeacon";
 
 export const dynamic = "force-dynamic";
 
@@ -10,10 +11,10 @@ type Params = { params: Promise<{ shareId: string }> };
 
 export default async function PublicProposalPage({ params }: Params) {
   const { shareId } = await params;
-  const proposal = db.proposals.findByShareId(shareId);
+  const proposal = await db.proposals.findByShareId(shareId);
   if (!proposal) notFound();
-  const owner = db.users.findById(proposal.userId);
-  const ownerCompany = db.companies.findByUser(proposal.userId);
+  const owner = await db.users.findById(proposal.userId);
+  const ownerCompany = await db.companies.findByUser(proposal.userId);
 
   let parsed: unknown;
   try {
@@ -28,6 +29,7 @@ export default async function PublicProposalPage({ params }: Params) {
 
   return (
     <div className="min-h-screen bg-slate-50 py-10">
+      <AnalyticsBeacon type="proposal_viewed" proposalId={proposal.id} />
       <article className="mx-auto max-w-3xl rounded-2xl border border-slate-200 bg-white p-8 shadow-sm sm:p-12">
         <header className="border-b border-slate-100 pb-6">
           <p className="text-sm font-medium text-brand">Proposal</p>

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { Logo } from "@/components/Logo";
 import { LogoutButton } from "@/components/LogoutButton";
+import { VerifyBanner } from "@/components/VerifyBanner";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,7 @@ export default async function AppLayout({
 
   return (
     <div className="min-h-screen bg-slate-50">
+      {!user.emailVerified && <VerifyBanner />}
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
           <Link href="/app">
@@ -30,6 +32,12 @@ export default async function AppLayout({
               className="text-slate-600 hover:text-slate-900"
             >
               Company
+            </Link>
+            <Link
+              href="/app/analytics"
+              className="text-slate-600 hover:text-slate-900"
+            >
+              Analytics
             </Link>
             <Link
               href="/app/billing"

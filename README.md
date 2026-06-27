@@ -18,13 +18,17 @@ margins, fast to a paid MVP). Product design is in
 
 ## What the MVP does
 
-- Email/password auth (scrypt hashing, signed-JWT sessions).
+- Email/password auth (scrypt hashing, signed-JWT sessions) with **email
+  verification** and **password reset**.
 - Reusable **company profile** that makes every proposal on-brand.
 - **AI proposal generation** from a short brief (Claude, structured output).
 - Full proposal **editor** — summary, sections, itemized pricing, totals.
 - **Shareable client view** with one-click **Accept** + status tracking.
 - Dashboard with free-tier usage metering.
-- **Stripe-ready billing** (Checkout + webhook), gated on env keys.
+- **Stripe billing** (Checkout + webhook), gated on env keys.
+- **Transactional email** (verification, welcome, reset, accepted-deal, billing).
+- **Product analytics** — visitors, signups, generations, views, acceptances,
+  subscriptions, activation rate, conversion funnel (`/app/analytics`).
 
 ## Tech stack
 
@@ -32,11 +36,14 @@ margins, fast to a paid MVP). Product design is in
   SSR marketing pages for SEO, API routes for the backend.
 - **Claude** via `@anthropic-ai/sdk` (`claude-opus-4-8`, adaptive thinking,
   structured outputs).
-- **Data:** a typed, file-backed repository (`src/lib/db.ts`) so the MVP runs
-  anywhere with zero native deps. The `db` interface is the single swap point —
-  reimplement it against Postgres for production without touching call sites.
+- **Data:** one `Repository` interface, two adapters — **PostgreSQL** (`pg`,
+  production; auto-selected when `DATABASE_URL` is set) and a zero-setup
+  **file-backed** adapter (local dev). Swapping is an env-var change; no call
+  sites change.
 - **Auth:** `jose` JWTs + Node `scrypt` (no native build deps).
+- **Email:** Resend HTTP API (no SDK dependency); logs to console when unset.
 - **Billing:** Stripe REST API directly (no SDK dependency), env-gated.
+- **Analytics:** first-party events table + cookie-free client beacon.
 
 ## Getting started
 
@@ -65,8 +72,10 @@ src/
     p/[shareId]/             # public client-facing proposal + accept
     api/                     # auth, company, generate, proposals, public accept, billing
   components/                # UI (editor, forms, buttons, logo)
-  lib/                       # db (repository), auth, password, ai, billing, validation, types
-docs/                        # strategy, product, growth, automation, roadmap
+  lib/                       # db (selector), db-file, db-postgres, db-types,
+                             # auth, password, tokens, ai, email, billing,
+                             # analytics, validation, format, types
+docs/                        # strategy, product, growth, automation, roadmap, deployment
 ```
 
 ## Documentation
@@ -76,3 +85,4 @@ docs/                        # strategy, product, growth, automation, roadmap
 - [`docs/GROWTH.md`](docs/GROWTH.md) — pricing, launch checklist, onboarding emails, growth engine (Phases 5–6)
 - [`docs/AUTOMATION.md`](docs/AUTOMATION.md) — operational automation (Phase 7)
 - [`docs/ROADMAP.md`](docs/ROADMAP.md) — status, bottlenecks, next steps (Phase 8)
+- [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) — production deployment guide

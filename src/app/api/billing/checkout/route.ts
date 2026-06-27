@@ -15,7 +15,7 @@ export async function POST() {
     );
   }
 
-  const user = db.users.findById(userId);
+  const user = await db.users.findById(userId);
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
