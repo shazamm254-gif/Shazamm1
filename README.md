@@ -14,6 +14,8 @@ analyze what's working and help you package and ideate faster.
 | Path | What it does |
 |---|---|
 | [`docs/GROWTH_STRATEGY.md`](docs/GROWTH_STRATEGY.md) | The playbook — hooks, series, cadence, a 30-day plan, all tuned to this niche. **Start here.** |
+| [`docs/FIRST_10_SHORTS.md`](docs/FIRST_10_SHORTS.md) | 10 ready-to-produce Short scripts — hook, full voiceover, on-screen text, visuals, and paste-ready titles/descriptions. |
+| [`docs/THUMBNAIL_CHECKLIST.md`](docs/THUMBNAIL_CHECKLIST.md) | First-frame / thumbnail checklist to win the swipe, tuned to this niche. |
 | `tools/analyze_channel.py` | Pulls your public stats, finds your top/bottom performers and best posting time. |
 | `tools/optimize_metadata.py` | Scores a title/description/tags against Shorts best practices (offline), with optional AI rewrites. |
 | `tools/generate_ideas.py` | Generates Short ideas + hooks for your niche (offline, or richer with AI). |
