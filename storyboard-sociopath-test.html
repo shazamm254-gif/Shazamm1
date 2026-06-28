@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Storyboard — Testing If You're a Sociopath</title>
+<style>
+  :root{
+    --bg:#0a0a0c;
+    --panel:#141418;
+    --panel2:#1b1b21;
+    --ink:#f4f4f6;
+    --muted:#9a9aa6;
+    --red:#e23b3b;
+    --reddim:#7a1f1f;
+    --line:#2a2a32;
+    --green:#2ecc71;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1100px;margin:0 auto;padding:40px 28px 80px;}
+  header{
+    border-bottom:2px solid var(--red);
+    padding-bottom:22px;margin-bottom:8px;
+  }
+  .kicker{
+    color:var(--red);font-weight:800;letter-spacing:.22em;
+    text-transform:uppercase;font-size:12px;margin:0 0 10px;
+  }
+  h1{
+    font-family:'Arial Narrow',Arial,sans-serif;
+    font-weight:800;font-size:46px;line-height:.98;margin:0;
+    text-transform:uppercase;letter-spacing:.01em;
+  }
+  .meta{
+    display:flex;flex-wrap:wrap;gap:18px;margin-top:16px;
+    color:var(--muted);font-size:13px;
+  }
+  .meta b{color:var(--ink);font-weight:700;}
+  .disclaimer{
+    margin:18px 0 30px;padding:10px 14px;border:1px solid var(--line);
+    border-left:3px solid var(--red);background:var(--panel);
+    color:var(--muted);font-size:12.5px;border-radius:4px;
+  }
+  .grid{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:18px;
+  }
+  .card{
+    background:var(--panel);border:1px solid var(--line);
+    border-radius:10px;overflow:hidden;display:flex;flex-direction:column;
+  }
+  .frame{
+    position:relative;aspect-ratio:9/16;max-height:360px;
+    background:radial-gradient(120% 90% at 50% 30%, #1d1d24 0%, #0c0c0f 70%, #050506 100%);
+    display:flex;align-items:center;justify-content:center;
+    border-bottom:1px solid var(--line);overflow:hidden;
+  }
+  .frame::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    box-shadow:inset 0 0 90px 12px rgba(226,59,59,.10);
+  }
+  .frame .ts{
+    position:absolute;top:10px;left:10px;z-index:3;
+    background:rgba(0,0,0,.55);border:1px solid var(--line);
+    color:var(--ink);font-size:11px;font-weight:700;letter-spacing:.05em;
+    padding:4px 8px;border-radius:4px;
+  }
+  .frame .shotno{
+    position:absolute;top:10px;right:10px;z-index:3;
+    color:var(--red);font-weight:800;font-size:13px;letter-spacing:.1em;
+  }
+  .frame .placeholder{
+    text-align:center;color:#3c3c46;font-size:13px;
+    padding:0 18px;z-index:2;
+  }
+  .frame .placeholder .icon{font-size:34px;display:block;margin-bottom:8px;filter:grayscale(1);opacity:.5;}
+  /* simulated on-screen text overlay */
+  .frame .ost{
+    position:absolute;z-index:4;left:50%;bottom:16%;transform:translateX(-50%);
+    font-family:'Arial Narrow',Arial,sans-serif;font-weight:800;
+    text-transform:uppercase;letter-spacing:.04em;text-align:center;
+    font-size:21px;line-height:1.05;width:86%;
+    text-shadow:0 2px 10px rgba(0,0,0,.9);
+  }
+  .frame .ost.red{color:var(--red);}
+  .frame .ost.white{color:#fff;}
+  .frame .ost.green{color:var(--green);}
+  .body{padding:14px 15px 16px;display:flex;flex-direction:column;gap:11px;flex:1;}
+  .row .label{
+    font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--red);font-weight:800;margin-bottom:3px;
+  }
+  .row .vo{font-size:14.5px;line-height:1.35;color:var(--ink);font-style:italic;}
+  .row .ost-txt{font-size:13px;color:var(--ink);font-weight:600;}
+  .row .visual{font-size:12.5px;color:var(--muted);line-height:1.4;}
+  .prompt{
+    background:var(--panel2);border:1px solid var(--line);border-radius:6px;
+    padding:9px 11px;font-family:ui-monospace,'SF Mono',Menlo,monospace;
+    font-size:11px;line-height:1.45;color:#c7c7d2;white-space:pre-wrap;
+    margin-top:auto;
+  }
+  .prompt .ptag{display:block;color:var(--muted);font-family:inherit;
+    font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:5px;}
+  .section-break{
+    grid-column:1/-1;margin:14px 0 0;padding:8px 0 6px;
+    border-top:1px dashed var(--line);color:var(--muted);
+    font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;
+  }
+  footer{
+    margin-top:36px;padding-top:22px;border-top:1px solid var(--line);
+    color:var(--muted);font-size:12.5px;line-height:1.7;
+  }
+  footer b{color:var(--ink);}
+  .pill{display:inline-block;background:var(--panel2);border:1px solid var(--line);
+    border-radius:20px;padding:3px 11px;margin:3px 5px 3px 0;font-size:11.5px;color:#c7c7d2;}
+  .print-hint{
+    background:var(--reddim);color:#ffd9d9;border-radius:6px;padding:10px 14px;
+    font-size:12.5px;margin:0 0 26px;
+  }
+  @media print{
+    body{background:#fff;color:#111;}
+    .print-hint{display:none;}
+    .card{break-inside:avoid;border-color:#ccc;background:#fafafa;}
+    .frame{background:#eee;}
+    .prompt{background:#f0f0f0;color:#333;border-color:#ccc;}
+    .row .visual,.meta,footer{color:#444;}
+    h1,.kicker,.row .label,.shotno,.ost.red{color:#c01b1b!important;}
+  }
+  @media (max-width:680px){.grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="kicker">YouTube Shorts &nbsp;·&nbsp; Storyboard</p>
+    <h1>Testing If<br>You're a Sociopath</h1>
+    <div class="meta">
+      <span><b>Runtime:</b> 45s</span>
+      <span><b>Format:</b> 9:16 vertical</span>
+      <span><b>Shots:</b> 11</span>
+      <span><b>Look:</b> dark · high-contrast · red accent · clinical-thriller</span>
+      <span><b>New visual:</b> every 2–4s</span>
+    </div>
+  </header>
+
+  <div class="print-hint">🖨️ <b>To save as PDF:</b> press <b>Ctrl/Cmd&nbsp;+&nbsp;P</b> → Destination &ldquo;Save as PDF&rdquo; → enable &ldquo;Background graphics&rdquo; for the dark theme.</div>
+
+  <div class="disclaimer">⚠️ On-screen disclaimer beat (7–9s): &ldquo;This isn't a clinical test — for entertainment.&rdquo; Keep it in to stay credible and platform-safe.</div>
+
+  <div class="grid">
+
+    <!-- 1 -->
+    <div class="card">
+      <div class="frame">
+        <span class="ts">0–2s</span><span class="shotno">SHOT 1</span>
+        <div class="placeholder"><span class="icon">👁️</span>Macro eye · unblinking</div>
+        <div class="ost red">You might fail this</div>
+      </div>
+      <div class="body">
+        <div class="row"><div class="label">Voiceover</div><div class="vo">&ldquo;Most people fail this in the first five seconds.&rdquo;</div></div>
+        <div class="row"><div class="label">Visual</div><div class="visual">Hard cut to extreme close-up of an unblinking eye; subtle red vignette.</div></div>
+        <div class="prompt"><span class="ptag">Gen prompt</span>extreme macro close-up of a single human eye, unblinking, dark moody lighting, subtle red vignette creeping in from edges, cinematic, shallow depth of field, 9:16 vertical, hyperrealistic, film grain</div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="card">
+      <div class="frame">
+        <span class="ts">2–4s</span><span class="shotno">SHOT 2</span>
+        <div class="placeholder"><span class="icon">⏱️</span>Stopwatch · motion blur</div>
+        <div class="ost white">Answer in your head ↓</div>
+      </div>
+      <div class="body">
+        <div class="row"><div class="label">Voiceover</div><div class="vo">&ldquo;Answer fast. Don't think — just feel it.&rdquo;</div></div>
+        <div class="row"><div class="label">Visual</div><div class="visual">Fast zoom on a ticking stopwatch, dramatic side light.</div></div>
+        <div class="prompt"><span class="ptag">Gen prompt</span>vintage silver stopwatch ticking, dramatic side light on black background, fast motion blur on second hand, tension, 9:16 vertical, cinematic</div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="card">
+      <div class="frame">
+        <span class="ts">4–7s</span><span class="shotno">SHOT 3</span>
+        <div class="placeholder"><span class="icon">📺</span>Glitch · VHS</div>
+        <div class="ost red">⚠️ Q3 = the tell</div>
+      </div>
+      <div class="body">
+        <div class="row"><div class="label">Voiceover</div><div class="vo">&ldquo;Keep watching — the third question is the one real sociopaths always get wrong.&rdquo;</div></div>
+        <div class="row"><div class="label">Loop</div><div class="visual">OPEN LOOP planted. Don't pay off until ~32s.</div></div>
+        <div class="prompt"><span class="ptag">Gen prompt</span>dark screen with glitchy red digital text reading "Q3", VHS distortion, flickering, ominous, 9:16 vertical</div>
+      </div>
+    </div>
+
+    <!-- 4 disclaimer -->
+    <div class="card">
+      <div class="frame">
+        <span class="ts">7–9s</span><span class="shotno">SHOT 4</span>
+        <div class="placeholder"><span class="icon">📄</span>Disclaimer card</div>
+        <div class="ost white" style="font-size:15px;font-style:italic;font-weight:600;text-transform:none;">Not a clinical test — for fun</div>
+      </div>
+      <div class="body">
+        <div class="row"><div class="label">Voiceover</div><div class="vo">&ldquo;This isn't a diagnosis. It's a pattern test.&rdquo;</div></div>
+        <div class="row"><div class="label">Visual</div><div class="visual">Small disclaimer card slides up, then off. Credibility beat.</div></div>
+        <div class="prompt"><span class="ptag">Gen prompt</span>minimal lower-third caption card on dark background, clean sans-serif white text, subtle slide animation, 9:16 vertical UI</div>
+      </div>
+    </div>
+
+    <div class="section-break">Question 1 · the flinch</div>
+
+    <!-- 5 -->
+    <div class="card">
+      <div class="frame">
+        <span class="ts">9–14s</span><span class="shotno">SHOT 5</span>
+        <div class="placeholder"><span class="icon">🚶</span>POV · stranger trips</div>
+        <div class="ost red" style="bottom:38%;">Q1</div>
+        <div class="ost white">Concern… or nothing?</div>
+      </div>
+      <div class="body">
+        <div class="row"><div class="label">Voiceover</div><div class="vo">&ldquo;Question one. A stranger trips in front of you. What do you feel first?&rdquo;</div></div>
+        <div class="row"><div class="label">Visual</div><div class="visual">Number &ldquo;1&rdquo; slams in → POV of someone stumbling on a sidewalk.</div></div>
+        <div class="prompt"><span class="ptag">Gen prompt</span>POV shot looking down at a person stumbling and falling on a city sidewalk, overcast daylight, candid, motion blur, 9:16 vertical, documentary style</div>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="card">
+      <div class="frame">
+        <span class="ts">14–18s</span><span class="shotno">SHOT 6</span>
+        <div class="placeholder"><span class="icon">🤝</span>Hand reaching · slow-mo</div>
+        <div class="ost white">The flinch. Did you?</div>
+      </div>
+      <div class="body">
+        <div class="row"><div class="label">Voiceover</div><div class="vo">&ldquo;Most people feel the flinch before the thought. If there was no flinch… interesting.&rdquo;</div></div>
+        <div class="row"><div class="label">Visual</div><div class="visual">Slow-mo hand reaching out → cut to a perfectly still, unreacting face.</div></div>
+        <div class="prompt"><span class="ptag">Gen prompt</span>slow-motion close-up of a hand instinctively reaching out to help, soft natural light, shallow focus, 9:16 vertical, cinematic</div>
+      </div>
+    </div>
+
+    <div class="section-break">Question 2 · the clean lie</div>
+
+    <!-- 7 -->
+    <div class="card">
+      <div class="frame">
+        <span class="ts">18–23s</span><span class="shotno">SHOT 7</span>
+        <div class="placeholder"><span class="icon">🃏</span>Hand · card across table</div>
+        <div class="ost red" style="bottom:38%;">Q2</div>
+        <div class="ost white">Would you? Be honest.</div>
+      </div>
+      <div class="body">
+        <div class="row"><div class="label">Voiceover</div><div class="vo">&ldquo;Question two. Faster. You can get everything you want by lying — and never get caught. Do you?&rdquo;</div></div>
+        <div class="row"><div class="label">Visual</div><div class="visual">Number &ldquo;2&rdquo; snaps in; tempo speeds up. Hand sliding a card across a dark table.</div></div>
+        <div class="prompt"><span class="ptag">Gen prompt</span>a hand sliding a blank white card across a dark wooden table, dramatic single light source, film noir, 9:16 vertical</div>
+      </div>
+    </div>
+
+    <!-- 8 -->
+    <div class="card">
+      <div class="frame">
+        <span class="ts">23–27s</span><span class="shotno">SHOT 8</span>
+        <div class="placeholder"><span class="icon">🙂</span>Half-lit smirk</div>
+        <div class="ost white">Hold that answer 🔒</div>
+      </div>
+      <div class="body">
+        <div class="row"><div class="label">Voiceover</div><div class="vo">&ldquo;The 'right' answer isn't the honest one. Remember what you said. It matters later.&rdquo;</div></div>
+        <div class="row"><div class="label">Visual</div><div class="visual">Knowing smirk, half-lit face → a lock icon clicks shut.</div></div>
+        <div class="prompt"><span class="ptag">Gen prompt</span>half-lit face with a subtle knowing smirk, chiaroscuro lighting, shadows covering one side, mysterious, 9:16 vertical, cinematic portrait</div>
+      </div>
+    </div>
+
+    <div class="section-break">Question 3 · the payoff</div>
+
+    <!-- 9 -->
+    <div class="card">
+      <div class="frame">
+        <span class="ts">27–34s</span><span class="shotno">SHOT 9</span>
+        <div class="placeholder"><span class="icon">😢</span>Split: comfort / study</div>
+        <div class="ost red" style="bottom:38%;">Q3 — the tell</div>
+        <div class="ost white">Comfort… or analyze?</div>
+      </div>
+      <div class="body">
+        <div class="row"><div class="label">Voiceover</div><div class="vo">&ldquo;Question three. The big one. Someone cries in front of you. Do you comfort them — or study them?&rdquo;</div></div>
+        <div class="row"><div class="label">Payoff</div><div class="visual">LOOP RESOLVES: &ldquo;Real sociopaths don't pick comfort. They pick curious.&rdquo; Heartbeat SFX, red pulse.</div></div>
+        <div class="prompt"><span class="ptag">Gen prompt</span>split screen vertical: left a comforting hand on a shoulder warm light, right narrowed observing eyes cold light, 9:16, cinematic contrast</div>
+      </div>
+    </div>
+
+    <!-- 10 -->
+    <div class="card">
+      <div class="frame">
+        <span class="ts">34–38s</span><span class="shotno">SHOT 10</span>
+        <div class="placeholder"><span class="icon">📊</span>Loading bar → 99%</div>
+        <div class="ost red">YOUR RESULT</div>
+      </div>
+      <div class="body">
+        <div class="row"><div class="label">Voiceover</div><div class="vo">&ldquo;If you hesitated… you already know. Now your result.&rdquo;</div></div>
+        <div class="row"><div class="label">Visual</div><div class="visual">Freeze-frame on blinking cursor → loading bar races to 99%. Climax build.</div></div>
+        <div class="prompt"><span class="ptag">Gen prompt</span>minimal red progress bar at 99% on a pure black screen, glowing, tense, 9:16 vertical, clean UI</div>
+      </div>
+    </div>
+
+    <!-- 11 -->
+    <div class="card">
+      <div class="frame">
+        <span class="ts">38–45s</span><span class="shotno">SHOT 11</span>
+        <div class="placeholder"><span class="icon">👁️</span>Eye returns · red tint</div>
+        <div class="ost green" style="bottom:46%;">✅ Empathetic</div>
+        <div class="ost red">🩸 The pattern</div>
+      </div>
+      <div class="body">
+        <div class="row"><div class="label">Voiceover</div><div class="vo">&ldquo;Felt the flinch, lied with guilt, rushed to comfort? You're safe. Felt nothing, lied clean, got curious? That's the pattern. Now re-read Question one — it was never about the stranger. Comment your result. Lie if you have to.&rdquo;</div></div>
+        <div class="row"><div class="label">Re-watch trigger</div><div class="visual">Quick rewind flash to the opening eye. On-screen: &ldquo;What did Q1 REALLY ask? 👇 ↺ watch again&rdquo;</div></div>
+        <div class="prompt"><span class="ptag">Gen prompt</span>same extreme macro eye close-up, now with heavy red tint washing over it, ominous, 9:16 vertical, cinematic</div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p><b>Re-watch payoff:</b> Q1 reads as &ldquo;what do you feel for the <i>stranger</i>&rdquo; — but the rewind reveals it measured whether <i>you</i> noticed your own reaction at all. The &ldquo;flinch&rdquo; line only fully lands on a second viewing.</p>
+    <p><b>Text styling:</b> bold condensed sans (Anton / Bebas Neue) · white body, <span style="color:var(--red)">red</span> for warnings/Q3/result, <span style="color:var(--green)">green</span> for the safe result · hard cut-ins &amp; scale-pop, never slow fades.</p>
+    <p><b>Caption:</b> Be honest in the comments 👇 Did you flinch, or did you go <i>curious</i>? (Not a real diagnosis — but Q1 wasn't what you thought. Watch it twice.) 🩸 or ✅</p>
+    <p style="margin-top:10px;">
+      <span class="pill">#psychology</span>
+      <span class="pill">#sociopathtest</span>
+      <span class="pill">#personalitytest</span>
+      <span class="pill">#mindgames</span>
+      <span class="pill">#psychologyfacts</span>
+    </p>
+  </footer>
+</div>
+</body>
+</html>
