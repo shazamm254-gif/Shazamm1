@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 optimize_metadata.py — score and improve a Short's title, description, and tags
-against YouTube Shorts best practices, tuned for the Project 3000 niche.
+against YouTube Shorts best practices, tuned to your niche (from niche.json).
 
 Runs fully offline with a rule-based linter (no API key needed). Add --use-claude
 to also get an AI-rewritten title/description using your channel's voice.
@@ -32,9 +32,10 @@ POWER_WORDS = {
     "terrifying", "impossible", "shouldn't", "won't", "will", "future", "last",
     "first", "watch", "stop", "real", "truth", "actually", "finally",
 }
-# Curiosity-gap openers that work well for speculative content.
-HOOK_STARTERS = ("what if", "this is", "in the year", "imagine", "scientists",
-                 "nobody", "you won't", "evolution", "the last", "if ")
+# Curiosity-gap openers that work well for fact/awe Shorts.
+HOOK_STARTERS = ("what if", "what happens", "this is", "imagine", "scientists",
+                 "nobody", "you won't", "the last", "the most", "there's",
+                 "something", "how ", "why ", "if ")
 
 
 def load_niche():
@@ -62,8 +63,8 @@ def lint_title(title, niche):
     if any(low.startswith(h) for h in HOOK_STARTERS):
         wins.append("Opens with a strong hook phrase.")
     else:
-        issues.append("Doesn't open with a hook. Try 'What if…', 'In the year "
-                      "3000…', 'This is…', 'The last…'.")
+        issues.append("Doesn't open with a hook. Try 'What if…', 'This is…', "
+                      "'The most…', 'Why…', 'How…'.")
 
     if any(w in low for w in POWER_WORDS):
         wins.append("Contains curiosity/power words.")

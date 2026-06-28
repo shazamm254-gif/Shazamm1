@@ -1,9 +1,12 @@
-# Project 3000 — Shorts Growth Toolkit
+# Cosmic Dread — Shorts Growth Toolkit
 
-Tooling + strategy to grow the YouTube Shorts channel
-**[@Project3000Official](https://www.youtube.com/@Project3000Official)** —
-AI-generated simulations of the future of evolution (speculative biology, future
-humans, post-apocalyptic survival, Earth & Mars in the next millennium).
+Tooling + strategy to launch and grow a faceless, AI-generated cosmic-horror
+YouTube Shorts channel — **Cosmic Dread**: the universe is bigger, stranger, and
+more terrifying than you think, in 30-second hits.
+
+> The channel is currently configured for the **cosmic / space-horror** niche in
+> `tools/niche.json`. Change that one file (name, pillars, hooks, vocabulary) and
+> every tool retunes to any niche you want.
 
 This repo can't post to YouTube for you, but it gives you the two things that
 actually move a small channel: a **concrete growth plan** and **scripts** that
@@ -37,14 +40,14 @@ generator are optional and need an Anthropic API key. See `.env.example`.
 ## Quick start
 
 ```bash
-# 1. Baseline the channel — what's working, and when to post
-python tools/analyze_channel.py --channel "@Project3000Official"
+# 1. Baseline a channel — what's working, and when to post
+python tools/analyze_channel.py --channel "@CosmicDread"
 
 # 2. Fill your idea pipeline
 python tools/generate_ideas.py -n 20
 
 # 3. Check an upload's packaging before you publish
-python tools/optimize_metadata.py --title "The last human on Earth won't look human"
+python tools/optimize_metadata.py --title "What happens if you fall into a black hole"
 ```
 
 Add `--use-claude` to the optimizer or idea generator for AI-written titles and

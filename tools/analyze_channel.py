@@ -9,7 +9,7 @@ same public numbers any viewer can see.
 
 Usage:
     export YOUTUBE_API_KEY="..."          # see .env.example
-    python tools/analyze_channel.py --channel "@Project3000Official"
+    python tools/analyze_channel.py --channel "@CosmicDread"
     python tools/analyze_channel.py --channel UCxxxxxxxx --csv reports/videos.csv
 
 What you get:
@@ -161,7 +161,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--channel",
-                    default=os.environ.get("YOUTUBE_CHANNEL", "@Project3000Official"),
+                    default=os.environ.get("YOUTUBE_CHANNEL", "@CosmicDread"),
                     help="@handle, channel ID (UC...), or name")
     ap.add_argument("--csv", help="Optional path to write per-video CSV")
     ap.add_argument("--top", type=int, default=5, help="How many top/bottom to show")

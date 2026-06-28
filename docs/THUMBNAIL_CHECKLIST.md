@@ -1,4 +1,4 @@
-# Project 3000 — Thumbnail & First-Frame Checklist
+# Cosmic Dread — Thumbnail & First-Frame Checklist
 
 For Shorts, the **first frame** *is* the thumbnail in most places — it's what
 shows in the feed, on your channel grid, and in search. Treat frame 1 of every
@@ -47,12 +47,13 @@ If you hesitate, it's not done. The image must promise the payoff instantly.
 
 ---
 
-## Niche-specific wins
+## Niche-specific wins (cosmic)
 
-- [ ] **Faces and eyes stop scrolls** — a strange humanoid face or a single intense animal eye is your strongest first frame. Use them often.
-- [ ] **Scale shock** — show the future thing next to something familiar for size (a leopard-cat in a doorway, a tall Martian human beside an Earth human).
-- [ ] **The "uncanny familiar"** — take something everyone knows (a hand, a cat, a human face) and reveal it changed. Familiar → wrong is your core hook.
-- [ ] **Ominous lighting** — rim light, low key, glow-in-the-dark subjects. It matches your documentary-from-the-future tone and reads great at small size.
+- [ ] **One glowing focal point in the void** — a black hole's accretion disk, a dying star, a lone planet against pure black. High contrast, reads tiny, instantly on-brand.
+- [ ] **Scale shock** — put the cosmic object next to something familiar for size (Earth as a speck beside a giant star or black hole). Scale is your strongest hook.
+- [ ] **Deep blacks + a single intense color** — deep blue/black with one violent flash of orange, red, or white. Keep this palette consistent so the grid reads as *yours*.
+- [ ] **A "wrong" or unsettling visual** — light bending around a black hole, a sky with no sun, an empty void. Ominous beats pretty for stopping the scroll.
+- [ ] **Avoid generic starfields** — a plain field of stars looks like every other space channel. Make frame 1 a *specific*, dramatic object.
 
 ---
 

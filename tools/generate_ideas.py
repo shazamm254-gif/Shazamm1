@@ -1,38 +1,29 @@
 #!/usr/bin/env python3
 """
-generate_ideas.py — generate Short video ideas (hook + concept) for Project 3000.
+generate_ideas.py — generate Short video ideas (hook + concept) for your channel.
+
+Reads everything from tools/niche.json, so it works for ANY niche — change that
+one file and the ideas change with it.
 
 Works two ways:
-  * Default: instant, free, offline — fills your channel's proven hook templates
-    with niche subjects (no API key needed).
+  * Default: instant, free, offline — fills your channel's hook templates with
+    niche vocabulary from niche.json (no API key needed).
   * --use-claude: richer, original ideas with hook, concept, and a title, written
     in your channel's voice (needs ANTHROPIC_API_KEY).
 
 Usage:
     python tools/generate_ideas.py -n 10
     python tools/generate_ideas.py -n 8 --use-claude
-    python tools/generate_ideas.py -n 8 --use-claude --theme "Mars colonists"
+    python tools/generate_ideas.py -n 8 --use-claude --theme "rogue planets"
 """
 
 import argparse
 import json
 import os
 import random
+import re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-
-# Fill-ins for the offline template generator. Tuned to the niche.
-SUBJECTS = ["the human hand", "the human eye", "sharks", "octopuses", "ants",
-            "house cats", "wolves", "crows", "jellyfish", "the human spine",
-            "forests", "coral reefs", "deep-sea fish", "spiders", "whales"]
-TIMEFRAMES = ["1,000 years", "10,000 years", "a million years", "10 million years",
-              "100 million years", "five generations", "a single ice age"]
-EVENTS = ["a second ice age", "an ocean boil-off", "a gamma-ray burst",
-          "an oxygen collapse", "a total blackout", "a gravity surge",
-          "the sun dimming", "the Earth stopping its spin"]
-ENVIRONMENTS = ["a drowned Earth", "the Martian surface", "a frozen wasteland",
-                "a radioactive desert", "total darkness", "a high-gravity world"]
-ANIMALS = ["dogs", "humans", "pigeons", "rats", "cockroaches", "deer", "bees"]
 
 
 def load_niche():
@@ -41,18 +32,23 @@ def load_niche():
 
 
 def offline_ideas(n, niche):
-    out, seen = [], set()
-    templates = niche["hook_templates"]
-    attempts = 0
-    while len(out) < n and attempts < n * 20:
+    """Fill each hook template's {placeholders} from niche['fillers']."""
+    templates = niche.get("hook_templates", [])
+    fillers = niche.get("fillers", {})
+    if not templates or not fillers:
+        return ["(Add hook_templates and fillers to niche.json to generate offline ideas.)"]
+
+    out, seen, attempts = [], set(), 0
+    while len(out) < n and attempts < n * 30:
         attempts += 1
         hook = random.choice(templates)
-        hook = (hook.replace("{subject}", random.choice(SUBJECTS))
-                    .replace("{timeframe}", random.choice(TIMEFRAMES))
-                    .replace("{event}", random.choice(EVENTS))
-                    .replace("{environment}", random.choice(ENVIRONMENTS))
-                    .replace("{animal}", random.choice(ANIMALS)))
-        hook = hook[0].upper() + hook[1:] if hook else hook
+        # Replace every {key} that we have a filler list for.
+        for key in re.findall(r"\{(\w+)\}", hook):
+            if key in fillers and fillers[key]:
+                hook = hook.replace("{" + key + "}", random.choice(fillers[key]), 1)
+        if "{" in hook:  # a placeholder with no filler — skip this draw
+            continue
+        hook = hook[0].upper() + hook[1:]
         if hook in seen:
             continue
         seen.add(hook)
@@ -83,8 +79,8 @@ def claude_ideas(n, niche, theme):
         "  HOOK: a scroll-stopping first line (said in the first 2 seconds)\n"
         "  CONCEPT: one sentence describing the visual/story arc of the Short\n"
         "  TITLE: a <60-char title with a curiosity gap, no hashtags\n\n"
-        "Make each idea distinct and genuinely intriguing. Number them. "
-        "Return plain text."
+        "Keep each idea distinct, accurate, and genuinely unsettling/awe-inducing. "
+        "Number them. Return plain text."
     )
     msg = client.messages.create(
         model="claude-opus-4-8",

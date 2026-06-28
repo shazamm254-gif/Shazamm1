@@ -1,33 +1,61 @@
 {
-  "channel_name": "Project 3000",
-  "handle": "@Project3000Official",
-  "one_line": "AI-generated simulations of the future of evolution — speculative biology, future human evolution, and post-apocalyptic survival on Earth and Mars.",
+  "channel_name": "Cosmic Dread",
+  "handle": "@CosmicDread",
+  "one_line": "The universe is bigger, stranger, and more terrifying than you think — bite-sized cosmic facts that mess with your head, visualized with AI.",
   "pillars": [
-    "Speculative Biology & Zoology",
-    "Future Human Evolution",
-    "Post-Apocalyptic Survival",
-    "Mars / off-world adaptation",
-    "Deep-time & far-future Earth"
+    "Space Horror (black holes, rogue planets, gamma-ray bursts)",
+    "Cosmic Giants (the biggest, densest, most extreme objects)",
+    "The End (heat death, the dying Sun, the far future of the universe)",
+    "What If (cosmic hypotheticals)",
+    "Unexplained (things in space science can't fully explain)"
   ],
-  "audience": "Sci-fi fans, futurism and speculative-evolution enthusiasts, biology nerds, and the 'what if' curiosity crowd that watches creatures/aliens/future-Earth content.",
-  "tone": "Documentary-grade, ominous, awe-inducing. Think a nature documentary narrated from the year 3000.",
-  "core_hashtags": ["#AI", "#Evolution", "#SciFi", "#Futurism", "#SpeculativeBiology"],
-  "extra_hashtags": ["#shorts", "#futureevolution", "#speculativezoology", "#whatif", "#aiart", "#mars", "#posthuman", "#deeptime", "#scifishorts", "#creaturedesign"],
+  "audience": "Space and science-curious viewers, sci-fi fans, the 'existential awe / cosmic horror' crowd, and anyone who likes facts that make the universe feel vast and unsettling.",
+  "tone": "Ominous, awe-inducing documentary. A calm narrator describing things almost too large and too dark to comprehend.",
+  "core_hashtags": ["#space", "#universe", "#cosmos", "#astronomy", "#blackhole"],
+  "extra_hashtags": ["#shorts", "#spacefacts", "#cosmic", "#scifi", "#nasa", "#physics", "#galaxy", "#cosmichorror", "#aiart"],
   "hook_templates": [
-    "In the year 3000, {subject} no longer exists. Here's what replaced it.",
-    "This is what humans will look like after {timeframe} on Mars.",
-    "Evolution didn't stop. {subject} kept changing — watch.",
-    "If {event} happened tomorrow, this is the creature that survives.",
-    "Scientists simulated {timeframe} of evolution. The result is terrifying.",
-    "What if {animal} had to survive a dead Earth?",
-    "The last human on Earth won't look human at all.",
-    "Nature built this in the next 10 million years. AI just showed us.",
-    "{subject} adapted to {environment}. The result shouldn't be possible.",
-    "Earth in 3000 is unrecognizable. Start here."
+    "This is what happens if you fall into {object}.",
+    "{object} is so {adjective} it breaks physics. Here's how.",
+    "Scientists found {object}. It shouldn't exist.",
+    "What's really at {place}? The answer is terrifying.",
+    "{object} could end all life on Earth. Here's how.",
+    "In {scale}, {event}. This is what it looks like.",
+    "Nobody can explain {object}. And that's the scary part.",
+    "The universe is hiding something at {place}.",
+    "{object} is bigger than you can imagine. Watch.",
+    "This is the most {adjective} thing in the universe.",
+    "What if {event}? Here's the answer.",
+    "There's {object} out there with your name on it."
   ],
   "title_keywords": [
-    "future evolution", "speculative biology", "year 3000", "post-human",
-    "Mars colony", "what if", "future humans", "deep time", "next million years",
-    "alien Earth", "survival", "mutation", "AI simulation"
-  ]
+    "black hole", "universe", "space", "supernova", "galaxy", "neutron star",
+    "cosmic", "light-years", "dark matter", "the Sun", "milky way", "void"
+  ],
+  "fillers": {
+    "object": [
+      "a black hole", "a neutron star", "the Sun", "a supernova", "a quasar",
+      "a rogue planet", "dark matter", "a magnetar", "Sagittarius A*",
+      "the Andromeda galaxy", "a white dwarf", "a gamma-ray burst",
+      "the largest star ever found", "the Boötes Void", "the Great Attractor"
+    ],
+    "adjective": [
+      "terrifying", "massive", "dense", "violent", "empty", "ancient",
+      "impossible", "silent", "cold", "powerful"
+    ],
+    "place": [
+      "the center of the Milky Way", "the edge of the universe",
+      "the bottom of a black hole", "the largest void in space",
+      "the heart of a dying star", "beyond the observable universe"
+    ],
+    "scale": [
+      "a billion years", "100 trillion years", "the last second of the universe",
+      "the first second after the Big Bang", "10 billion light-years",
+      "the end of time"
+    ],
+    "event": [
+      "the Sun died", "two black holes collided", "a star exploded next door",
+      "the universe stopped expanding", "the last star burned out",
+      "a gamma-ray burst hit Earth", "the galaxies all merged"
+    ]
+  }
 }
