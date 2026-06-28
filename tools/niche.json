@@ -1,0 +1,33 @@
+{
+  "channel_name": "Project 3000",
+  "handle": "@Project3000Official",
+  "one_line": "AI-generated simulations of the future of evolution — speculative biology, future human evolution, and post-apocalyptic survival on Earth and Mars.",
+  "pillars": [
+    "Speculative Biology & Zoology",
+    "Future Human Evolution",
+    "Post-Apocalyptic Survival",
+    "Mars / off-world adaptation",
+    "Deep-time & far-future Earth"
+  ],
+  "audience": "Sci-fi fans, futurism and speculative-evolution enthusiasts, biology nerds, and the 'what if' curiosity crowd that watches creatures/aliens/future-Earth content.",
+  "tone": "Documentary-grade, ominous, awe-inducing. Think a nature documentary narrated from the year 3000.",
+  "core_hashtags": ["#AI", "#Evolution", "#SciFi", "#Futurism", "#SpeculativeBiology"],
+  "extra_hashtags": ["#shorts", "#futureevolution", "#speculativezoology", "#whatif", "#aiart", "#mars", "#posthuman", "#deeptime", "#scifishorts", "#creaturedesign"],
+  "hook_templates": [
+    "In the year 3000, {subject} no longer exists. Here's what replaced it.",
+    "This is what humans will look like after {timeframe} on Mars.",
+    "Evolution didn't stop. {subject} kept changing — watch.",
+    "If {event} happened tomorrow, this is the creature that survives.",
+    "Scientists simulated {timeframe} of evolution. The result is terrifying.",
+    "What if {animal} had to survive a dead Earth?",
+    "The last human on Earth won't look human at all.",
+    "Nature built this in the next 10 million years. AI just showed us.",
+    "{subject} adapted to {environment}. The result shouldn't be possible.",
+    "Earth in 3000 is unrecognizable. Start here."
+  ],
+  "title_keywords": [
+    "future evolution", "speculative biology", "year 3000", "post-human",
+    "Mars colony", "what if", "future humans", "deep time", "next million years",
+    "alien Earth", "survival", "mutation", "AI simulation"
+  ]
+}
