@@ -1,0 +1,7 @@
+# Core dependency for talking to the YouTube Data API v3 (REST, no SDK needed).
+requests>=2.31.0
+
+# Optional: only needed if you want AI-powered title/idea generation
+# (the --use-claude flags). The scripts work without it using built-in
+# rule-based logic. Install with:  pip install anthropic
+anthropic>=0.40.0

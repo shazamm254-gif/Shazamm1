@@ -1,0 +1,61 @@
+{
+  "channel_name": "Cosmic Dread",
+  "handle": "@CosmicDread",
+  "one_line": "The universe is bigger, stranger, and more terrifying than you think — bite-sized cosmic facts that mess with your head, visualized with AI.",
+  "pillars": [
+    "Space Horror (black holes, rogue planets, gamma-ray bursts)",
+    "Cosmic Giants (the biggest, densest, most extreme objects)",
+    "The End (heat death, the dying Sun, the far future of the universe)",
+    "What If (cosmic hypotheticals)",
+    "Unexplained (things in space science can't fully explain)"
+  ],
+  "audience": "Space and science-curious viewers, sci-fi fans, the 'existential awe / cosmic horror' crowd, and anyone who likes facts that make the universe feel vast and unsettling.",
+  "tone": "Ominous, awe-inducing documentary. A calm narrator describing things almost too large and too dark to comprehend.",
+  "core_hashtags": ["#space", "#universe", "#cosmos", "#astronomy", "#blackhole"],
+  "extra_hashtags": ["#shorts", "#spacefacts", "#cosmic", "#scifi", "#nasa", "#physics", "#galaxy", "#cosmichorror", "#aiart"],
+  "hook_templates": [
+    "This is what happens if you fall into {object}.",
+    "{object} is so {adjective} it breaks physics. Here's how.",
+    "Scientists found {object}. It shouldn't exist.",
+    "What's really at {place}? The answer is terrifying.",
+    "{object} could end all life on Earth. Here's how.",
+    "In {scale}, {event}. This is what it looks like.",
+    "Nobody can explain {object}. And that's the scary part.",
+    "The universe is hiding something at {place}.",
+    "{object} is bigger than you can imagine. Watch.",
+    "This is the most {adjective} thing in the universe.",
+    "What if {event}? Here's the answer.",
+    "There's {object} out there with your name on it."
+  ],
+  "title_keywords": [
+    "black hole", "universe", "space", "supernova", "galaxy", "neutron star",
+    "cosmic", "light-years", "dark matter", "the Sun", "milky way", "void"
+  ],
+  "fillers": {
+    "object": [
+      "a black hole", "a neutron star", "the Sun", "a supernova", "a quasar",
+      "a rogue planet", "dark matter", "a magnetar", "Sagittarius A*",
+      "the Andromeda galaxy", "a white dwarf", "a gamma-ray burst",
+      "the largest star ever found", "the Boötes Void", "the Great Attractor"
+    ],
+    "adjective": [
+      "terrifying", "massive", "dense", "violent", "empty", "ancient",
+      "impossible", "silent", "cold", "powerful"
+    ],
+    "place": [
+      "the center of the Milky Way", "the edge of the universe",
+      "the bottom of a black hole", "the largest void in space",
+      "the heart of a dying star", "beyond the observable universe"
+    ],
+    "scale": [
+      "a billion years", "100 trillion years", "the last second of the universe",
+      "the first second after the Big Bang", "10 billion light-years",
+      "the end of time"
+    ],
+    "event": [
+      "the Sun died", "two black holes collided", "a star exploded next door",
+      "the universe stopped expanding", "the last star burned out",
+      "a gamma-ray burst hit Earth", "the galaxies all merged"
+    ]
+  }
+}
