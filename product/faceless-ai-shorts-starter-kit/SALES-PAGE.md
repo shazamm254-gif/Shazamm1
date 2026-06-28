@@ -105,7 +105,9 @@ Built for beginners. Day 1 to launch in the first week, with a 30-day plan after
 |---|---|---|
 | **Starter** | $9–$19 | The Playbook + hook vault + templates (guides only) |
 | **Complete** ⭐ | $27–$39 | Everything: Playbook + toolkit + example scripts + checklist + templates |
-| **Pro** | $49–$79 | Complete + a niche prompt pack + a 1:1 setup walkthrough / extended script vault |
+| **Pro** | $49–$79 | Complete + the **Cosmic AI Prompt Pack** (300+ prompts) + a 1:1 setup walkthrough / extended script vault |
 
 > Start with the **Complete** tier as your hero offer. Price low at launch to
-> gather reviews, then raise it. Bundle a niche prompt pack to upsell to Pro.
+> gather reviews, then raise it. The **Cosmic AI Prompt Pack**
+> (`../cosmic-ai-prompt-pack/`) is your Pro-tier upsell — or list it standalone
+> at $9–$19 to anyone making space content.
