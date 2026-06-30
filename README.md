@@ -113,6 +113,23 @@ React (Vite, :5173)  ──/api/*──▶  Express backend (:8787)  ──▶  
 - `server/routes/visuals.js` + `server/lib/leonardo.js` — Stage 5 shot list + image generation (with polling).
 - `src/` — React app: stepper, stages, shared spinner/error components.
 
+### Using OpenRouter instead of Anthropic (optional)
+
+If you don't have Anthropic credits, you can route every "Claude" call through
+[OpenRouter](https://openrouter.ai) (an OpenAI-compatible gateway with free
+models). Add to `.env`:
+
+```
+OPENROUTER_API_KEY=sk-or-...
+OPENROUTER_MODEL=deepseek/deepseek-chat-v3-0324:free
+```
+
+When `OPENROUTER_API_KEY` is set it takes priority over `ANTHROPIC_API_KEY`;
+nothing else changes. `OPENROUTER_MODEL` is optional — pick any model id from
+<https://openrouter.ai/models> (ids ending in `:free` cost nothing; you can also
+use `anthropic/claude-sonnet-4-6`, which draws OpenRouter credits). The key-status
+row in the app shows which provider and model are active.
+
 ### Cost guards
 
 - YouTube `search.list` is capped at **25** results (~100 quota units) and

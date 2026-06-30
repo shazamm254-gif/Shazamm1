@@ -7,7 +7,7 @@ import analyzeRoute from './routes/analyze.js'
 import scriptRoute from './routes/script.js'
 import voiceRoute from './routes/voice.js'
 import visualsRoute from './routes/visuals.js'
-import { ApiError } from './lib/anthropic.js'
+import { ApiError, aiProvider } from './lib/anthropic.js'
 
 const app = express()
 const PORT = process.env.PORT || 8787
@@ -19,9 +19,15 @@ app.use(express.json({ limit: '1mb' }))
 app.get('/api/health', (req, res) => {
   res.json({
     ok: true,
+    aiProvider: aiProvider(), // 'openrouter' or 'anthropic'
+    aiModel:
+      aiProvider() === 'openrouter'
+        ? process.env.OPENROUTER_MODEL || 'deepseek/deepseek-chat-v3-0324:free'
+        : 'claude-sonnet-4-6',
     keys: {
       youtube: Boolean(process.env.YOUTUBE_API_KEY),
       anthropic: Boolean(process.env.ANTHROPIC_API_KEY),
+      openrouter: Boolean(process.env.OPENROUTER_API_KEY),
       elevenlabs: Boolean(process.env.ELEVENLABS_API_KEY),
       leonardo: Boolean(process.env.LEONARDO_API_KEY),
     },

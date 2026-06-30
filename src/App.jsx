@@ -95,7 +95,7 @@ export default function App() {
         </button>
       </header>
 
-      {health && <KeyStatus keys={health.keys} />}
+      {health && <KeyStatus health={health} />}
 
       <Stepper current={stage} unlocked={unlocked} onSelect={setStage} />
 
@@ -158,10 +158,13 @@ export default function App() {
   )
 }
 
-function KeyStatus({ keys }) {
+function KeyStatus({ health }) {
+  const { keys } = health
+  const usingOpenRouter = health.aiProvider === 'openrouter'
+  // The "AI" chip reflects whichever provider is active for the Claude calls.
   const items = [
     ['YouTube', keys.youtube],
-    ['Anthropic', keys.anthropic],
+    [usingOpenRouter ? 'AI · OpenRouter' : 'AI · Anthropic', usingOpenRouter ? keys.openrouter : keys.anthropic],
     ['ElevenLabs', keys.elevenlabs],
     ['Leonardo', keys.leonardo],
   ]
@@ -172,6 +175,7 @@ function KeyStatus({ keys }) {
           {ok ? '●' : '○'} {name}
         </span>
       ))}
+      {health.aiModel && <span className="keychip model-chip">model: {health.aiModel}</span>}
     </div>
   )
 }

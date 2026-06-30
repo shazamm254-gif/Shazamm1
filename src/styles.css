@@ -40,6 +40,7 @@ body {
 }
 .keychip.ok { color: #34d399; }
 .keychip.missing { color: #f87171; }
+.keychip.model-chip { color: var(--muted); font-family: ui-monospace, Menlo, monospace; }
 
 /* Stepper */
 .stepper {
