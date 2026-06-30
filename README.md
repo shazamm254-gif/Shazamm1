@@ -1,73 +1,129 @@
-# Cosmic Dread — Shorts Growth Toolkit
+# The Algorithm Beater
 
-Tooling + strategy to launch and grow a faceless, AI-generated cosmic-horror
-YouTube Shorts channel — **Cosmic Dread**: the universe is bigger, stranger, and
-more terrifying than you think, in 30-second hits.
+A local web app — a **YouTube Shorts pipeline** that generates *proven* viral
+ideas, scores them, analyzes them, writes engineered scripts, voices them, and
+generates matching visuals.
 
-> The channel is currently configured for the **cosmic / space-horror** niche in
-> `tools/niche.json`. Change that one file (name, pillars, hooks, vocabulary) and
-> every tool retunes to any niche you want.
+It runs as a **Vite + React** frontend with a small **Node/Express** backend.
+All four API keys stay **server-side** in `.env` — the backend proxies every API
+call and the React frontend only ever talks to the backend. No keys ever reach
+the browser.
 
-This repo can't post to YouTube for you, but it gives you the two things that
-actually move a small channel: a **concrete growth plan** and **scripts** that
-analyze what's working and help you package and ideate faster.
+> Looking for the original Cosmic Dread Python toolkit that used to live here?
+> It moved to [`docs/SHORTS_TOOLKIT.md`](docs/SHORTS_TOOLKIT.md).
 
-## What's here
+## The five stages
 
-| Path | What it does |
+1. **Proven Idea Engine** — pulls top recent Shorts in your niche from YouTube,
+   scores them by virality, and asks Claude to turn the proven *formats* into
+   fresh ideas. *(Built.)*
+2. **Idea Analysis** — a structured retention/pacing brief for the chosen idea. *(Next.)*
+3. **Viral Script Generator** — a second-marked, human-voiced Shorts script. *(Next.)*
+4. **Voiceover** — ElevenLabs TTS (confirm-before-generate; uses paid credits). *(Next.)*
+5. **Visual Prompts + Generation** — Claude shot list → Leonardo images
+   (confirm-before-generate; uses paid credits). *(Next.)*
+
+Stages unlock only when the previous one is complete. You can **Export project**
+to download every stage's output as one JSON file.
+
+> **Build status:** the scaffold and **Stage 1 (the core)** are complete and
+> runnable end to end. Stages 2–5 are wired into the stepper and land in the
+> next build steps.
+
+---
+
+## Setup (desktop)
+
+```bash
+npm install          # install dependencies
+cp .env.example .env # then edit .env and fill in your four keys
+npm run dev          # starts the Express backend + Vite frontend together
+```
+
+Open the printed Vite URL (default <http://localhost:5173>). The backend runs on
+`PORT` (default **8787**) and the frontend proxies all `/api/*` calls to it.
+
+### Healthcheck
+
+Visit <http://localhost:8787/api/health> — it reports which keys are present
+(never their values). The app also shows a key-status row at the top.
+
+---
+
+## Setup on Android (Termux)
+
+1. Install **Termux** from **F-Droid** (the Play Store version is outdated — use
+   F-Droid).
+2. In Termux:
+   ```
+   pkg update && pkg upgrade
+   pkg install nodejs git
+   ```
+3. Clone or create the project folder, then `cd` into it.
+4. `npm install`
+5. Create the `.env` file (see **Where the keys go** below) and fill in the four
+   keys.
+6. `npm run dev`
+7. Open the printed `localhost` URL in your phone's browser (Chrome/Firefox).
+   The backend runs on `PORT=8787`; Vite serves the frontend; both run inside
+   Termux.
+
+> **Note:** Termux must stay open in the foreground (or run `termux-wake-lock`)
+> or Android may kill the server.
+
+---
+
+## Where the keys go
+
+All four keys go in **one** file named `.env` in the project root (the same
+folder as `package.json`). In Termux, create it with `nano .env`, paste the
+block below, fill each value after the `=` with **no quotes and no spaces**, then
+save (Ctrl+O, Enter, Ctrl+X):
+
+```
+YOUTUBE_API_KEY=your_youtube_key_here
+ANTHROPIC_API_KEY=your_anthropic_key_here
+ELEVENLABS_API_KEY=your_elevenlabs_key_here
+LEONARDO_API_KEY=your_leonardo_key_here
+PORT=8787
+```
+
+- The **YouTube** key is the one you make in Google Cloud Console (enable
+  **YouTube Data API v3** → Credentials → Create API key). It's read-only public
+  data.
+- The keys are read **only** by the backend, never sent to the browser.
+- `.env` is listed in `.gitignore`, so it's never committed or shared.
+- If a key is wrong or missing, the matching stage shows a clear
+  **"invalid/missing key"** error instead of a generic crash.
+
+---
+
+## How it works (architecture)
+
+```
+React (Vite, :5173)  ──/api/*──▶  Express backend (:8787)  ──▶  YouTube / Anthropic / ElevenLabs / Leonardo
+   no keys                          reads .env, proxies every call
+```
+
+- `server/index.js` — Express app, healthcheck, route mounting, central error handler.
+- `server/lib/youtube.js` — `search.list` + `videos.list` + virality scoring.
+- `server/lib/anthropic.js` — Claude helper (`claude-sonnet-4-6`) + JSON-fence stripping.
+- `server/routes/ideas.js` — Stage 1 pipeline.
+- `src/` — React app: stepper, stages, shared spinner/error components.
+
+### Cost guards
+
+- YouTube `search.list` is capped at **25** results (~100 quota units) and
+  `videos.list` is a single ~1-unit call.
+- Stages 4 and 5 (paid credits) require an explicit **"Generate (uses credits)"**
+  confirmation before any request is sent.
+
+## Scripts
+
+| Command | What it does |
 |---|---|
-| [`docs/GROWTH_STRATEGY.md`](docs/GROWTH_STRATEGY.md) | The playbook — hooks, series, cadence, a 30-day plan, all tuned to this niche. **Start here.** |
-| [`docs/PRODUCTION-PACK.md`](docs/PRODUCTION-PACK.md) | **All-in-one** — every script's voiceover + the 4 ready-to-paste image prompts together. Make all 10 Shorts from this one file (phone-friendly). |
-| [`docs/FIRST_10_SHORTS.md`](docs/FIRST_10_SHORTS.md) | 10 ready-to-produce Short scripts — hook, full voiceover, on-screen text, visuals, and paste-ready titles/descriptions. |
-| [`docs/THUMBNAIL_CHECKLIST.md`](docs/THUMBNAIL_CHECKLIST.md) | First-frame / thumbnail checklist to win the swipe, tuned to this niche. |
-| `tools/analyze_channel.py` | Pulls your public stats, finds your top/bottom performers and best posting time. |
-| `tools/optimize_metadata.py` | Scores a title/description/tags against Shorts best practices (offline), with optional AI rewrites. |
-| `tools/generate_ideas.py` | Generates Short ideas + hooks for your niche (offline, or richer with AI). |
-| `tools/niche.json` | Your channel's niche, pillars, voice, and hook templates — edit this to retune every tool. |
-| [`product/faceless-ai-shorts-starter-kit/`](product/faceless-ai-shorts-starter-kit/) | A **sellable digital product** — packages the system into a faceless-channel starter kit, with paste-ready sales copy and pricing. |
-| [`product/cosmic-ai-prompt-pack/`](product/cosmic-ai-prompt-pack/) | **300+ cosmic AI image/video prompts** with a cohesive style system + shot lists for the 10 scripts. A standalone product, the Pro-tier upsell, and your own production shortcut. |
-
-## Setup
-
-```bash
-pip install -r requirements.txt      # only `requests` is required
-cp .env.example .env                 # then edit .env with your key(s)
-source .env
-```
-
-You need a free **YouTube Data API key** for the analytics (read-only public
-data — it can't change your channel). The AI features in the optimizer and idea
-generator are optional and need an Anthropic API key. See `.env.example`.
-
-## Quick start
-
-```bash
-# 1. Baseline a channel — what's working, and when to post
-python tools/analyze_channel.py --channel "@CosmicDread"
-
-# 2. Fill your idea pipeline
-python tools/generate_ideas.py -n 20
-
-# 3. Check an upload's packaging before you publish
-python tools/optimize_metadata.py --title "What happens if you fall into a black hole"
-```
-
-Add `--use-claude` to the optimizer or idea generator for AI-written titles and
-full hook/concept/title ideas (needs `ANTHROPIC_API_KEY`).
-
-## How to actually use this
-
-1. Read [`docs/GROWTH_STRATEGY.md`](docs/GROWTH_STRATEGY.md) once, end to end.
-2. Run `analyze_channel.py` to get your starting numbers and best posting time.
-3. Batch-generate a week of ideas, produce them, and run each through
-   `optimize_metadata.py` before posting.
-4. Re-run `analyze_channel.py` weekly. Make more of whatever over-performs.
-
-Retune everything by editing `tools/niche.json` — change the pillars, voice, or
-hook templates and every tool follows.
-
-## Note
-
-Public stats (views, likes) show *what* performed; the deeper Shorts signals
-(swipe-away rate, average view duration) live in **YouTube Studio → Analytics**.
-Use this toolkit to spot patterns fast, then confirm them in Studio.
+| `npm run dev` | Run backend + frontend together (development). |
+| `npm run dev:server` | Backend only. |
+| `npm run dev:client` | Frontend only. |
+| `npm run build` | Production build of the frontend. |
+| `npm start` | Run the backend (serves `/api`). |

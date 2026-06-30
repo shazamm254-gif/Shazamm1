@@ -2,6 +2,12 @@
 .env
 *.local
 
+# Node / Vite (web app)
+node_modules/
+dist/
+npm-debug.log*
+.vite/
+
 # Python
 __pycache__/
 *.py[cod]
