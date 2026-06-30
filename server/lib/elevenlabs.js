@@ -12,6 +12,13 @@ function requireKey() {
 
 function mapStatus(status) {
   if (status === 401) return new ApiError(401, 'invalid_key', 'ElevenLabs rejected the API key (401). Check ELEVENLABS_API_KEY.')
+  if (status === 403) {
+    return new ApiError(
+      403,
+      'invalid_key',
+      'ElevenLabs returned 403 (forbidden). The key is missing permissions — in your ElevenLabs profile, give the API key the "Voices: Read" and "Text to Speech" scopes (or use a key with no scope restrictions).'
+    )
+  }
   if (status === 429) return new ApiError(429, 'quota_exceeded', 'ElevenLabs quota / rate limit reached. Check your credit balance.')
   return null
 }

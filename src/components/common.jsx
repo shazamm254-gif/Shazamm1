@@ -11,7 +11,8 @@ export function Spinner({ label = 'Working…' }) {
 
 // Maps backend error codes to friendly, actionable copy.
 const FRIENDLY = {
-  invalid_key: 'A required API key is missing or invalid. Check your .env file and restart the server.',
+  invalid_key: 'A required API key is missing, invalid, or lacks permissions. Check your .env file (and the key’s scopes), then restart the server.',
+  billing: 'This provider’s account is out of credits. Add credits/billing, then try again.',
   quota_exceeded: 'API quota/rate limit reached. Wait a bit or use a different key.',
   empty_results: 'No results to work with. Try a broader or different input.',
   parse_error: 'The AI response could not be read. Try running the stage again.',

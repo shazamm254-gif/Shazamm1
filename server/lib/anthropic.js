@@ -50,6 +50,11 @@ export async function askClaude(prompt, { maxTokens = 1024, system } = {}) {
   }
   if (!resp.ok) {
     const detail = await safeText(resp)
+    // A valid key with an empty wallet returns 400 with this message — surface
+    // it as a distinct, actionable billing error rather than a generic failure.
+    if (/credit balance is too low|too low to access/i.test(detail)) {
+      throw new ApiError(402, 'billing', 'Your Anthropic credit balance is too low. Add credits at console.anthropic.com → Plans & Billing.')
+    }
     throw new ApiError(resp.status, 'anthropic_error', `Anthropic error ${resp.status}: ${detail}`)
   }
 
