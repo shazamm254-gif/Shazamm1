@@ -37,4 +37,6 @@ function withCode(err, code) {
 export const api = {
   health: () => get('/api/health'),
   ideas: (niche, region) => post('/api/ideas', { niche, region }),
+  analyze: (idea) => post('/api/analyze', { idea }),
+  script: (idea, brief) => post('/api/script', { idea, brief }),
 }

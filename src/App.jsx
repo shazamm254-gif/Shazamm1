@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import Stepper from './components/Stepper.jsx'
 import Stage1Ideas from './components/Stage1Ideas.jsx'
+import Stage2Analysis from './components/Stage2Analysis.jsx'
+import Stage3Script from './components/Stage3Script.jsx'
 import { api } from './api.js'
 
 export default function App() {
@@ -12,15 +14,34 @@ export default function App() {
   const [ideasResult, setIdeasResult] = useState(null)
   const [selectedIdeaIdx, setSelectedIdeaIdx] = useState(null)
   const [chosenIdea, setChosenIdea] = useState(null)
+  const [brief, setBrief] = useState(null)
+  const [script, setScript] = useState(null)
 
   useEffect(() => {
     api.health().then(setHealth).catch(() => setHealth(null))
   }, [])
 
   function advanceToStage2(idea) {
-    setChosenIdea(idea)
+    // Choosing a (possibly different) idea invalidates downstream outputs.
+    setChosenIdea((prev) => {
+      if (prev && prev.idea !== idea.idea) {
+        setBrief(null)
+        setScript(null)
+      }
+      return idea
+    })
     setUnlocked((u) => Math.max(u, 2))
     setStage(2)
+  }
+
+  function advanceToStage3() {
+    setUnlocked((u) => Math.max(u, 3))
+    setStage(3)
+  }
+
+  function advanceToStage4() {
+    setUnlocked((u) => Math.max(u, 4))
+    setStage(4)
   }
 
   function exportProject() {
@@ -33,6 +54,8 @@ export default function App() {
         ideas: ideasResult?.ideas || [],
         chosenIdea,
       },
+      stage2: { brief },
+      stage3: { script },
     }
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
@@ -70,15 +93,33 @@ export default function App() {
           />
         )}
 
-        {stage > 1 && (
+        {stage === 2 && (
+          <Stage2Analysis
+            idea={chosenIdea}
+            brief={brief}
+            onBrief={setBrief}
+            onAdvance={advanceToStage3}
+          />
+        )}
+
+        {stage === 3 && (
+          <Stage3Script
+            idea={chosenIdea}
+            brief={brief}
+            script={script}
+            onScript={setScript}
+            onAdvance={advanceToStage4}
+          />
+        )}
+
+        {stage > 3 && (
           <section className="stage">
             <h2>Stage {stage}</h2>
             <p className="muted">
               Chosen idea: <strong>{chosenIdea?.idea}</strong>
             </p>
             <p className="comingsoon">
-              🚧 This stage is built in the next step. Scaffold + Stage 1 are complete and ready to
-              review.
+              🚧 This stage is built in the next step. Stages 1–3 are complete and ready to review.
             </p>
           </section>
         )}
