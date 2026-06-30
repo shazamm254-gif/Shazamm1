@@ -19,15 +19,14 @@ the browser.
    fresh ideas. *(Built.)*
 2. **Idea Analysis** — a structured retention/pacing brief for the chosen idea. *(Built.)*
 3. **Viral Script Generator** — a second-marked, human-voiced, editable Shorts script. *(Built.)*
-4. **Voiceover** — ElevenLabs TTS (confirm-before-generate; uses paid credits). *(Next.)*
-5. **Visual Prompts + Generation** — Claude shot list → Leonardo images
-   (confirm-before-generate; uses paid credits). *(Next.)*
+4. **Voiceover** — ElevenLabs TTS (confirm-before-generate; uses paid credits). *(Built.)*
+5. **Visual Prompts + Generation** — Claude shot list → Leonardo images, pick which
+   scenes to render (confirm-before-generate; uses paid credits). *(Built.)*
 
 Stages unlock only when the previous one is complete. You can **Export project**
 to download every stage's output as one JSON file.
 
-> **Build status:** the scaffold and **Stages 1–3** are complete and runnable end
-> to end. Stages 4–5 are wired into the stepper and land in the next build steps.
+> **Build status:** all five stages are complete and runnable end to end.
 
 ---
 
@@ -110,6 +109,8 @@ React (Vite, :5173)  ──/api/*──▶  Express backend (:8787)  ──▶  
 - `server/routes/ideas.js` — Stage 1 pipeline.
 - `server/routes/analyze.js` — Stage 2 retention brief.
 - `server/routes/script.js` — Stage 3 script writer.
+- `server/routes/voice.js` + `server/lib/elevenlabs.js` — Stage 4 voices list + TTS (mp3).
+- `server/routes/visuals.js` + `server/lib/leonardo.js` — Stage 5 shot list + image generation (with polling).
 - `src/` — React app: stepper, stages, shared spinner/error components.
 
 ### Cost guards

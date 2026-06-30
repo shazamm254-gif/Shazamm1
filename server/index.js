@@ -5,6 +5,8 @@ import cors from 'cors'
 import ideasRoute from './routes/ideas.js'
 import analyzeRoute from './routes/analyze.js'
 import scriptRoute from './routes/script.js'
+import voiceRoute from './routes/voice.js'
+import visualsRoute from './routes/visuals.js'
 import { ApiError } from './lib/anthropic.js'
 
 const app = express()
@@ -30,7 +32,8 @@ app.get('/api/health', (req, res) => {
 app.use('/api/ideas', ideasRoute)
 app.use('/api/analyze', analyzeRoute)
 app.use('/api/script', scriptRoute)
-// Stages 4–5 routes are added in later build steps.
+app.use('/api', voiceRoute) // /api/voices, /api/tts
+app.use('/api', visualsRoute) // /api/scenes, /api/image
 
 // --- Central error handler ---------------------------------------------------
 // Routes throw ApiError (or any Error); we translate to a clean JSON shape the

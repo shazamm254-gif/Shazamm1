@@ -19,6 +19,27 @@ const FRIENDLY = {
   bad_request: 'Something was missing from the request.',
 }
 
+// Confirm-before-generate guard for paid stages (4 & 5).
+export function ConfirmGenerate({ open, title, body, confirmLabel, onConfirm, onCancel }) {
+  if (!open) return null
+  return (
+    <div className="modal-backdrop" onClick={onCancel}>
+      <div className="modal" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
+        <h3>{title}</h3>
+        <p className="muted">{body}</p>
+        <div className="modal-actions">
+          <button className="btn" onClick={onCancel}>
+            Cancel
+          </button>
+          <button className="btn primary" onClick={onConfirm}>
+            {confirmLabel || 'Generate (uses credits)'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export function ErrorBox({ error }) {
   if (!error) return null
   const friendly = FRIENDLY[error.code]

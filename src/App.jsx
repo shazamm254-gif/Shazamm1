@@ -3,6 +3,8 @@ import Stepper from './components/Stepper.jsx'
 import Stage1Ideas from './components/Stage1Ideas.jsx'
 import Stage2Analysis from './components/Stage2Analysis.jsx'
 import Stage3Script from './components/Stage3Script.jsx'
+import Stage4Voice from './components/Stage4Voice.jsx'
+import Stage5Visuals from './components/Stage5Visuals.jsx'
 import { api } from './api.js'
 
 export default function App() {
@@ -16,6 +18,10 @@ export default function App() {
   const [chosenIdea, setChosenIdea] = useState(null)
   const [brief, setBrief] = useState(null)
   const [script, setScript] = useState(null)
+  const [voiceId, setVoiceId] = useState(null)
+  const [audioUrl, setAudioUrl] = useState(null)
+  const [scenes, setScenes] = useState(null)
+  const [images, setImages] = useState({}) // { sceneIndex: [url] }
 
   useEffect(() => {
     api.health().then(setHealth).catch(() => setHealth(null))
@@ -44,6 +50,11 @@ export default function App() {
     setStage(4)
   }
 
+  function advanceToStage5() {
+    setUnlocked((u) => Math.max(u, 5))
+    setStage(5)
+  }
+
   function exportProject() {
     const payload = {
       exportedAt: new Date().toISOString(),
@@ -56,6 +67,12 @@ export default function App() {
       },
       stage2: { brief },
       stage3: { script },
+      stage4: { voiceId, hasAudio: Boolean(audioUrl) },
+      stage5: {
+        scenes: scenes || [],
+        // Map scene index → generated image URLs (object URLs are session-only).
+        images,
+      },
     }
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
@@ -112,16 +129,25 @@ export default function App() {
           />
         )}
 
-        {stage > 3 && (
-          <section className="stage">
-            <h2>Stage {stage}</h2>
-            <p className="muted">
-              Chosen idea: <strong>{chosenIdea?.idea}</strong>
-            </p>
-            <p className="comingsoon">
-              🚧 This stage is built in the next step. Stages 1–3 are complete and ready to review.
-            </p>
-          </section>
+        {stage === 4 && (
+          <Stage4Voice
+            script={script}
+            audioUrl={audioUrl}
+            voiceId={voiceId}
+            onAudio={setAudioUrl}
+            onVoiceId={setVoiceId}
+            onAdvance={advanceToStage5}
+          />
+        )}
+
+        {stage === 5 && (
+          <Stage5Visuals
+            script={script}
+            scenes={scenes}
+            onScenes={setScenes}
+            images={images}
+            onImages={setImages}
+          />
         )}
       </main>
 

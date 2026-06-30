@@ -84,6 +84,7 @@ body {
 .btn {
   border: 1px solid var(--border); background: var(--panel-2); color: var(--text);
   padding: 10px 16px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600;
+  text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
 }
 .btn:hover:not(:disabled) { border-color: var(--accent); }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -166,5 +167,42 @@ body {
   font: 14px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 .script-area:focus { outline: none; border-color: var(--accent); }
+
+/* Field with label above a control */
+.field { display: flex; flex-direction: column; gap: 4px; }
+
+/* Stage 4 — audio */
+.audio-block { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+.audio-player { height: 40px; }
+
+/* Stage 5 — scenes + images */
+.scenes { display: grid; gap: 14px; margin-top: 18px; }
+.scene {
+  background: var(--panel-2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px;
+}
+.scene-picked { border-color: var(--accent); }
+.scene-head { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.scene-title { font-weight: 600; }
+.scene-prompt { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
+.image-grid {
+  display: grid; gap: 12px; margin-top: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+.image-cell { margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.image-cell img { width: 100%; border-radius: 10px; border: 1px solid var(--border); display: block; }
+.small-btn { padding: 6px 10px; font-size: 12px; text-align: center; text-decoration: none; }
+
+/* Confirm-before-generate modal */
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(4, 7, 14, 0.7);
+  display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 50;
+}
+.modal {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
+  padding: 22px; max-width: 420px; width: 100%;
+}
+.modal h3 { margin: 0 0 8px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
 
 .app-foot { margin-top: 28px; text-align: center; color: var(--muted); font-size: 12px; }
