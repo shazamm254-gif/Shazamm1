@@ -1,17 +1,42 @@
 import {
   AbsoluteFill,
+  Audio,
   interpolate,
   Sequence,
   spring,
+  staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+import { getAudioDurationInSeconds } from "@remotion/media-utils";
 
 // Short #1 from docs/FIRST_10_SHORTS.md — "Falling Into a Black Hole"
 export const FPS = 30;
-export const HOOK_FRAMES = FPS * 2; // 0-2s hook
-export const END_FRAMES = FPS * 3; // last 3s
-export const TOTAL_FRAMES = FPS * 30; // ~30s Short
+const HOOK_FRAMES = FPS * 2; // "INTO THE BLACK" card overlays the first 2s of the VO
+const TAIL_PAD_FRAMES = FPS * 0.5; // let the end card linger a beat after the audio ends
+
+const VO_AUDIO = "audio/vo.wav";
+const END_AUDIO = "audio/end.wav";
+
+type BlackHoleProps = {
+  voFrames: number;
+  endFrames: number;
+};
+
+export const calculateBlackHoleMetadata = async () => {
+  const [voSeconds, endSeconds] = await Promise.all([
+    getAudioDurationInSeconds(staticFile(VO_AUDIO)),
+    getAudioDurationInSeconds(staticFile(END_AUDIO)),
+  ]);
+
+  const voFrames = Math.ceil(voSeconds * FPS);
+  const endFrames = Math.ceil(endSeconds * FPS) + TAIL_PAD_FRAMES;
+
+  return {
+    durationInFrames: voFrames + endFrames,
+    props: { voFrames, endFrames },
+  };
+};
 
 const DriftingVoid: React.FC = () => {
   const frame = useCurrentFrame();
@@ -72,18 +97,20 @@ const CaptionCard: React.FC<{ text: string }> = ({ text }) => {
   );
 };
 
-export const BlackHole: React.FC = () => {
+export const BlackHole: React.FC<BlackHoleProps> = ({ voFrames, endFrames }) => {
   return (
     <AbsoluteFill>
       <DriftingVoid />
+      <Sequence from={0} durationInFrames={voFrames} name="VO">
+        <Audio src={staticFile(VO_AUDIO)} />
+      </Sequence>
+      <Sequence from={voFrames} durationInFrames={endFrames} name="End VO">
+        <Audio src={staticFile(END_AUDIO)} />
+      </Sequence>
       <Sequence from={0} durationInFrames={HOOK_FRAMES} name="Hook">
         <CaptionCard text="INTO THE BLACK" />
       </Sequence>
-      <Sequence
-        from={TOTAL_FRAMES - END_FRAMES}
-        durationInFrames={END_FRAMES}
-        name="End card"
-      >
+      <Sequence from={voFrames} durationInFrames={endFrames} name="End card">
         <CaptionCard text="…and from outside, you're still falling." />
       </Sequence>
     </AbsoluteFill>

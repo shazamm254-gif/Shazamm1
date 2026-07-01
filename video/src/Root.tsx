@@ -1,7 +1,7 @@
 import "./index.css";
 import { Composition } from "remotion";
 import { MyComposition } from "./Composition";
-import { BlackHole, FPS, TOTAL_FRAMES } from "./shorts/BlackHole";
+import { BlackHole, calculateBlackHoleMetadata, FPS } from "./shorts/BlackHole";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -17,10 +17,12 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="BlackHole"
         component={BlackHole}
-        durationInFrames={TOTAL_FRAMES}
+        calculateMetadata={calculateBlackHoleMetadata}
+        durationInFrames={1}
         fps={FPS}
         width={1080}
         height={1920}
+        defaultProps={{ voFrames: 0, endFrames: 0 }}
       />
     </>
   );
