@@ -25,6 +25,8 @@ const VO_AUDIO = "audio/vo.wav";
 const END_AUDIO = "audio/end.wav";
 const DISK_IMAGE = "images/black-hole-disk.jpg";
 const SILHOUETTE_IMAGE = "images/stretching-silhouette.jpg";
+const LENSING_IMAGE = "images/lensing-ring.png";
+const FAINT_GLOW_IMAGE = "images/faint-glow-black.png";
 
 type BlackHoleProps = {
   voFrames: number;
@@ -62,15 +64,22 @@ const KenBurns: React.FC<{ src: string }> = ({ src }) => {
 
 const Scene: React.FC<{ voFrames: number }> = ({ voFrames }) => {
   const frame = useCurrentFrame();
-  // Crossfade from the wide accretion-disk shot to the stretching silhouette
-  // as the VO reaches the spaghettification line.
+  // Four beats matching the shot list: disk (base) → stretching silhouette
+  // → lensing ring warp → pure black with a faint glow, each crossfading in
+  // as the VO reaches the matching line.
   const silhouetteOpacity = interpolate(
     frame,
-    [voFrames * 0.28, voFrames * 0.38],
+    [voFrames * 0.26, voFrames * 0.34, voFrames * 0.62, voFrames * 0.7],
+    [0, 1, 1, 0],
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+  );
+  const lensingOpacity = interpolate(
+    frame,
+    [voFrames * 0.64, voFrames * 0.72],
     [0, 1],
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
   );
-  const blackOpacity = interpolate(frame, [voFrames * 0.88, voFrames], [0, 1], {
+  const faintGlowOpacity = interpolate(frame, [voFrames * 0.9, voFrames], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
@@ -81,7 +90,12 @@ const Scene: React.FC<{ voFrames: number }> = ({ voFrames }) => {
       <AbsoluteFill style={{ opacity: silhouetteOpacity }}>
         <KenBurns src={SILHOUETTE_IMAGE} />
       </AbsoluteFill>
-      <AbsoluteFill style={{ backgroundColor: "black", opacity: blackOpacity }} />
+      <AbsoluteFill style={{ opacity: lensingOpacity }}>
+        <KenBurns src={LENSING_IMAGE} />
+      </AbsoluteFill>
+      <AbsoluteFill style={{ opacity: faintGlowOpacity }}>
+        <KenBurns src={FAINT_GLOW_IMAGE} />
+      </AbsoluteFill>
     </AbsoluteFill>
   );
 };
