@@ -1,0 +1,1 @@
+Placeholder narration script. Replace this line with the real jewel wasp script, then run `npm run narrate` again.
