@@ -31,6 +31,22 @@ npm run dev
 npx remotion render
 ```
 
+**Generate narration**
+
+Renders `scripts/narration.txt` to `public/assets/narration.mp3` using the
+[`edge-tts`](https://github.com/rany2/edge-tts) Python package (free,
+Microsoft Edge's TTS voices — no API key, no Docker). Installs `edge-tts`
+automatically via `pip` if it isn't already on your PATH.
+
+```console
+npm run narrate
+```
+
+Uses voice `en-US-AndrewNeural` at `--rate=-8%` for a calm, deliberate,
+deadpan read rather than an excited-announcer tone. To use a different
+voice or rate, edit `scripts/narrate.sh`. To change what gets narrated,
+edit `scripts/narration.txt` and rerun `npm run narrate`.
+
 **Upgrade Remotion**
 
 ```console

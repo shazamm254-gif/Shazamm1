@@ -97,6 +97,12 @@ Rendering needs a headless Chromium, which Remotion downloads on first render
 — make sure outbound access to `remotion.media` is allowed in restricted
 network environments.
 
+`video/` also has its own narration pipeline: `npm run narrate` (inside
+`video/`) renders `video/scripts/narration.txt` to
+`video/public/assets/narration.mp3` using the free `edge-tts` Python package
+directly (no Docker, no API key) — see [`video/README.md`](video/README.md)
+for details. Needs outbound access to `speech.platform.bing.com`.
+
 ## How to actually use this
 
 1. Read [`docs/GROWTH_STRATEGY.md`](docs/GROWTH_STRATEGY.md) once, end to end.
