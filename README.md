@@ -25,6 +25,7 @@ analyze what's working and help you package and ideate faster.
 | `tools/generate_ideas.py` | Generates Short ideas + hooks for your niche (offline, or richer with AI). |
 | `tools/generate_voiceover.py` | Renders the VO lines from `docs/FIRST_10_SHORTS.md` to audio via a local text-to-speech server. |
 | `tools/niche.json` | Your channel's niche, pillars, voice, and hook templates — edit this to retune every tool. |
+| [`video/`](video/) | A [Remotion](https://remotion.dev) project (React-based video rendering) — scaffold for assembling the AI images + voiceovers into final Shorts programmatically. |
 | [`product/faceless-ai-shorts-starter-kit/`](product/faceless-ai-shorts-starter-kit/) | A **sellable digital product** — packages the system into a faceless-channel starter kit, with paste-ready sales copy and pricing. |
 | [`product/cosmic-ai-prompt-pack/`](product/cosmic-ai-prompt-pack/) | **300+ cosmic AI image/video prompts** with a cohesive style system + shot lists for the 10 scripts. A standalone product, the Pro-tier upsell, and your own production shortcut. |
 
@@ -78,6 +79,23 @@ python tools/generate_voiceover.py --text "Custom line" -o clip.mp3
 Files are written to `voiceovers/` (git-ignored). Configure the server URL,
 key, voice, format, and speed via `TTS_API_URL` / `TTS_API_KEY` / `TTS_VOICE`
 / `TTS_FORMAT` / `TTS_SPEED` (see `.env.example`) or the matching CLI flags.
+
+### Video assembly
+
+`video/` is a blank [Remotion](https://remotion.dev) project (scaffolded with
+`npx create-video@latest`) for turning the AI-generated images and voiceovers
+into a finished vertical video in code, instead of a manual editor:
+
+```bash
+cd video
+npm install
+npm run dev      # opens the Remotion Studio to preview/edit compositions
+npx remotion render MyComp out.mp4   # renders a composition to a video file
+```
+
+Rendering needs a headless Chromium, which Remotion downloads on first render
+— make sure outbound access to `remotion.media` is allowed in restricted
+network environments.
 
 ## How to actually use this
 
