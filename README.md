@@ -26,6 +26,7 @@ analyze what's working and help you package and ideate faster.
 | `tools/niche.json` | Your channel's niche, pillars, voice, and hook templates — edit this to retune every tool. |
 | [`product/faceless-ai-shorts-starter-kit/`](product/faceless-ai-shorts-starter-kit/) | A **sellable digital product** — packages the system into a faceless-channel starter kit, with paste-ready sales copy and pricing. |
 | [`product/cosmic-ai-prompt-pack/`](product/cosmic-ai-prompt-pack/) | **300+ cosmic AI image/video prompts** with a cohesive style system + shot lists for the 10 scripts. A standalone product, the Pro-tier upsell, and your own production shortcut. |
+| [`video/`](video/) | A [Remotion](https://remotion.dev) project (the "Prompt to Video" template) that turns a title + topic into a rendered Short — script, AI images, and voiceover via OpenAI + ElevenLabs. See `video/README.md`. |
 
 ## Setup
 
