@@ -23,6 +23,7 @@ analyze what's working and help you package and ideate faster.
 | `tools/analyze_channel.py` | Pulls your public stats, finds your top/bottom performers and best posting time. |
 | `tools/optimize_metadata.py` | Scores a title/description/tags against Shorts best practices (offline), with optional AI rewrites. |
 | `tools/generate_ideas.py` | Generates Short ideas + hooks for your niche (offline, or richer with AI). |
+| `tools/niche_generator.py` | Discovers and scores new viral niches or sub-niches (offline or AI), explains why each one works, and can export a pick straight into the `niche.json` format. |
 | `tools/niche.json` | Your channel's niche, pillars, voice, and hook templates — edit this to retune every tool. |
 | [`product/faceless-ai-shorts-starter-kit/`](product/faceless-ai-shorts-starter-kit/) | A **sellable digital product** — packages the system into a faceless-channel starter kit, with paste-ready sales copy and pricing. |
 | [`product/cosmic-ai-prompt-pack/`](product/cosmic-ai-prompt-pack/) | **300+ cosmic AI image/video prompts** with a cohesive style system + shot lists for the 10 scripts. A standalone product, the Pro-tier upsell, and your own production shortcut. |
@@ -42,6 +43,9 @@ generator are optional and need an Anthropic API key. See `.env.example`.
 ## Quick start
 
 ```bash
+# 0. Not sure what niche to run at all? Generate and score some options first
+python tools/niche_generator.py -n 10
+
 # 1. Baseline a channel — what's working, and when to post
 python tools/analyze_channel.py --channel "@CosmicDread"
 
