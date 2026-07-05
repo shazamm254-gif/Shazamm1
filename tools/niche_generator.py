@@ -227,6 +227,29 @@ PARENTS = [
      "hashtags": ["#linguistics", "#language", "#etymology", "#words", "#learnontiktok"],
      "pillars": ["Untranslatable words", "Dying & endangered languages", "Weird grammar rules",
                  "Etymology deep dives", "Invented & secret languages"]},
+    {"key": "dark_botany", "name": "Dark Botany", "tag": "Dark Botany",
+     "demand": 7, "competition": 4, "evergreen": 9, "feasibility": 9,
+     "description": "Plants as characters in dark stories — poison, medicine, and the history "
+                     "connecting them, told as science and storytelling, never as a remedy to try.",
+     "vocab": ["a deadly nightshade berry", "an aconite root", "a castor bean's ricin",
+               "a water hemlock stalk", "a foxglove leaf's digoxin",
+               "willow bark's aspirin lineage", "a Madagascar periwinkle's chemo compound",
+               "the opium wars", "an ergot-poisoned harvest", "a radium-laced patent tonic",
+               "quinine and the age of empire", "a mandrake root legend"],
+     "hashtags": ["#darkbotany", "#poisonousplants", "#planthistory", "#toxicology",
+                  "#plantlore", "#darkhistory"],
+     "pillars": ["Poison garden: kill mechanisms of deadly plants",
+                 "Plants that became medicine: folk remedy to real pharmacology",
+                 "Plants that changed history: wars, witch trials, empires",
+                 "Botanical myth-busting: did grandma's remedy actually work?",
+                 "Plant folklore & superstition"],
+     # Never frame these as "this herb cures X" — history/science storytelling only,
+     # to stay clear of YouTube's medical-claims policy.
+     "sample_hooks": [
+         "This flower killed more Roman emperors than war did.",
+         "Aspirin started as tree bark. Nobody tells you that part.",
+         "A witch trial and a moldy loaf of bread have more in common than you'd think.",
+         "This houseplant is one bite away from a coroner's report."]},
 ]
 
 # ---------------------------------------------------------------------------
