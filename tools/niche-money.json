@@ -1,0 +1,61 @@
+{
+  "channel_name": "Money Decoded",
+  "handle": "@MoneyDecoded",
+  "one_line": "The financial system explained in 30 seconds — how money, debt, and wealth actually work, and why nobody teaches you this.",
+  "pillars": [
+    "Psychology of Money (why smart people make dumb money decisions)",
+    "How Money Really Moves (banks, credit, the Fed, the invisible machinery)",
+    "Debt & Interest Mechanics (compound interest, credit scores, debt traps)",
+    "Investing Explainers (stocks, index funds, crypto, real estate, simplified)",
+    "Scams & Financial Traps (MLMs, payday loans, get-rich-quick schemes)"
+  ],
+  "audience": "People who feel confused or anxious about money, young adults navigating first jobs/credit cards/debt, and anyone interested in the financial literacy nobody taught them in school.",
+  "tone": "Direct, myth-busting educator. Calm but urgent — like someone finally explaining the thing nobody told you.",
+  "core_hashtags": ["#money", "#personalfinance", "#financialliteracy", "#debt", "#investing"],
+  "extra_hashtags": ["#shorts", "#moneytips", "#wealth", "#budgeting", "#creditscore", "#sidehustle", "#financetips", "#richvspoor"],
+  "hook_templates": [
+    "This is what happens if you carry {object} for 10 years.",
+    "{object} is designed to keep you {adjective}. Here's how.",
+    "Banks don't want you to know this about {object}.",
+    "What's really happening when you {place}? The answer will shock you.",
+    "{object} could cost you {scale} over your lifetime. Here's the math.",
+    "In {scale}, {event}. This is what it means for your money.",
+    "Nobody explains {object} in school. And that's the scary part.",
+    "The financial system doesn't want you to think about what happens when you {place}.",
+    "{object} is bigger than you think. Here's the real number.",
+    "What if {event}? Here's what happens to your money.",
+    "There's {object} eating your paycheck and you don't see it.",
+    "This one decision about {object} determines your financial future."
+  ],
+  "title_keywords": [
+    "money", "debt", "credit score", "investing", "compound interest",
+    "budgeting", "financial literacy", "index funds", "credit card",
+    "the Fed", "inflation", "wealth"
+  ],
+  "fillers": {
+    "object": [
+      "credit card debt", "a payday loan", "compound interest",
+      "your credit score", "an index fund", "a 401k", "student loan debt",
+      "inflation", "a subscription you forgot about", "lifestyle inflation",
+      "an emergency fund", "a car loan"
+    ],
+    "adjective": [
+      "broke", "in debt", "dependent", "afraid", "confused", "poor",
+      "trapped", "behind"
+    ],
+    "place": [
+      "swipe a credit card", "make a minimum payment", "check your credit score",
+      "get your paycheck", "sign up for a 401k", "take out a loan"
+    ],
+    "scale": [
+      "$50,000", "10 years", "a full year's salary",
+      "a single percentage point", "20 years of compounding",
+      "6 months of minimum payments"
+    ],
+    "event": [
+      "you missed one payment", "interest rates doubled",
+      "you started investing at 25 instead of 35", "the Fed raised rates",
+      "you paid off all your debt", "inflation hit 9%"
+    ]
+  }
+}
