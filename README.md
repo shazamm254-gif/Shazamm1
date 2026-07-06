@@ -40,6 +40,19 @@ A second, ready-to-go niche — pass `--niche-file niche-money.json` to
 | [`docs/THUMBNAIL_CHECKLIST_MONEY.md`](docs/THUMBNAIL_CHECKLIST_MONEY.md) | First-frame / thumbnail checklist tuned to the money niche. |
 | `tools/niche-money.json` | The Money Decoded niche config — pillars, voice, and hook templates. |
 
+### Dream What-Ifs (sleep-science niche)
+
+A third niche, generated and scored by `tools/niche_generator.py` (Sleep &
+Dreams × What-If Scenarios, 78/100) — pass `--niche-file niche-dreams.json`
+to `generate_ideas.py` to target it.
+
+| Path | What it does |
+|---|---|
+| [`docs/GROWTH_STRATEGY_DREAMS.md`](docs/GROWTH_STRATEGY_DREAMS.md) | The playbook for **Dream What-Ifs** — hooks, series, cadence, a 30-day plan. |
+| [`docs/FIRST_10_SHORTS_DREAMS.md`](docs/FIRST_10_SHORTS_DREAMS.md) | 10 ready-to-produce Short scripts across all 5 sleep/dream pillars. |
+| [`docs/THUMBNAIL_CHECKLIST_DREAMS.md`](docs/THUMBNAIL_CHECKLIST_DREAMS.md) | First-frame / thumbnail checklist tuned to the dreams niche. |
+| `tools/niche-dreams.json` | The Dream What-Ifs niche config — pillars, voice, and hook templates. |
+
 ## Setup
 
 ```bash
