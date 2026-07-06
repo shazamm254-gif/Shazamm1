@@ -26,8 +26,9 @@ import re
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
-def load_niche():
-    with open(os.path.join(HERE, "niche.json"), encoding="utf-8") as f:
+def load_niche(niche_file="niche.json"):
+    path = niche_file if os.path.isabs(niche_file) else os.path.join(HERE, niche_file)
+    with open(path, encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -97,9 +98,11 @@ def main():
     ap.add_argument("-n", "--count", type=int, default=10)
     ap.add_argument("--use-claude", action="store_true")
     ap.add_argument("--theme", default="", help="Optional theme for the batch (Claude only)")
+    ap.add_argument("--niche-file", default="niche.json",
+                     help="Path to a niche config (default: tools/niche.json)")
     args = ap.parse_args()
 
-    niche = load_niche()
+    niche = load_niche(args.niche_file)
     print(f"\n  {args.count} Short ideas for {niche['channel_name']}")
     print("  " + "=" * 56)
 

@@ -28,6 +28,18 @@ analyze what's working and help you package and ideate faster.
 | [`product/faceless-ai-shorts-starter-kit/`](product/faceless-ai-shorts-starter-kit/) | A **sellable digital product** — packages the system into a faceless-channel starter kit, with paste-ready sales copy and pricing. |
 | [`product/cosmic-ai-prompt-pack/`](product/cosmic-ai-prompt-pack/) | **300+ cosmic AI image/video prompts** with a cohesive style system + shot lists for the 10 scripts. A standalone product, the Pro-tier upsell, and your own production shortcut. |
 
+### Money Decoded (personal-finance niche)
+
+A second, ready-to-go niche — pass `--niche-file niche-money.json` to
+`generate_ideas.py` to target it instead of Cosmic Dread.
+
+| Path | What it does |
+|---|---|
+| [`docs/GROWTH_STRATEGY_MONEY.md`](docs/GROWTH_STRATEGY_MONEY.md) | The playbook for **Money Decoded** — hooks, series, cadence, a 30-day plan. |
+| [`docs/FIRST_10_SHORTS_MONEY.md`](docs/FIRST_10_SHORTS_MONEY.md) | 10 ready-to-produce Short scripts across all 5 money pillars. |
+| [`docs/THUMBNAIL_CHECKLIST_MONEY.md`](docs/THUMBNAIL_CHECKLIST_MONEY.md) | First-frame / thumbnail checklist tuned to the money niche. |
+| `tools/niche-money.json` | The Money Decoded niche config — pillars, voice, and hook templates. |
+
 ## Setup
 
 ```bash
