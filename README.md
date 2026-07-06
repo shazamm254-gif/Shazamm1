@@ -27,6 +27,7 @@ analyze what's working and help you package and ideate faster.
 | `tools/niche.json` | Your channel's niche, pillars, voice, and hook templates — edit this to retune every tool. |
 | [`product/faceless-ai-shorts-starter-kit/`](product/faceless-ai-shorts-starter-kit/) | A **sellable digital product** — packages the system into a faceless-channel starter kit, with paste-ready sales copy and pricing. |
 | [`product/cosmic-ai-prompt-pack/`](product/cosmic-ai-prompt-pack/) | **300+ cosmic AI image/video prompts** with a cohesive style system + shot lists for the 10 scripts. A standalone product, the Pro-tier upsell, and your own production shortcut. |
+| [`product/ai-disclosure-compliance-kit/`](product/ai-disclosure-compliance-kit/) | **A mandatory-purchase compliance kit** — decodes YouTube/TikTok/Instagram's AI content-disclosure rules into a 30-second checklist, with paste-ready disclosure text and an audit log. Protects the channel the other two products help you build. |
 
 ### Money Decoded (personal-finance niche)
 
