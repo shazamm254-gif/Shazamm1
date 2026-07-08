@@ -25,6 +25,7 @@ analyze what's working and help you package and ideate faster.
 | `tools/generate_ideas.py` | Generates Short ideas + hooks for your niche (offline, or richer with AI). |
 | `tools/niche_generator.py` | Discovers and scores new viral niches or sub-niches (offline or AI), explains why each one works, and can export a pick straight into the `niche.json` format. |
 | `tools/niche.json` | Your channel's niche, pillars, voice, and hook templates — edit this to retune every tool. |
+| `tools/assembler.py` | Stage 6 video assembler — renders a finished 1080x1920 Short (Ken Burns stills + burned-in captions + ducked music) from a voiceover, ElevenLabs word timestamps, and a folder of Leonardo stills. Headless, ffmpeg-based. See the module docstring for the expected job-folder layout and `python tools/assembler.py --job <folder> --preview` for a fast 5s test render. |
 | [`product/faceless-ai-shorts-starter-kit/`](product/faceless-ai-shorts-starter-kit/) | A **sellable digital product** — packages the system into a faceless-channel starter kit, with paste-ready sales copy and pricing. |
 | [`product/cosmic-ai-prompt-pack/`](product/cosmic-ai-prompt-pack/) | **300+ cosmic AI image/video prompts** with a cohesive style system + shot lists for the 10 scripts. A standalone product, the Pro-tier upsell, and your own production shortcut. |
 

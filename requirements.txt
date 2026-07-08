@@ -5,3 +5,13 @@ requests>=2.31.0
 # (the --use-claude flags). The scripts work without it using built-in
 # rule-based logic. Install with:  pip install anthropic
 anthropic>=0.40.0
+
+# --- Only needed for tools/assembler.py (Stage 6 video assembly) ---
+# Also requires the `ffmpeg`/`ffprobe` binaries on PATH (not a pip package —
+# see the install instructions assembler.py prints if they're missing).
+Pillow>=10.0.0
+
+# Optional: only needed if you set GDRIVE_UPLOAD=1 to have assembler.py
+# upload finished videos to Google Drive.
+google-api-python-client>=2.0.0
+google-auth>=2.0.0
