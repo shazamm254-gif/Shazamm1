@@ -1,0 +1,57 @@
+{
+  "channel_name": "Dream What-Ifs",
+  "handle": "@dreamwhatifs",
+  "one_line": "The unexplained science of sleep, dreams, and the sleeping brain \u2014 relatable to literally everyone. This sub-niche runs it through what-if scenarios.",
+  "pillars": [
+    "Lucid dreaming & dream control",
+    "Sleep paralysis & parasomnias",
+    "Dream interpretation theories",
+    "Sleep science & disorders",
+    "Unexplained sleep phenomena"
+  ],
+  "audience": "Audience already engaged with sleep & dreams content.",
+  "tone": "What-If Scenarios \u2014 Poses a vivid hypothetical and answers it \u2014 one of the most reliable curiosity-gap formats because it promises a payoff in the first sentence.",
+  "core_hashtags": [
+    "#sleep",
+    "#dreams",
+    "#luciddreaming",
+    "#sleepparalysis",
+    "#psychology"
+  ],
+  "extra_hashtags": [
+    "#shorts"
+  ],
+  "hook_templates": [
+    "What if {x} happened tomorrow? Here's what would actually happen.",
+    "What if {x}? Scientists ran the numbers.",
+    "This is what {x} would actually look like.",
+    "Nobody's ready for what happens if {x}.",
+    "Here's exactly what happens when {x}."
+  ],
+  "title_keywords": [
+    "lucid dreaming technique",
+    "sleep paralysis case",
+    "recurring nightmare pattern",
+    "dream-interpretation theory",
+    "sleep disorder",
+    "circadian rhythm disruption",
+    "unexplained sleep phenomenon",
+    "near-death sleep experience",
+    "dream recall trick",
+    "microsleep incident"
+  ],
+  "fillers": {
+    "x": [
+      "a lucid dreaming technique",
+      "a sleep paralysis case",
+      "a recurring nightmare pattern",
+      "a dream-interpretation theory",
+      "a sleep disorder",
+      "a circadian rhythm disruption",
+      "an unexplained sleep phenomenon",
+      "a near-death sleep experience",
+      "a dream recall trick",
+      "a microsleep incident"
+    ]
+  }
+}
