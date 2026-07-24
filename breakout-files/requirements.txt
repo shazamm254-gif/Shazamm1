@@ -1,0 +1,19 @@
+# Breakout Files — Termux / Android ARM install notes
+#
+# huggingface_hub's normal install pulls in `hf-xet`, which needs a Rust build
+# that fails on Termux ARM. Install it with --no-deps, then its runtime deps
+# manually (this is the exact order that works on Termux ARM):
+#
+#   pip install --no-deps huggingface_hub==0.34.4
+#   pip install filelock fsspec packaging pyyaml tqdm typing-extensions pillow
+#
+# Then install everything below normally:
+
+anthropic>=0.40.0
+gradio_client>=1.4.0
+pyyaml>=6.0
+
+# gradio_client depends on huggingface_hub; once huggingface_hub==0.34.4 is
+# already installed via --no-deps above, `pip install gradio_client` will not
+# try to replace it. If pip insists on upgrading huggingface_hub, re-run:
+#   pip install --no-deps --force-reinstall huggingface_hub==0.34.4

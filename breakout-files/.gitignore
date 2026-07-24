@@ -1,0 +1,4 @@
+output/
+assets/placeholders/
+__pycache__/
+*.pyc

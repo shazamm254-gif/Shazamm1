@@ -1,0 +1,43 @@
+{
+  "case_name": "SAMPLE CASE — Test Fixture (not a real case)",
+  "title": "The File That Never Closed (SAMPLE)",
+  "description": "A bundled sample script used only to test the assembly pipeline offline. Not a real case.",
+  "hashtags": ["#truecrime", "#casefile", "#shorts"],
+  "scenes": [
+    {
+      "narration": "This is a placeholder hook line for pipeline testing.",
+      "image_prompt": "dim courthouse hallway at night, empty benches, single overhead light",
+      "duration": 3.5
+    },
+    {
+      "narration": "This scene stands in for the crime summary beat.",
+      "image_prompt": "rain-streaked window over a quiet small-town street, dusk",
+      "duration": 7.0
+    },
+    {
+      "narration": "This scene stands in for the trial and sentence beat.",
+      "image_prompt": "empty wood-paneled courtroom, gavel on the bench, low light",
+      "duration": 7.5
+    },
+    {
+      "narration": "This scene stands in for the appeals and years-on-death-row beat.",
+      "image_prompt": "narrow prison corridor, single barred window, long shadows",
+      "duration": 8.0
+    },
+    {
+      "narration": "This scene stands in for the final days beat.",
+      "image_prompt": "plain metal table, untouched tray, bare concrete wall",
+      "duration": 7.0
+    },
+    {
+      "narration": "This scene stands in for the last words and last meal beat.",
+      "image_prompt": "empty visiting room chair facing a thick glass divider",
+      "duration": 7.5
+    },
+    {
+      "narration": "File remains open. This placeholder line stands in for the outro tease.",
+      "image_prompt": "closed manila case file on a metal desk under a single lamp",
+      "duration": 5.5
+    }
+  ]
+}
