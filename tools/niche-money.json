@@ -57,5 +57,41 @@
       "you started investing at 25 instead of 35", "the Fed raised rates",
       "you paid off all your debt", "inflation hit 9%"
     ]
+  },
+  "narration_wps": 2.6,
+  "end_templates": [
+    "And nobody taught you that in school.",
+    "Now you know the math.",
+    "That's the number they don't show you.",
+    "Do that math on your own accounts.",
+    "Small decision. Massive difference.",
+    "That's how the system is built.",
+    "Now run your own numbers."
+  ],
+  "visual_style": {
+    "medium": "clean AI-generated motion-graphic / documentary finance visuals",
+    "style_suffix": "clean modern motion graphics, minimal flat design with subtle depth, bold sans-serif data callouts, high contrast, financial documentary aesthetic, crisp lighting, 8k, highly detailed",
+    "negative_prompt": "text errors, watermark, signature, logo, clutter, cartoon, low detail, blurry, busy background, oversaturated, stock-photo handshake cliches",
+    "palette": ["#0B1220", "#101826"],
+    "accent_colors": {
+      "growth / gains / good decisions": "green",
+      "debt / danger / traps": "red",
+      "neutral facts / mechanics": "cool blue/white",
+      "warnings / scams": "amber"
+    },
+    "aspect_ratio": "9:16",
+    "series_tags": {
+      "Psychology of Money": "human, relatable, everyday scenes, subtle tension",
+      "How Money Really Moves": "systemic, network diagrams, flowing currency, mechanical",
+      "Debt & Interest Mechanics": "compounding graphs, escalating scale, mounting pressure",
+      "Investing Explainers": "growth curves, charts climbing, optimistic light",
+      "Scams & Financial Traps": "trap imagery, red flags, warning glow"
+    },
+    "caption_style": {
+      "font": "Anton-Regular.ttf",
+      "fontcolor": "white",
+      "boxcolor": "black@0.55",
+      "position": "lower-third"
+    }
   }
 }

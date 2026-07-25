@@ -53,5 +53,41 @@
       "a dream recall trick",
       "a microsleep incident"
     ]
+  },
+  "narration_wps": 2.4,
+  "end_templates": [
+    "And your brain does this every single night.",
+    "Nobody fully knows why.",
+    "That's happening in your head right now.",
+    "Sleep on that.",
+    "We still don't know where dreams come from.",
+    "It's stranger than fiction — and it's real."
+  ],
+  "visual_style": {
+    "medium": "AI-generated soft-focus surreal dreamscape cinematography",
+    "style_suffix": "dreamlike surreal cinematography, soft diffused light, gentle film grain, floating particles, muted desaturated palette with one glowing accent, slow dreamy motion, 8k, highly detailed, night-bedroom documentary aesthetic",
+    "negative_prompt": "text, watermark, signature, logo, UI, cartoon, illustration, harsh lighting, oversaturated, cluttered, low detail, blurry, jump scares, gore",
+    "palette": ["#0B0E1A", "#141026"],
+    "accent_colors": {
+      "lucid dreaming / control": "soft violet glow",
+      "sleep paralysis / parasomnia": "cold blue, shadowed",
+      "dream interpretation": "warm amber, hazy",
+      "sleep science / disorders": "clinical white/blue",
+      "unexplained phenomena": "deep indigo, faint glow"
+    },
+    "aspect_ratio": "9:16",
+    "series_tags": {
+      "Lucid dreaming & dream control": "floaty, weightless, glowing edges",
+      "Sleep paralysis & parasomnias": "still, heavy, shadow figures, dread",
+      "Dream interpretation theories": "symbolic, hazy, layered imagery",
+      "Sleep science & disorders": "clinical, brain-scan glow, precise",
+      "Unexplained sleep phenomena": "mysterious, liminal, foggy"
+    },
+    "caption_style": {
+      "font": "Anton-Regular.ttf",
+      "fontcolor": "white",
+      "boxcolor": "black@0.55",
+      "position": "lower-third"
+    }
   }
 }
