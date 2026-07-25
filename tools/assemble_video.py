@@ -164,14 +164,23 @@ def build_command(script, niche, images_dir, voiceover, music, out_path,
     cmd = ["ffmpeg", "-y"]
 
     for i, beat in enumerate(beats):
+        # zoompan animates its `d`-frame Ken Burns cycle once per INPUT frame it
+        # receives, restarting (and re-saturating the zoom cap) on every new one.
+        # A looped image/color source otherwise streams many identical frames per
+        # beat, so each beat would flood far more output than its share and the
+        # concat would never reach later beats. Capping the source to exactly one
+        # frame for the whole beat (rate = 1/duration) keeps each beat to its own
+        # `d`-frame cycle.
+        single_frame_rate = 1 / beat["duration"]
         img_path = find_shot_image(images_dir, i + 1)
         if img_path:
-            cmd += ["-loop", "1", "-t", str(beat["duration"]), "-i", img_path]
+            cmd += ["-framerate", str(single_frame_rate), "-loop", "1",
+                    "-t", str(beat["duration"]), "-i", img_path]
             images.append({"path": img_path, "is_placeholder": False})
         else:
             color = palette[i % len(palette)].lstrip("#")
             cmd += ["-f", "lavfi", "-t", str(beat["duration"]),
-                    "-i", f"color=c=0x{color}:s={width}x{height}:rate={fps}"]
+                    "-i", f"color=c=0x{color}:s={width}x{height}:rate={single_frame_rate}"]
             images.append({"path": None, "is_placeholder": True})
 
         on_screen = beat.get("on_screen") or beat.get("vo", "")
