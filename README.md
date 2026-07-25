@@ -17,14 +17,18 @@ analyze what's working and help you package and ideate faster.
 | Path | What it does |
 |---|---|
 | [`docs/GROWTH_STRATEGY.md`](docs/GROWTH_STRATEGY.md) | The playbook — hooks, series, cadence, a 30-day plan, all tuned to this niche. **Start here.** |
+| [`docs/VIDEO_ASSEMBLY.md`](docs/VIDEO_ASSEMBLY.md) | **The video pipeline** — idea → script → visual prompts → final rendered MP4, end to end. |
 | [`docs/PRODUCTION-PACK.md`](docs/PRODUCTION-PACK.md) | **All-in-one** — every script's voiceover + the 4 ready-to-paste image prompts together. Make all 10 Shorts from this one file (phone-friendly). |
 | [`docs/FIRST_10_SHORTS.md`](docs/FIRST_10_SHORTS.md) | 10 ready-to-produce Short scripts — hook, full voiceover, on-screen text, visuals, and paste-ready titles/descriptions. |
 | [`docs/THUMBNAIL_CHECKLIST.md`](docs/THUMBNAIL_CHECKLIST.md) | First-frame / thumbnail checklist to win the swipe, tuned to this niche. |
 | `tools/analyze_channel.py` | Pulls your public stats, finds your top/bottom performers and best posting time. |
 | `tools/optimize_metadata.py` | Scores a title/description/tags against Shorts best practices (offline), with optional AI rewrites. |
 | `tools/generate_ideas.py` | Generates Short ideas + hooks for your niche (offline, or richer with AI). |
+| `tools/generate_script.py` | Turns a hook/idea into a full, timed, beat-by-beat script (voiceover, on-screen text, shot list) — offline draft or AI-written. |
+| `tools/generate_visuals.py` | Turns a script's shot list into paste-ready AI image/video generation prompts, styled to your niche's visual identity. |
+| `tools/assemble_video.py` | **Assembly** — stitches shot images + voiceover + captions + music into a final vertical MP4 via ffmpeg (Ken Burns motion, burned-in captions). |
 | `tools/niche_generator.py` | Discovers and scores new viral niches or sub-niches (offline or AI), explains why each one works, and can export a pick straight into the `niche.json` format. |
-| `tools/niche.json` | Your channel's niche, pillars, voice, and hook templates — edit this to retune every tool. |
+| `tools/niche.json` | Your channel's niche, pillars, voice, hook templates, narration pace, and visual style — edit this to retune every tool. |
 | [`product/faceless-ai-shorts-starter-kit/`](product/faceless-ai-shorts-starter-kit/) | A **sellable digital product** — packages the system into a faceless-channel starter kit, with paste-ready sales copy and pricing. |
 | [`product/cosmic-ai-prompt-pack/`](product/cosmic-ai-prompt-pack/) | **300+ cosmic AI image/video prompts** with a cohesive style system + shot lists for the 10 scripts. A standalone product, the Pro-tier upsell, and your own production shortcut. |
 
@@ -62,8 +66,10 @@ source .env
 ```
 
 You need a free **YouTube Data API key** for the analytics (read-only public
-data — it can't change your channel). The AI features in the optimizer and idea
-generator are optional and need an Anthropic API key. See `.env.example`.
+data — it can't change your channel). The AI features (script/idea/visual
+generation, metadata rewrites) are optional and need an Anthropic API key.
+`tools/assemble_video.py` needs **ffmpeg** installed separately (a system
+binary, not a pip package — see `requirements.txt`). See `.env.example`.
 
 ## Quick start
 
@@ -77,23 +83,32 @@ python tools/analyze_channel.py --channel "@CosmicDread"
 # 2. Fill your idea pipeline
 python tools/generate_ideas.py -n 20
 
-# 3. Check an upload's packaging before you publish
+# 3. Turn one idea into a full production pipeline: script -> visuals -> video
+python tools/generate_script.py --hook "What if the Sun vanished right now?"
+python tools/generate_visuals.py --script tools/output/script_*.json
+# ... generate each shot in your image/video tool, save as shot_01.png, shot_02.png, ...
+python tools/assemble_video.py --script tools/output/script_*.json --images-dir ./shots
+
+# 4. Check an upload's packaging before you publish
 python tools/optimize_metadata.py --title "What happens if you fall into a black hole"
 ```
 
-Add `--use-claude` to the optimizer or idea generator for AI-written titles and
-full hook/concept/title ideas (needs `ANTHROPIC_API_KEY`).
+Add `--use-claude` to the optimizer, idea generator, script generator, or
+visual-prompt generator for AI-written output (needs `ANTHROPIC_API_KEY`).
+See [`docs/VIDEO_ASSEMBLY.md`](docs/VIDEO_ASSEMBLY.md) for the full
+idea → script → visuals → assembly pipeline in detail.
 
 ## How to actually use this
 
 1. Read [`docs/GROWTH_STRATEGY.md`](docs/GROWTH_STRATEGY.md) once, end to end.
 2. Run `analyze_channel.py` to get your starting numbers and best posting time.
-3. Batch-generate a week of ideas, produce them, and run each through
-   `optimize_metadata.py` before posting.
+3. Batch-generate a week of ideas, run each through `generate_script.py` ->
+   `generate_visuals.py` -> `assemble_video.py` to produce it, and run the
+   packaging through `optimize_metadata.py` before posting.
 4. Re-run `analyze_channel.py` weekly. Make more of whatever over-performs.
 
-Retune everything by editing `tools/niche.json` — change the pillars, voice, or
-hook templates and every tool follows.
+Retune everything by editing `tools/niche.json` — change the pillars, voice,
+hook templates, or visual style and every tool follows.
 
 ## Note
 

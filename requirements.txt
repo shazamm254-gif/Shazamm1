@@ -1,7 +1,14 @@
 # Core dependency for talking to the YouTube Data API v3 (REST, no SDK needed).
 requests>=2.31.0
 
-# Optional: only needed if you want AI-powered title/idea generation
-# (the --use-claude flags). The scripts work without it using built-in
-# rule-based logic. Install with:  pip install anthropic
+# Optional: only needed if you want AI-powered title/idea/script/prompt
+# generation (the --use-claude flags). The scripts work without it using
+# built-in rule-based logic. Install with:  pip install anthropic
 anthropic>=0.40.0
+
+# --- System dependency (not pip-installable) ---
+# tools/assemble_video.py shells out to ffmpeg to render the final MP4 —
+# no Python video library required. Install it separately:
+#   macOS:   brew install ffmpeg
+#   Ubuntu:  sudo apt install ffmpeg
+#   Windows: https://ffmpeg.org/download.html

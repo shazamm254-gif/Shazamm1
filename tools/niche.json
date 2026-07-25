@@ -57,5 +57,42 @@
       "the universe stopped expanding", "the last star burned out",
       "a gamma-ray burst hit Earth", "the galaxies all merged"
     ]
+  },
+  "narration_wps": 2.5,
+  "end_templates": [
+    "And that's just the beginning.",
+    "Nobody can explain why.",
+    "Sit with that for a second.",
+    "We only just found out.",
+    "And it's still out there.",
+    "That's not a theory. That's happening.",
+    "We won't see it coming.",
+    "Look up. It's already begun."
+  ],
+  "visual_style": {
+    "medium": "AI-generated photorealistic deep-space cinematography",
+    "style_suffix": "cinematic cosmic horror, photorealistic deep space, ultra-detailed, volumetric light, single dramatic light source, deep blacks, subtle film grain, awe-inducing scale, ominous mood, 8k, highly detailed, dark sci-fi documentary aesthetic",
+    "negative_prompt": "text, watermark, signature, logo, UI, people, faces, astronauts, cartoon, illustration, flat lighting, oversaturated, cluttered, busy background, low detail, blurry, lens flare overload, rainbow colors",
+    "palette": ["#05060A", "#0A1024"],
+    "accent_colors": {
+      "black holes / accretion disks / dying suns": "orange/amber",
+      "neutron stars / frozen worlds / distant stars": "icy blue/white",
+      "supernovae / gamma-ray bursts / danger": "deep red",
+      "nebulae / exotic / unexplained": "violet/teal"
+    },
+    "aspect_ratio": "9:16",
+    "series_tags": {
+      "Space Horror": "unsettling, eerie, high contrast, threatening",
+      "Cosmic Giants": "epic scale, vast, monumental, sense of immensity",
+      "The End": "cold, desolate, fading light, entropy, emptiness",
+      "What If": "dramatic, speculative, dynamic motion",
+      "Unexplained": "mysterious, otherworldly, strange glow"
+    },
+    "caption_style": {
+      "font": "Anton-Regular.ttf",
+      "fontcolor": "white",
+      "boxcolor": "black@0.55",
+      "position": "lower-third"
+    }
   }
 }
