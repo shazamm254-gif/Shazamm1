@@ -1,0 +1,45 @@
+{
+  "channel_name": "Wild Secrets",
+  "handle": "@wildsecrets",
+  "one_line": "BBC-Earth-level wildlife storytelling in 45-60 seconds — the animal kingdom's most extreme adaptations, showdowns, and survival tricks, visualized with AI.",
+  "pillars": [
+    "Extreme adaptations",
+    "Predator vs. prey showdowns",
+    "Venom & parasites",
+    "Record-holding animals",
+    "Bizarre mating & survival rituals"
+  ],
+  "audience": "Nature-documentary fans, animal-fact accounts' followers, and anyone who stops for a 'no way that's real' wildlife clip.",
+  "tone": "Cinematic wildlife documentary — BBC Planet Earth / National Geographic narration. Calm, precise, and awestruck, letting real biology carry the shock.",
+  "core_hashtags": ["#wildlife", "#animals", "#nature", "#natureismetal", "#animalfacts"],
+  "extra_hashtags": ["#shorts", "#wildlifephotography", "#naturedocumentary", "#biology", "#animalkingdom", "#natgeo", "#planetearth", "#aiart", "#didyouknow"],
+  "hook_templates": [
+    "This animal has outsmarted scientists for decades.",
+    "Scientists still can't fully explain what {x} does.",
+    "{x} should not be able to survive this. Here's how it does.",
+    "This predator has a secret nobody expected.",
+    "{x} just broke a rule biology said was impossible.",
+    "Nature built the perfect killer, and it's smaller than your hand.",
+    "This is what happens right before {x} strikes.",
+    "The military actually studied {x} to build better technology.",
+    "{x} is stranger than anything a screenwriter could invent.",
+    "Here's the animal kingdom's most brutal survival trick, and it's real.",
+    "What if the deadliest hunter on Earth wasn't a lion or a shark?",
+    "{x} rewrote what scientists thought was biologically possible."
+  ],
+  "title_keywords": [
+    "extreme adaptation", "predator vs prey", "venomous animal", "parasite takeover",
+    "record-holding animal", "mating ritual", "survival strategy", "apex predator",
+    "deep-sea creature", "animal behavior scientists can't explain"
+  ],
+  "fillers": {
+    "x": [
+      "a deep-sea hydrothermal worm", "a frozen wood frog", "a 300-year-old shark",
+      "a fungus that hijacks ant brains", "a jellyfish with lethal venom",
+      "a diving falcon", "a bowerbird building its bower", "a self-sacrificing octopus mother",
+      "a hunting orca pod", "an extreme survival adaptation", "a record-holding animal",
+      "a brutal mating ritual", "an apex predator's ambush", "a parasitic takeover",
+      "a venom's effect on the nervous system"
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+# Core — required, all free/open-source
+gradio>=6.0
+requests>=2.31.0
+edge-tts>=6.1.0
+
+# --- Optional voiceover engines (install only if you want them) ---
+#
+# Piper TTS (free, fully offline, no Python package — install the binary
+# separately from https://github.com/rhasspy/piper and download a .onnx
+# voice model, then set PIPER_BINARY / PIPER_MODEL_PATH env vars).
+#
+# Coqui TTS / XTTS (free, fully offline, higher quality, heavy install):
+#   pip install TTS
+
+# --- Optional local LLM support ---
+#
+# Ollama (free, local model server): install from https://ollama.com,
+# then `ollama pull llama3.1` and `ollama serve`. No Python package needed —
+# the app talks to it over HTTP.
+
+# --- Optional hosted LLM support (NOT required, costs money) ---
+#
+# OpenRouter: no extra package needed (uses `requests`), just set
+# OPENROUTER_API_KEY. Entirely optional — the app is fully functional
+# without it using the offline generators.
