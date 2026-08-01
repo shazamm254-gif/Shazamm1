@@ -53,6 +53,21 @@ to `generate_ideas.py` to target it.
 | [`docs/THUMBNAIL_CHECKLIST_DREAMS.md`](docs/THUMBNAIL_CHECKLIST_DREAMS.md) | First-frame / thumbnail checklist tuned to the dreams niche. |
 | `tools/niche-dreams.json` | The Dream What-Ifs niche config — pillars, voice, and hook templates. |
 
+### Wild Secrets (wildlife niche)
+
+A fourth niche — BBC-Earth-level wildlife storytelling (extreme adaptations,
+predator/prey showdowns, venom & parasites, record-holders, and mating &
+survival rituals) — pass `--niche-file niche-wildlife.json` to
+`generate_ideas.py` to target it.
+
+| Path | What it does |
+|---|---|
+| [`docs/WILDLIFE_AI_SYSTEM_PROMPT.md`](docs/WILDLIFE_AI_SYSTEM_PROMPT.md) | The full AI content-generation system prompt for this niche — paste it into Claude with one verified fact to get a complete, production-ready Short. |
+| [`docs/GROWTH_STRATEGY_WILDLIFE.md`](docs/GROWTH_STRATEGY_WILDLIFE.md) | The playbook for **Wild Secrets** — hooks, series, cadence, a 30-day plan. |
+| [`docs/FIRST_10_SHORTS_WILDLIFE.md`](docs/FIRST_10_SHORTS_WILDLIFE.md) | 10 ready-to-produce Short scripts across all 5 wildlife pillars, each with a full scene-by-scene AI image and image-to-video shot list. |
+| [`docs/THUMBNAIL_CHECKLIST_WILDLIFE.md`](docs/THUMBNAIL_CHECKLIST_WILDLIFE.md) | First-frame / thumbnail checklist tuned to the wildlife niche. |
+| `tools/niche-wildlife.json` | The Wild Secrets niche config — pillars, voice, and hook templates. |
+
 ## Setup
 
 ```bash
