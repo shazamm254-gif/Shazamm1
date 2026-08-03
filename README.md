@@ -54,6 +54,17 @@ to `generate_ideas.py` to target it.
 | [`docs/THUMBNAIL_CHECKLIST_DREAMS.md`](docs/THUMBNAIL_CHECKLIST_DREAMS.md) | First-frame / thumbnail checklist tuned to the dreams niche. |
 | `tools/niche-dreams.json` | The Dream What-Ifs niche config — pillars, voice, and hook templates. |
 
+### Extreme Weather What-Ifs (disaster niche)
+
+A fourth niche, generated end-to-end by `tools/viral_generator.py` (Extreme
+Weather & Natural Disasters × What-If Scenarios, 76/100) — the first produced by
+the one-shot niche + script pipeline, with voiceovers already written.
+
+| Path | What it does |
+|---|---|
+| [`docs/SCRIPT_PACK_WEATHER.md`](docs/SCRIPT_PACK_WEATHER.md) | 5 ready-to-record Shorts with **fully written, fact-checked voiceovers** — hook, VO, on-screen text, shot timings, titles/descriptions. |
+| [`docs/VISUAL_PACK_WEATHER.md`](docs/VISUAL_PACK_WEATHER.md) | Shot-by-shot AI image/video prompts for all 5 scripts — master style suffix, motion notes, and thumbnail prompts. |
+
 ## Setup
 
 ```bash
