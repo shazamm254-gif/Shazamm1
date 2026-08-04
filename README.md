@@ -65,6 +65,7 @@ actually work") — pass `--niche-file niche-herbal.json` to
 | [`docs/GROWTH_STRATEGY_HERBAL.md`](docs/GROWTH_STRATEGY_HERBAL.md) | The playbook for **Herbs Decoded** — hooks, series, cadence, a 30-day plan, and the no-health-claims ground rules. |
 | [`docs/FIRST_10_SHORTS_HERBAL.md`](docs/FIRST_10_SHORTS_HERBAL.md) | 10 ready-to-produce herbal explainer Shorts across all 5 pillars, plus series spin-offs and niche-specific packaging/compliance notes. |
 | [`docs/THUMBNAIL_CHECKLIST_HERBAL.md`](docs/THUMBNAIL_CHECKLIST_HERBAL.md) | First-frame / thumbnail checklist tuned to the herbal niche. |
+| [`docs/IMAGE_PROMPTS_HERBAL.md`](docs/IMAGE_PROMPTS_HERBAL.md) | 4 paste-ready AI image prompts per Short (40 total) in the channel's macro-herb-on-dark style, tuned for descriptive-prompt models like Nano Banana. |
 | `tools/niche-herbal.json` | The Herbs Decoded niche config — pillars, voice, and hook templates. |
 
 ## Setup
