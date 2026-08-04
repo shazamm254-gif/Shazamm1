@@ -54,6 +54,17 @@ to `generate_ideas.py` to target it.
 | [`docs/THUMBNAIL_CHECKLIST_DREAMS.md`](docs/THUMBNAIL_CHECKLIST_DREAMS.md) | First-frame / thumbnail checklist tuned to the dreams niche. |
 | `tools/niche-dreams.json` | The Dream What-Ifs niche config — pillars, voice, and hook templates. |
 
+### Herbs Decoded (herbal explainer niche)
+
+A fourth niche — honest, science-grounded herbal explainers ("how herbs
+actually work") — pass `--niche-file niche-herbal.json` to
+`generate_ideas.py` to target it.
+
+| Path | What it does |
+|---|---|
+| [`docs/FIRST_10_SHORTS_HERBAL.md`](docs/FIRST_10_SHORTS_HERBAL.md) | 10 ready-to-produce herbal explainer Shorts across all 5 pillars, plus series spin-offs and niche-specific packaging/compliance notes. |
+| `tools/niche-herbal.json` | The Herbs Decoded niche config — pillars, voice, and hook templates. |
+
 ## Setup
 
 ```bash
