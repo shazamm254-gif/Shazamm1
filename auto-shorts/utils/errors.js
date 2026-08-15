@@ -47,8 +47,8 @@ const E = {
     code: 'FFMPEG_MISSING',
     status: 500,
     what: 'Video processing is unavailable because FFmpeg could not be found.',
-    why: 'The bundled ffmpeg-static binary is missing or not executable in this environment.',
-    fix: 'Run "npm install" inside auto-shorts/, or set AUTOSHORTS_FFMPEG to the path of an ffmpeg binary.',
+    why: 'The bundled ffmpeg-static binary is missing or would not run on this platform, and no ffmpeg was found on PATH.',
+    fix: 'Run "npm install" inside auto-shorts/. On Android/Termux or another unsupported platform, run "pkg install ffmpeg" (or your system equivalent) and restart — it is picked up automatically.',
   }),
 
   ffmpegFailed: (stage, stderr) => new AppError({

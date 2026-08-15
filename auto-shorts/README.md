@@ -58,6 +58,38 @@ npm start              # terminal 1 — API on :5174
 npm run frontend       # terminal 2 — UI on :5173, proxies /api to :5174
 ```
 
+### Running it from an Android phone
+
+There are two honest ways, depending on whether you have a computer at all.
+
+**If you have a computer**, run the server there and open it from your phone.
+Start it with `HOST=0.0.0.0 npm start`, find the computer's local address
+(`ipconfig` on Windows, `ifconfig | grep inet` on macOS/Linux — something like
+`192.168.1.42`), and browse to `http://192.168.1.42:5174` on the phone while
+both are on the same wifi. The interface is built for a phone, so this is the
+best of both: touch UI, desktop CPU doing the rendering.
+
+**If the phone is all you have**, it runs directly under
+[Termux](https://f-droid.org/packages/com.termux/) — install it from F-Droid or
+GitHub, not the Play Store, where the build is years out of date.
+
+```bash
+pkg install nodejs ffmpeg git
+git clone https://github.com/shazamm254-gif/Shazamm1.git
+cd Shazamm1/auto-shorts
+npm install --ignore-scripts        # skip the x64 binary download
+npm --prefix frontend install && npm run build
+npm start                           # then open http://localhost:5174
+```
+
+`--ignore-scripts` skips the bundled FFmpeg, which is built for desktop Linux
+and will not run on Android. Termux's own `ffmpeg` package is found on PATH
+automatically, so there is nothing to configure.
+
+Expect renders to take roughly two to four times longer than on a laptop — a
+30-second Short is a couple of minutes rather than half of one. Export at 720p
+while you are iterating and switch to 1080p for the final pass.
+
 ### Verify the install
 
 ```bash

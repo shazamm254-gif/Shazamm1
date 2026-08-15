@@ -7,24 +7,51 @@
  * report a real percentage instead of a spinner.
  */
 
-const { spawn } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const { E } = require('../utils/errors');
 
-function resolveBinary(envVar, staticModule, subpath) {
-  const fromEnv = process.env[envVar];
-  if (fromEnv && fs.existsSync(fromEnv)) return fromEnv;
+/** A binary already on PATH, verified to actually execute. */
+function fromPath(name) {
   try {
-    const mod = require(staticModule);
-    const p = subpath ? mod[subpath] : mod;
-    if (p && fs.existsSync(p)) return p;
-  } catch (_) { /* module not installed */ }
+    const r = spawnSync(name, ['-version'], { encoding: 'utf8', timeout: 10000 });
+    if (r.status === 0 && /ffmpeg|ffprobe/i.test(`${r.stdout || ''}${r.stderr || ''}`)) return name;
+  } catch (_) { /* not on PATH, or not runnable */ }
   return null;
 }
 
-const FFMPEG = resolveBinary('AUTOSHORTS_FFMPEG', 'ffmpeg-static');
-const FFPROBE = resolveBinary('AUTOSHORTS_FFPROBE', 'ffprobe-static', 'path');
+/**
+ * Find a usable binary, in order of preference:
+ *   1. an explicit path from the environment
+ *   2. the bundled static build from npm
+ *   3. whatever is on PATH
+ *
+ * Step 3 matters more than it looks. The bundled builds are glibc-linked x64/
+ * arm64, so on platforms they were never built for — Termux on Android being
+ * the common one — the npm binary is either absent or refuses to run. Falling
+ * back to a system FFmpeg means `pkg install ffmpeg` is the only setup step,
+ * with nothing to configure.
+ */
+function resolveBinary(envVar, staticModule, subpath, pathName) {
+  const fromEnv = process.env[envVar];
+  if (fromEnv && fs.existsSync(fromEnv)) return fromEnv;
+
+  try {
+    const mod = require(staticModule);
+    const p = subpath ? mod[subpath] : mod;
+    // Existence is not enough: a binary for the wrong libc exits non-zero.
+    if (p && fs.existsSync(p)) {
+      const r = spawnSync(p, ['-version'], { encoding: 'utf8', timeout: 10000 });
+      if (r.status === 0) return p;
+    }
+  } catch (_) { /* module not installed */ }
+
+  return fromPath(pathName);
+}
+
+const FFMPEG = resolveBinary('AUTOSHORTS_FFMPEG', 'ffmpeg-static', null, 'ffmpeg');
+const FFPROBE = resolveBinary('AUTOSHORTS_FFPROBE', 'ffprobe-static', 'path', 'ffprobe');
 
 function available() {
   return Boolean(FFMPEG && FFPROBE);
