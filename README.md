@@ -67,6 +67,33 @@ actually work") — pass `--niche-file niche-herbal.json` to
 | [`docs/THUMBNAIL_CHECKLIST_HERBAL.md`](docs/THUMBNAIL_CHECKLIST_HERBAL.md) | First-frame / thumbnail checklist tuned to the herbal niche. |
 | `tools/niche-herbal.json` | The Herbs Decoded niche config — pillars, voice, and hook templates. |
 
+### Extreme Weather What-Ifs (disaster niche)
+
+A fifth niche, generated end-to-end by `tools/viral_generator.py` (Extreme
+Weather & Natural Disasters × What-If Scenarios, 76/100) — the first produced by
+the one-shot niche + script pipeline, with voiceovers already written.
+
+| Path | What it does |
+|---|---|
+| [`docs/SCRIPT_PACK_WEATHER.md`](docs/SCRIPT_PACK_WEATHER.md) | 5 ready-to-record Shorts with **fully written, fact-checked voiceovers** — hook, VO, on-screen text, shot timings, titles/descriptions. |
+| [`docs/VISUAL_PACK_WEATHER.md`](docs/VISUAL_PACK_WEATHER.md) | Shot-by-shot AI image/video prompts for all 5 scripts — master style suffix, motion notes, and thumbnail prompts. |
+
+### Death What-Ifs (mortality science niche)
+
+The **highest-scoring niche** the toolkit has generated (Death & the Afterlife ×
+What-If Scenarios, 80/100) — 8/10 built-in demand, 9/10 content depth, 9/10
+faceless feasibility. Run `python tools/viral_generator.py --parent death` to
+generate more.
+
+| Path | What it does |
+|---|---|
+| [`docs/SCRIPT_PACK_DEATH.md`](docs/SCRIPT_PACK_DEATH.md) | 5 ready-to-record Shorts with **fully written voiceovers and a source citation per script** — the dying brain's gamma surge, hearing as the last sense, a 3-hour cardiac arrest survival, terminal lucidity, and Victorian safety coffins. |
+| [`docs/VISUAL_PACK_DEATH.md`](docs/VISUAL_PACK_DEATH.md) | Shot-by-shot AI image/video prompts for all 5 scripts — master style suffix, motion notes, thumbnails, and a **restraint rule** (no bodies, no gore, no real faces) that keeps the channel monetized and the imagery stronger. |
+
+> This niche is documentary and science framing only — never method, never
+> instruction, never glorification. That's the ethical line and it's also
+> YouTube's suicide & self-harm policy line; the script pack states it up front.
+
 ## Setup
 
 ```bash
