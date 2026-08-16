@@ -54,9 +54,22 @@ to `generate_ideas.py` to target it.
 | [`docs/THUMBNAIL_CHECKLIST_DREAMS.md`](docs/THUMBNAIL_CHECKLIST_DREAMS.md) | First-frame / thumbnail checklist tuned to the dreams niche. |
 | `tools/niche-dreams.json` | The Dream What-Ifs niche config — pillars, voice, and hook templates. |
 
+### Herbs Decoded (herbal explainer niche)
+
+A fourth niche — honest, science-grounded herbal explainers ("how herbs
+actually work") — pass `--niche-file niche-herbal.json` to
+`generate_ideas.py` to target it.
+
+| Path | What it does |
+|---|---|
+| [`docs/GROWTH_STRATEGY_HERBAL.md`](docs/GROWTH_STRATEGY_HERBAL.md) | The playbook for **Herbs Decoded** — hooks, series, cadence, a 30-day plan, and the no-health-claims ground rules. |
+| [`docs/FIRST_10_SHORTS_HERBAL.md`](docs/FIRST_10_SHORTS_HERBAL.md) | 10 ready-to-produce herbal explainer Shorts across all 5 pillars, plus series spin-offs and niche-specific packaging/compliance notes. |
+| [`docs/THUMBNAIL_CHECKLIST_HERBAL.md`](docs/THUMBNAIL_CHECKLIST_HERBAL.md) | First-frame / thumbnail checklist tuned to the herbal niche. |
+| `tools/niche-herbal.json` | The Herbs Decoded niche config — pillars, voice, and hook templates. |
+
 ### Extreme Weather What-Ifs (disaster niche)
 
-A fourth niche, generated end-to-end by `tools/viral_generator.py` (Extreme
+A fifth niche, generated end-to-end by `tools/viral_generator.py` (Extreme
 Weather & Natural Disasters × What-If Scenarios, 76/100) — the first produced by
 the one-shot niche + script pipeline, with voiceovers already written.
 

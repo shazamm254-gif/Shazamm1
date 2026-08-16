@@ -1,0 +1,57 @@
+{
+  "channel_name": "Herbs Decoded",
+  "handle": "@herbsdecoded",
+  "one_line": "How herbs actually work — the real chemistry, history, and honest evidence behind the plants in your kitchen, explained in 30-second hits.",
+  "pillars": [
+    "Kitchen herbs & spices explained",
+    "How herbs actually work (the chemistry)",
+    "Herbal myths vs. what studies say",
+    "Plants that became medicine (history)",
+    "Grow & use basics"
+  ],
+  "audience": "Wellness-curious viewers who like tea, cooking, houseplants, and 'how it actually works' science content — skeptics welcome.",
+  "tone": "Curious, honest, a little surprising. Explain the mechanism, cite the evidence level plainly, never overclaim. Educational only — never medical advice, never 'cures' or 'treats'.",
+  "core_hashtags": [
+    "#herbs",
+    "#herbalism",
+    "#plantscience",
+    "#tea",
+    "#foodscience"
+  ],
+  "extra_hashtags": [
+    "#shorts"
+  ],
+  "hook_templates": [
+    "Here's what {x} actually does inside your body.",
+    "Everyone believes this about {x}. The studies say otherwise.",
+    "{x} is not what you think it is.",
+    "Why {x} works — and when it doesn't.",
+    "The real story behind {x} nobody tells you."
+  ],
+  "title_keywords": [
+    "peppermint menthol trick",
+    "chamomile sleep science",
+    "willow bark aspirin origin",
+    "turmeric black pepper absorption",
+    "ginger nausea evidence",
+    "garlic allicin chemistry",
+    "lavender scent and brain",
+    "herb drug interaction",
+    "echinacea cold studies",
+    "grow herbs from cuttings"
+  ],
+  "fillers": {
+    "x": [
+      "peppermint",
+      "chamomile tea",
+      "turmeric",
+      "fresh ginger",
+      "raw garlic",
+      "lavender",
+      "echinacea",
+      "St. John's Wort",
+      "willow bark",
+      "green tea"
+    ]
+  }
+}
