@@ -227,6 +227,32 @@ PARENTS = [
      "hashtags": ["#linguistics", "#language", "#etymology", "#words", "#learnontiktok"],
      "pillars": ["Untranslatable words", "Dying & endangered languages", "Weird grammar rules",
                  "Etymology deep dives", "Invented & secret languages"]},
+    {"key": "death", "name": "Death & the Afterlife", "tag": "Death",
+     "demand": 8, "competition": 6, "evergreen": 9, "feasibility": 9,
+     "description": "The one experience nobody comes back to explain — the biology of "
+                     "dying, what the brain does at the end, and how cultures have "
+                     "handled death for a hundred thousand years.",
+     "vocab": ["the moment the heart stops", "a near-death experience",
+               "the final surge of brain activity", "the last sense to shut down",
+               "a case of terminal lucidity", "a sky burial",
+               "a Victorian safety coffin", "the first hour after death",
+               "a deathbed vision", "the coldest person ever revived",
+               "an ancient burial ritual", "the legal definition of death"],
+     "hashtags": ["#death", "#mortality", "#neardeathexperience", "#deathpositive",
+                  "#science", "#history", "#deathrituals"],
+     "pillars": ["The biology of dying (what the body actually does)",
+                 "The dying brain & near-death experiences",
+                 "Deathbed phenomena science can't explain",
+                 "Death rituals & customs across cultures",
+                 "The blurry line between alive and dead"],
+     # Documentary and science framing only. Never method, never instruction, never
+     # glorification — that is both the ethical line and YouTube's suicide & self-harm
+     # policy line. Treat real deaths, and the rituals of living cultures, with respect.
+     "sample_hooks": [
+         "Your brain may replay your life in the 30 seconds after your heart stops.",
+         "Hearing is the last sense to go. They can still hear you.",
+         "She had no heartbeat for three hours — and walked out of the hospital.",
+         "Victorians were so afraid of being buried alive they patented coffins with bells."]},
     {"key": "dark_botany", "name": "Dark Botany", "tag": "Dark Botany",
      "demand": 7, "competition": 4, "evergreen": 9, "feasibility": 9,
      "description": "Plants as characters in dark stories — poison, medicine, and the history "
