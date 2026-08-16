@@ -75,6 +75,7 @@ generate more.
 | Path | What it does |
 |---|---|
 | [`docs/SCRIPT_PACK_DEATH.md`](docs/SCRIPT_PACK_DEATH.md) | 5 ready-to-record Shorts with **fully written voiceovers and a source citation per script** — the dying brain's gamma surge, hearing as the last sense, a 3-hour cardiac arrest survival, terminal lucidity, and Victorian safety coffins. |
+| [`docs/VISUAL_PACK_DEATH.md`](docs/VISUAL_PACK_DEATH.md) | Shot-by-shot AI image/video prompts for all 5 scripts — master style suffix, motion notes, thumbnails, and a **restraint rule** (no bodies, no gore, no real faces) that keeps the channel monetized and the imagery stronger. |
 
 > This niche is documentary and science framing only — never method, never
 > instruction, never glorification. That's the ethical line and it's also
