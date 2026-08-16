@@ -1,4 +1,11 @@
-# Extreme Weather What-Ifs — Visual Pack
+# Extreme Weather What-Ifs — Visual Pack (Ember Edition)
+
+> **Two visual editions exist for these scripts.** This is the **ember edition**
+> — warm, kinetic, spectacle-forward: you shoot the event itself. The
+> [**aftermath edition**](VISUAL_PACK_WEATHER_AFTERMATH.md) shoots the same 5
+> scripts cold and still, in the Death channel's memento-mori language, framing
+> the residue instead of the disaster. Pick one per video, or A/B them — the
+> aftermath file ends with a recommendation on which scripts suit which.
 
 Shot-by-shot AI image/video prompts for all 5 scripts in the Extreme Weather
 full-voiceover pack. Copy a prompt, append the **master style suffix**, add your

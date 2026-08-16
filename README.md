@@ -76,7 +76,8 @@ the one-shot niche + script pipeline, with voiceovers already written.
 | Path | What it does |
 |---|---|
 | [`docs/SCRIPT_PACK_WEATHER.md`](docs/SCRIPT_PACK_WEATHER.md) | 5 ready-to-record Shorts with **fully written, fact-checked voiceovers** — hook, VO, on-screen text, shot timings, titles/descriptions. |
-| [`docs/VISUAL_PACK_WEATHER.md`](docs/VISUAL_PACK_WEATHER.md) | Shot-by-shot AI image/video prompts for all 5 scripts — master style suffix, motion notes, and thumbnail prompts. |
+| [`docs/VISUAL_PACK_WEATHER.md`](docs/VISUAL_PACK_WEATHER.md) | **Ember edition** (default) — shot-by-shot AI image/video prompts for all 5 scripts: warm, kinetic, spectacle-forward, with master style suffix, motion notes, and thumbnail prompts. |
+| [`docs/VISUAL_PACK_WEATHER_AFTERMATH.md`](docs/VISUAL_PACK_WEATHER_AFTERMATH.md) | **Aftermath edition** (variant) — the same 5 scripts re-shot in the Death channel's cold memento-mori language: the residue instead of the disaster. Ends with the trade-off analysis and an A/B recommendation. |
 
 ### Death What-Ifs (mortality science niche)
 
