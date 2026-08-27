@@ -227,6 +227,40 @@ PARENTS = [
      "hashtags": ["#linguistics", "#language", "#etymology", "#words", "#learnontiktok"],
      "pillars": ["Untranslatable words", "Dying & endangered languages", "Weird grammar rules",
                  "Etymology deep dives", "Invented & secret languages"]},
+    {"key": "dental", "name": "Teeth & Dental History", "tag": "Teeth",
+     # Evergreen is deliberately 7, not 9: the well of genuinely great dental facts is
+     # real but finite — you will exhaust the best ones faster than in cosmic or death.
+     "demand": 8, "competition": 6, "evergreen": 7, "feasibility": 9,
+     "description": "Everyone has teeth and almost everyone is a little afraid of them — "
+                     "5,000 years of dental quackery, surgery, and myth, plus the strangest "
+                     "tissue in the human body.",
+     "vocab": ["the 5,000-year-old tooth worm", "a Waterloo tooth",
+               "George Washington's dentures", "a Neolithic dental drill",
+               "radioactive toothpaste", "tooth enamel", "an impacted wisdom tooth",
+               "the first dental filling", "Colorado brown stain",
+               "a Victorian dentist's chair", "a baby tooth's dissolving root",
+               "the origins of the tooth fairy"],
+     "hashtags": ["#teeth", "#dental", "#dentalhistory", "#darkhistory",
+                  "#science", "#mythbusting"],
+     "pillars": ["Dental history: the surgeries, tools, and quackery",
+                 "Myths people still believe about teeth",
+                 "The strange science of enamel — the tissue that can't heal",
+                 "Teeth as artifacts: what skulls and skeletons reveal",
+                 "Dentistry's inventions and accidents"],
+     # HEALTH-CONTENT WARNING. This is the toolkit's first YMYL ("your money or your
+     # life") category and it carries risk the 0-100 score does NOT measure:
+     #   1. Never give dental advice, diagnosis, or treatment guidance. History,
+     #      archaeology, and myth-busting only — the same line dark_botany draws.
+     #   2. Faceless is a HANDICAP here. The top dental creators are practising
+     #      dentists whose face and credential IS the trust signal. History and
+     #      myth-busting are the angles that don't need a credential.
+     #   3. Health claims risk removal and demonetization under YouTube's medical
+     #      misinformation policy. Cite a source per video; make no recommendations.
+     "sample_hooks": [
+         "For 5,000 years, humans believed a worm lived inside aching teeth.",
+         "Your enamel is the hardest thing in your body — and the only part that can never heal.",
+         "After Waterloo, dentures were made from the teeth of dead soldiers.",
+         "George Washington's teeth weren't wooden. The truth is worse."]},
     {"key": "death", "name": "Death & the Afterlife", "tag": "Death",
      "demand": 8, "competition": 6, "evergreen": 9, "feasibility": 9,
      "description": "The one experience nobody comes back to explain — the biology of "
