@@ -95,6 +95,35 @@ generate more.
 > instruction, never glorification. That's the ethical line and it's also
 > YouTube's suicide & self-harm policy line; the script pack states it up front.
 
+### Animal What-Ifs (nature niche)
+
+Animal Kingdom Extremes × What-If Scenarios, 78/100. Generate more with
+`python tools/viral_generator.py --parent animal`.
+
+| Path | What it does |
+|---|---|
+| [`docs/PRODUCTION_PACK_NATURE.md`](docs/PRODUCTION_PACK_NATURE.md) | **All-in-one** — 5 scripts with fully written voiceovers *and* their shot prompts in one file. Cordyceps, the mantis shrimp punch, the frog that stops its own heart, 400-year-old sharks, and the marsupial that mates itself to death. |
+
+> Nature is the one niche where AI visuals are weakest — viewers know what
+> animals look like, so anatomy errors read as slop. The pack marks which shots
+> need licensed stock footage and which are safe to generate.
+
+### Teeth Myths & Hidden History (dental niche)
+
+Teeth & Dental History, added as a scored category in `tools/niche_generator.py`
+(`--parent dental`). The generator ranks What-If highest at 78/100; the pack
+deliberately uses the 74-point **Myth-Busting / Hidden History** angles instead.
+
+| Path | What it does |
+|---|---|
+| [`docs/PRODUCTION_PACK_DENTAL.md`](docs/PRODUCTION_PACK_DENTAL.md) | **All-in-one** — 5 scripts with voiceovers *and* shot prompts. The 5,000-year tooth worm, enamel as the tissue that can't heal, Waterloo teeth, Washington's dentures, and Neolithic dental drilling. |
+
+> **The toolkit's first YMYL niche.** The 0-100 score measures virality, not
+> risk: faceless is a *handicap* where the top creators are credentialed
+> dentists, and health claims risk removal under YouTube's medical
+> misinformation policy. History, archaeology, and myth-busting only — never
+> advice, diagnosis, or treatment guidance.
+
 ## Setup
 
 ```bash
