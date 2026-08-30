@@ -82,6 +82,24 @@ first 2 seconds, cut visuals every 1.5–3s, end on the loop line.
 
 ---
 
+## 6 — "Your brain's last seconds" · *The dying brain*
+
+> Sibling of script 1 — the same Vicente et al. case, but myth-bust framing
+> instead of discovery framing (generated with `tools/viral_script.py`,
+> explainer format). Post them weeks apart, or A/B the two hooks.
+
+- **HOOK (0–3s):** *"Your brain's last seconds don't work the way you think. At all."*
+- **ON-SCREEN:** 900 SECONDS
+- **VO:** "Your brain's last seconds don't work the way you think. At all. Everyone assumes the brain just switches off with the heart. It doesn't. In 2022, an 87-year-old wired to an EEG had a cardiac arrest — and in the thirty seconds around his final heartbeat, his brain *surged* with gamma waves. That's the rhythm of memory replay. And dreaming. 'Life flashing before your eyes' — the oldest death story humans tell — may have just shown up on a hospital monitor. Did you already know this, or did I just ruin it for you? Comments. Go."
+- **PACING:** ~95 words ≈ 32–35s at Shorts pace — cut "And dreaming." to hit 30.
+- **VISUALS:** Glass head with a constellation of cyan light inside → light switch that dims but doesn't die → filament bulb flaring on "It doesn't" → night hospital room, EEG cap on its stand → waveform erupting into gamma peaks → old photographs drifting apart in cyan-lit dark → monitor afterglow fading to black.
+- **END:** *"Did you already know this, or did I just ruin it for you? Comments. Go."*
+- **TITLE:** What your brain does in the final seconds, explained
+- **DESC:** What your brain actually does in its final seconds — one accidental recording changed the question. Follow for more Death What-Ifs. #brain #neuroscience #death #didyouknow #shorts
+- **SOURCE:** Vicente et al., *Frontiers in Aging Neuroscience*, Feb 2022 (Zemmar lab) — same single-case EEG as script 1.
+
+---
+
 ## Production notes
 
 - **Tone:** calm, unhurried, documentary. This subject does not need hype — the

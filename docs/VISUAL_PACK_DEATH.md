@@ -1,6 +1,6 @@
 # Death What-Ifs — Visual Pack
 
-Shot-by-shot AI image/video prompts for all 5 scripts in
+Shot-by-shot AI image/video prompts for all 6 scripts in
 [`SCRIPT_PACK_DEATH.md`](SCRIPT_PACK_DEATH.md). Copy a prompt, append the
 **master style suffix**, add your 9:16 flag, and generate. Every shot lists its
 edit timing and a motion note for video generators (Runway / Kling / Pika / Veo).
@@ -144,9 +144,34 @@ lit by one candle, huge negative space to the right for text.
 
 ---
 
+## 6 — "Your brain's last seconds" · *The dying brain*
+
+*On-screen text (monitor cyan): 900 SECONDS*
+
+> Sibling of script 1 (same case, myth-bust framing) — deliberately different
+> shots (glass head, light switch, filament) so the two Shorts feel like
+> siblings, not reuploads. Shot 3 is the pattern interrupt: the only warm-ish
+> flare in an otherwise cold video, marking the "It doesn't." turn.
+
+| # | Timing | Image prompt | Motion note |
+|---|--------|--------------|-------------|
+| 1 | 0–3s (hook) | A translucent glass silhouette of a human head on pure black, a faint constellation of cyan light points glowing deep inside it, one point pulsing brighter than the rest | Points of light flicker asynchronously; slow drift toward the bright one |
+| 2 | 3–7s | An old bakelite light switch on a dark plaster wall, caught in a single shaft of cold light, deep shadow swallowing the rest of the room | Static, held tension — the light dims slightly as if about to go out |
+| 3 | 7–10s | A bare filament bulb in darkness flaring brighter instead of dying, delicate cyan-white tendrils of light crawling along the filament | Filament surges once, hard — the "It doesn't" beat lands on this flare |
+| 4 | 10–15s | A hospital room at night, empty bed neatly made, an EEG cap with trailing electrodes resting on a steel stand, one small lamp, a monitor glowing cyan in the corner | Nearly static; slow push-in toward the monitor; dust in the lamplight |
+| 5 | 15–21s | A cyan EEG waveform on a black screen erupting into towering jagged peaks, far taller than the calm trace before them, the glow spilling onto dark glass | Waveform scrolls right-to-left, then the peaks surge upward on "gamma waves" |
+| 6 | 21–27s (payoff) | Dozens of old out-of-focus family photographs drifting apart in dark space, lit only by a pale cyan glow, as if released from something | Photographs tumble slowly outward; one drifts close to lens, never sharp |
+| 7 | 27–31s (loop) | A dark hospital monitor, screen just gone black, the last cyan afterglow fading at its center, faint reflection of an empty room in the glass | Afterglow fades over two beats, hold black — hard cut with the last word |
+
+**Thumbnail prompt:** A single cyan EEG trace on pure black with one colossal
+gamma spike mid-frame dwarfing every other peak, vast negative space above for
+title text.
+
+---
+
 ## Batch workflow
 
-1. Generate all 20 prompts in one sitting (3–4 variations each) so the look stays
+1. Generate all 27 prompts in one sitting (3–4 variations each) so the look stays
    consistent — same suffix, same session, same model version.
 2. Animate only the hooks and payoffs. This niche is *built* for stills with a
    slow push-in; stillness is the tone, not a shortcut.
