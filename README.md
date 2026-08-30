@@ -24,6 +24,7 @@ analyze what's working and help you package and ideate faster.
 | `tools/optimize_metadata.py` | Scores a title/description/tags against Shorts best practices (offline), with optional AI rewrites. |
 | `tools/generate_ideas.py` | Generates Short ideas + hooks for your niche (offline, or richer with AI). |
 | `tools/niche_generator.py` | Discovers and scores new viral niches or sub-niches (offline or AI), explains why each one works, and can export a pick straight into the `niche.json` format. |
+| `tools/viral_script.py` | **Any-topic viral script generator** — give it any topic in any niche and it writes a script engineered to go viral *and* to sound like a human talking to a friend, not a robot. Hooks, open loops, re-hooks, curiosity gaps, payoff, loop ending — every beat labeled with the retention device it uses, plus per-beat timings, word targets, and delivery notes. Works from 15s Shorts to 10-minute videos, in 5 formats (explainer, storytime, countdown, hot take, how-to). Offline by default with a research checklist per script; `--use-claude` writes every word under strict sound-like-a-human rules. |
 | `tools/viral_generator.py` | **End-to-end niche + script generator** — generates and ranks proven-viral niches, picks the winner, and writes complete ready-to-produce Short scripts for it (hook, timed VO beats, on-screen text, visuals, loop ending, title/desc). Also scripts any existing `niche*.json` via `--niche-file`, and exports markdown production packs with `--export-md`. |
 | `tools/niche.json` | Your channel's niche, pillars, voice, and hook templates — edit this to retune every tool. |
 | [`product/faceless-ai-shorts-starter-kit/`](product/faceless-ai-shorts-starter-kit/) | A **sellable digital product** — packages the system into a faceless-channel starter kit, with paste-ready sales copy and pricing. |
@@ -117,6 +118,11 @@ python tools/niche_generator.py -n 10
 #     scripts for it (add --use-claude for fully written voiceovers)
 python tools/viral_generator.py --scripts 5
 python tools/viral_generator.py --niche-file niche-money.json   # script an existing niche
+
+# 0c. Already know your topic? Write a viral, human-sounding script for it —
+#     any topic, any niche, any length (add --use-claude for fully written VO)
+python tools/viral_script.py "why you can't remember being a baby"
+python tools/viral_script.py "the housing market" --length 3min -n 3
 
 # 1. Baseline a channel — what's working, and when to post
 python tools/analyze_channel.py --channel "@CosmicDread"
