@@ -193,6 +193,11 @@ def fill_topic(template, topic):
     return text[0].upper() + text[1:]
 
 
+STOPWORDS = {"a", "an", "the", "of", "in", "on", "to", "for", "and", "or",
+             "but", "your", "you", "what", "when", "why", "how", "does", "do",
+             "is", "are", "was", "were", "with", "that", "this", "it", "its",
+             "at", "by", "from", "if", "can", "cant", "will", "would"}
+
 TITLE_TEMPLATES = [
     "The truth about {t} nobody tells you",
     "{T} isn't what you think",
@@ -210,8 +215,12 @@ def make_title(topic, rng):
             fits.append(title)
     if fits:
         return rng.choice(fits)
-    # very long topic — cut it at a word boundary instead of mid-word
-    short = topic[:52].rsplit(" ", 1)[0]
+    # very long topic — cut at a word boundary, and never end on a dangling
+    # little word ("...the final seconds of, explained")
+    words = topic[:52].rsplit(" ", 1)[0].split()
+    while words and words[-1].lower() in STOPWORDS:
+        words.pop()
+    short = " ".join(words) or topic[:52]
     return (short[0].upper() + short[1:] + ", explained")[:60]
 
 
@@ -297,7 +306,9 @@ def build_script(topic, seconds, style, ending, rng, number=1):
 
     vo = " ".join(b["text"] for b in beats)
     title = make_title(topic, rng)
-    hashtags = ["#" + w.lower() for w in re.findall(r"[A-Za-z]{4,}", topic)[:3]]
+    tag_words = [w for w in re.findall(r"[A-Za-z]{4,}", topic.lower())
+                 if w not in STOPWORDS][:3]
+    hashtags = ["#" + w for w in tag_words]
     hashtags += ["#didyouknow", "#shorts" if seconds <= 60 else "#viral"]
     return {
         "number": number,
