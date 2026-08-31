@@ -120,9 +120,15 @@ def lint_tags(tags, niche):
                       "(#scifi) and specific (#speculativezoology).")
     else:
         wins.append(f"{len(tags)} tags — good coverage.")
+    # Hashtags are written closed up (#personalfinance) but a YouTube tag is a
+    # natural phrase ("personal finance"). Compare them with spacing and
+    # punctuation removed, or every multi-word tag reads as missing.
+    def norm(s):
+        return "".join(c for c in s.lower() if c.isalnum())
+
     suggested = [h.lstrip("#") for h in niche["core_hashtags"] + niche["extra_hashtags"]]
-    have = {t.lower().lstrip("#") for t in tags}
-    missing = [s for s in suggested if s.lower() not in have][:6]
+    have = {norm(t) for t in tags}
+    missing = [s for s in suggested if norm(s) not in have][:6]
     if missing:
         issues.append("Consider adding tags: " + ", ".join(missing))
     return issues, wins
