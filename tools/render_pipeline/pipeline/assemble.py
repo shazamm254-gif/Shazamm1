@@ -3,7 +3,7 @@ import shutil
 import subprocess
 import textwrap
 
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont
 
 
 def ffprobe_duration(path):
@@ -125,62 +125,58 @@ def fit_image_to_canvas(src_path, out_path, width, height, mode="cover", sharpen
     dst_ratio = width / height
 
     if mode == "contain":
-        # A solid pad is cleaner than a blurred one when the source is a
-        # designed panel: blurring a page of text just produces legible-ish
-        # ghosts behind it, which reads as an accident rather than a choice.
         if pad_color:
+            # A flat pad is honest when the source has nothing to extend --
+            # but on a photographic panel it reads as letterboxing, which is
+            # why it is no longer the default companion to safe_area.
             backdrop = Image.new("RGB", (width, height), pad_color)
-            if safe_area:
-                x0, y0, x1, y1 = safe_box(width, height, zoom_headroom, safe_margins)
-                avail_w, avail_h = int(x1 - x0), int(y1 - y0)
-                fw = avail_w
-                fh = int(fw / src_ratio)
-                if fh > avail_h:
-                    fh = avail_h
-                    fw = int(fh * src_ratio)
-                fg = img.resize((max(fw, 1), max(fh, 1)), Image.LANCZOS)
-                if sharpen > 0:
-                    fg = _sharpen(fg, sharpen)
-                # Centre within that box: horizontally clear of the buttons,
-                # vertically in the band above the title strip.
-                x = int(x0) + (avail_w - fw) // 2
-                y = int(y0) + (avail_h - fh) // 2
-                backdrop.paste(fg, (x, y))
-                backdrop.save(out_path, quality=95)
-                return out_path
+        else:
+            # Fill the whole 9:16 frame with an over-scaled, heavily blurred
+            # copy of the panel. The frame is never empty and never barred:
+            # the panel's own colour and lighting continue past its edges, so
+            # a 4:5 source reads as a deliberate 9:16 composition rather than
+            # a smaller picture sitting on black.
+            if src_ratio > dst_ratio:
+                bw, bh = int(height * src_ratio), height
+            else:
+                bw, bh = width, int(width / src_ratio)
+            scale = 1.25  # over-scale so blur has no dark edges
+            backdrop = img.resize((int(bw * scale), int(bh * scale)), Image.LANCZOS)
+            bl = (backdrop.width - width) // 2
+            bt = (backdrop.height - height) // 2
+            backdrop = backdrop.crop((bl, bt, bl + width, bt + height))
+            # Blur hard enough that burned-in text becomes texture rather than
+            # a legible ghost of itself, and scale the radius with the canvas
+            # so it does not weaken on a larger frame. A fixed 28px left words
+            # like "IT FEELS OBVIOUS." readable behind the panel, which looks
+            # like a mistake rather than a backdrop.
+            backdrop = backdrop.filter(ImageFilter.GaussianBlur(max(28, width // 14)))
+            # Then sit it back so the sharp panel is unambiguously the subject.
+            backdrop = ImageEnhance.Brightness(backdrop).enhance(0.45)
 
+        if safe_area:
+            x0, y0, x1, y1 = safe_box(width, height, zoom_headroom, safe_margins)
+            avail_w, avail_h = int(x1 - x0), int(y1 - y0)
+            fw = avail_w
+            fh = int(fw / src_ratio)
+            if fh > avail_h:
+                fh = avail_h
+                fw = int(fh * src_ratio)
+            # Centre within that box: horizontally clear of the buttons,
+            # vertically in the band above the title strip.
+            x = int(x0) + (avail_w - fw) // 2
+            y = int(y0) + (avail_h - fh) // 2
+        else:
             if src_ratio > dst_ratio:
                 fw, fh = width, max(1, int(width / src_ratio))
             else:
                 fh, fw = height, max(1, int(height * src_ratio))
-            fg = img.resize((fw, fh), Image.LANCZOS)
-            if sharpen > 0:
-                fg = _sharpen(fg, sharpen)
-            backdrop.paste(fg, ((width - fw) // 2, (height - fh) // 2))
-            backdrop.save(out_path, quality=95)
-            return out_path
+            x, y = (width - fw) // 2, (height - fh) // 2
 
-        # Blurred, over-scaled backdrop so the frame is never empty.
-        if src_ratio > dst_ratio:
-            bw, bh = int(height * src_ratio), height
-        else:
-            bw, bh = width, int(width / src_ratio)
-        scale = 1.25  # over-scale so blur has no dark edges
-        backdrop = img.resize((int(bw * scale), int(bh * scale)), Image.LANCZOS)
-        bl = (backdrop.width - width) // 2
-        bt = (backdrop.height - height) // 2
-        backdrop = backdrop.crop((bl, bt, bl + width, bt + height))
-        backdrop = backdrop.filter(ImageFilter.GaussianBlur(28))
-
-        # Foreground scaled to fit entirely inside the canvas.
-        if src_ratio > dst_ratio:
-            fw, fh = width, max(1, int(width / src_ratio))
-        else:
-            fh, fw = height, max(1, int(height * src_ratio))
-        fg = img.resize((fw, fh), Image.LANCZOS)
+        fg = img.resize((max(fw, 1), max(fh, 1)), Image.LANCZOS)
         if sharpen > 0:
             fg = _sharpen(fg, sharpen)
-        backdrop.paste(fg, ((width - fw) // 2, (height - fh) // 2))
+        backdrop.paste(fg, (x, y))
         backdrop.save(out_path, quality=95)
         return out_path
 

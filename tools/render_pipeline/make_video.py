@@ -349,10 +349,12 @@ def main():
         safe_margins = {"top": t, "right": r, "bottom": b}
 
     # Fail here rather than rendering a video that silently ignored the flag.
-    if args.safe_area and (args.fit != "contain" or not args.pad):
-        print("--safe-area needs --fit contain and --pad <colour>: it shrinks the "
-              "image away from the interface, which leaves a margin that has to be "
-              "filled with something. Try: --fit contain --pad '#0b0b0d' --safe-area")
+    # --pad is no longer required: without it the margin is filled by a blurred
+    # copy of the panel, which fills the 9:16 frame instead of letterboxing it.
+    if args.safe_area and args.fit != "contain":
+        print("--safe-area needs --fit contain. With --fit cover the image is "
+              "cropped to fill the frame, so there is no margin to keep clear of "
+              "the interface. Try: --fit contain --safe-area")
         sys.exit(1)
 
     if not os.path.isfile(args.voiceover):
