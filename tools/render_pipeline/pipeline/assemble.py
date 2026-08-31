@@ -55,8 +55,45 @@ def peak_zoom(motions, config):
     return max(MOTION_PEAK_ZOOM.get(m, None) or config.MAX_ZOOM for m in motions)
 
 
+def safe_box(width, height, zoom_headroom=1.0, margins=None):
+    """
+    The largest box that is centred in the frame, clear of the interface, and
+    still clear of it once the Ken Burns move has magnified everything.
+
+    Centred is the point. The interface is lopsided -- buttons down the right,
+    a title strip along the bottom -- so the region it leaves free is lopsided
+    too, and an image centred in *that* sits visibly left of, and above, the
+    middle of the frame. It reads as a mistake on every single shot. So each
+    margin is mirrored onto the opposite side: the box is symmetric about the
+    frame centre, and the image lands where the eye expects it.
+
+    That symmetry costs width, since the widest safe box is now set by the
+    button column on both sides. Pass smaller `margins` to buy it back.
+
+    Returns (x0, y0, x1, y1) as floats.
+    """
+    m = dict(SHORTS_SAFE)
+    if margins:
+        m.update(margins)
+
+    # Mirror the larger margin on each axis, so the result is centred.
+    half_w = width / 2.0 - max(m["right"], 0)
+    half_h = height / 2.0 - max(m["top"], m["bottom"], 0)
+
+    # Then leave the zoom somewhere to grow into. zoompan maps p -> c + (p-c)*z
+    # about the frame centre, so the region still inside the box at peak zoom
+    # is the box scaled by 1/z -- which, for a centred box, is just this.
+    z = max(zoom_headroom, 1.0)
+    half_w /= z
+    half_h /= z
+
+    cx, cy = width / 2.0, height / 2.0
+    return cx - half_w, cy - half_h, cx + half_w, cy + half_h
+
+
 def fit_image_to_canvas(src_path, out_path, width, height, mode="cover", sharpen=0.0,
-                        pad_color=None, safe_area=False, zoom_headroom=1.0):
+                        pad_color=None, safe_area=False, zoom_headroom=1.0,
+                        safe_margins=None):
     """
     Fit an arbitrary image to the vertical canvas.
 
@@ -94,19 +131,7 @@ def fit_image_to_canvas(src_path, out_path, width, height, mode="cover", sharpen
         if pad_color:
             backdrop = Image.new("RGB", (width, height), pad_color)
             if safe_area:
-                # The visible box, before allowing for the zoom.
-                x0, x1 = 0.0, float(width - SHORTS_SAFE["right"])
-                y0 = float(SHORTS_SAFE["top"])
-                y1 = float(height - SHORTS_SAFE["bottom"])
-
-                # Pull it in toward the frame centre by the zoom headroom.
-                # zoompan maps p -> c + (p - c) * z, so the region that is
-                # still inside the visible box at peak zoom is c + (box - c)/z.
-                z = max(zoom_headroom, 1.0)
-                cx, cy = width / 2.0, height / 2.0
-                x0, x1 = cx + (x0 - cx) / z, cx + (x1 - cx) / z
-                y0, y1 = cy + (y0 - cy) / z, cy + (y1 - cy) / z
-
+                x0, y0, x1, y1 = safe_box(width, height, zoom_headroom, safe_margins)
                 avail_w, avail_h = int(x1 - x0), int(y1 - y0)
                 fw = avail_w
                 fh = int(fw / src_ratio)

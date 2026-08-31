@@ -313,6 +313,12 @@ def main():
                         "Use this whenever your images already have text in them -- "
                         "otherwise the lowest line ends up behind the video title. "
                         "Requires --fit contain and --pad.")
+    p.add_argument("--safe-margins", default=None, metavar="TOP,RIGHT,BOTTOM",
+                   help="How much of the frame the Shorts interface covers, in pixels "
+                        "at 1080x1920 (default 90,150,320). The safe box is centred, so "
+                        "the right value is mirrored on the left and sets the usable "
+                        "width -- lowering it is how you get a bigger picture back. "
+                        "Only useful with --safe-area.")
     p.add_argument("--gentle", action="store_true",
                    help="Use a barely-there drift on every shot instead of the usual "
                         "push-ins and pans. Worth it for images that already contain "
@@ -332,6 +338,15 @@ def main():
     config = Config()
     config.check_dependencies()
     config.FIT_MODE = args.fit
+
+    safe_margins = None
+    if args.safe_margins:
+        try:
+            t, r, b = (int(v) for v in args.safe_margins.split(","))
+        except ValueError:
+            print("--safe-margins wants three whole numbers, e.g. 90,150,320")
+            sys.exit(1)
+        safe_margins = {"top": t, "right": r, "bottom": b}
 
     # Fail here rather than rendering a video that silently ignored the flag.
     if args.safe_area and (args.fit != "contain" or not args.pad):
@@ -426,7 +441,7 @@ def main():
         fit_image_to_canvas(src, fitted, config.WIDTH, config.HEIGHT,
                             mode=config.FIT_MODE, sharpen=args.sharpen,
                             pad_color=args.pad, safe_area=args.safe_area,
-                            zoom_headroom=headroom)
+                            zoom_headroom=headroom, safe_margins=safe_margins)
 
         kb = os.path.join(build_dir, f"kb_{i:02d}.mp4")
         ken_burns_segment(fitted, dur, kb, config, motion=motion,
