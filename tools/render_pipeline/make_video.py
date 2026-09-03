@@ -36,7 +36,7 @@ import subprocess
 import sys
 import tempfile
 
-from pipeline.assemble import (concat_segments, ffprobe_duration,
+from pipeline.assemble import (SHORTS_SAFE, concat_segments, ffprobe_duration,
                                fit_image_to_canvas, ken_burns_segment,
                                mux_audio, overlay_caption, peak_zoom,
                                render_caption_png)
@@ -133,7 +133,8 @@ def parse_srt(path):
     return entries
 
 
-def overlay_timed_captions(video_path, entries, out_path, build_dir, config):
+def overlay_timed_captions(video_path, entries, out_path, build_dir, config,
+                           caption_bottom=160):
     """
     Burn timed captions onto a finished visual track.
 
@@ -143,7 +144,8 @@ def overlay_timed_captions(video_path, entries, out_path, build_dir, config):
     inputs = ["-i", video_path]
     for i, (_s, _e, text) in enumerate(entries):
         png = os.path.join(build_dir, f"srtcap_{i:03d}.png")
-        render_caption_png(text, png, config.WIDTH, config.HEIGHT, config)
+        render_caption_png(text, png, config.WIDTH, config.HEIGHT, config,
+                           bottom_margin=caption_bottom)
         inputs += ["-i", png]
 
     steps, prev = [], "0:v"
@@ -426,6 +428,17 @@ def main():
         motions = [DEFAULT_MOTION_CYCLE[i % len(DEFAULT_MOTION_CYCLE)]
                    for i in range(len(images))]
 
+    # Captions default to sitting 160px off the bottom, which is underneath
+    # the Shorts title strip. With --safe-area, lift them clear of it: a
+    # caption hidden behind the title is worse than no caption, because the
+    # narration still refers to text the viewer cannot read.
+    # This is unconditional, not tied to --safe-area: a caption behind the
+    # title strip is never what anyone wanted, whatever the fit mode.
+    _m = dict(SHORTS_SAFE)
+    if safe_margins:
+        _m.update(safe_margins)
+    caption_bottom = _m["bottom"] + 30
+
     # One headroom for the whole video rather than one per shot: sizing each
     # panel against its own motion would make them visibly change size from
     # cut to cut.
@@ -451,7 +464,8 @@ def main():
 
         if use_captions and i < len(captions):
             cap_png = os.path.join(build_dir, f"cap_{i:02d}.png")
-            render_caption_png(captions[i], cap_png, config.WIDTH, config.HEIGHT, config)
+            render_caption_png(captions[i], cap_png, config.WIDTH, config.HEIGHT, config,
+                               bottom_margin=caption_bottom)
             seg = os.path.join(build_dir, f"seg_{i:02d}.mp4")
             overlay_caption(kb, cap_png, seg)
         else:
@@ -466,7 +480,8 @@ def main():
     if burn_srt:
         print(f"  burning {len(srt_entries)} timed caption(s) from {os.path.basename(args.srt)}")
         captioned = os.path.join(build_dir, "captioned.mp4")
-        overlay_timed_captions(concat, srt_entries, captioned, build_dir, config)
+        overlay_timed_captions(concat, srt_entries, captioned, build_dir, config,
+                               caption_bottom=caption_bottom)
         concat = captioned
 
     out_dir = os.path.dirname(os.path.abspath(args.out))

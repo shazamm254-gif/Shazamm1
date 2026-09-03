@@ -215,7 +215,15 @@ def _load_font(path, size):
         return ImageFont.load_default()
 
 
-def render_caption_png(text, out_path, width, height, config, accent_hex="#C9A227"):
+def render_caption_png(text, out_path, width, height, config, accent_hex="#C9A227",
+                       bottom_margin=160):
+    """
+    Draw one caption card, anchored `bottom_margin` px above the frame bottom.
+
+    The default of 160 puts the card underneath the Shorts title strip, which
+    is fine for a preview and wrong on a phone. Pass the interface's bottom
+    margin (see SHORTS_SAFE) to lift it clear.
+    """
     img = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
     font = _load_font(config.FONT_BOLD, 58)
@@ -225,9 +233,12 @@ def render_caption_png(text, out_path, width, height, config, accent_hex="#C9A22
     line_heights = [draw.textbbox((0, 0), ln, font=font)[3] for ln in lines]
     total_h = sum(line_heights) + (len(lines) - 1) * 14
 
+    # bottom_margin is the clearance for the card *including* its padding and
+    # outline, not for the text inside it -- otherwise the visible edge of the
+    # card still lands box_pad px lower than the caller asked for.
     box_pad = 40
-    box_top = height - total_h - 260
-    box_bottom = height - 160
+    box_bottom = height - bottom_margin - box_pad
+    box_top = box_bottom - total_h - 60
     draw.rounded_rectangle(
         [50, box_top - box_pad, width - 50, box_bottom + box_pad],
         radius=24, fill=(10, 10, 12, 190), outline=accent_hex, width=3,
