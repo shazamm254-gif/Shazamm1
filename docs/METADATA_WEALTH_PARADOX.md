@@ -81,6 +81,42 @@ hyperinflation, weimar republic, inflation, money, wealth, financial literacy, g
 
 ---
 
+## 3. Pig butchering / "sorry, wrong number"
+
+**Title** (57 chars)
+
+```
+Why "sorry, wrong number" costs people their life savings
+```
+
+**Description**
+
+```
+It starts with a text you were never meant to get. "Sorry, wrong number." She apologizes, you laugh it off, and now you're talking.
+
+For four months she is just a friend. She never asks you for anything. Eventually she mentions a trading platform. You put in $500, it grows, you withdraw it — and the money genuinely lands in your bank account.
+
+That was the whole scam. The $500 was never the target; it was the proof that made you trust the platform with your life savings. Investigators call it pig butchering: the victim is fattened before slaughter, and the fattening was the friendship.
+
+Subscribe to The Wealth Paradox for the hidden rules of money.
+
+#shorts #money #wealth #financialliteracy #scam #personalfinance #moneypsychology
+```
+
+**Tags**
+
+```
+pig butchering, romance scam, investment scam, crypto scam, financial literacy, money, wealth, scams, personal finance, wrong number scam, fraud, money psychology, financial traps, online safety, shorts
+```
+
+**Backup titles** — both lint clean:
+
+- `This is how a scam earns your trust with real money`
+- `Why the first $500 always pays out — and takes your savings`
+
+
+---
+
 ## Notes
 
 **Titles are truncated around 40-50 characters in the feed**, so both hooks
