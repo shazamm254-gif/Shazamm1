@@ -8,6 +8,11 @@ Every case below is real and publicly documented. Where a script follows a
 *pattern* rather than one named case, it says so — dramatized composite, never
 invented detail, never a real private individual named.
 
+> **Shot-by-shot AI image prompts for all ten** are in
+> [`docs/VISUAL_PACK_SCAMS.md`](VISUAL_PACK_SCAMS.md) — 46 prompts with
+> timings, motion notes, thumbnails, two master style suffixes, and the
+> reusable assets worth building once.
+
 **Delivery:** calm, low, forensic. Never gleeful. ~2.5 words per second, so a
 120-word VO lands around 48 seconds. Hook inside 2 seconds, cut visuals every
 1.5–3s, end on the loop line.
