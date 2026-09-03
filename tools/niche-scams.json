@@ -1,0 +1,65 @@
+{
+  "channel_name": "The Setup",
+  "handle": "@thesetupexplained",
+  "one_line": "How elaborate scams actually work — the psychology, the mechanics, and the moment the mark realizes — broken down in 45-second hits.",
+  "pillars": [
+    "Modern digital scams (phishing, AI, crypto, marketplace)",
+    "Historical cons & legendary grifters",
+    "Corporate fraud & Ponzi mechanics explained",
+    "The psychology of being manipulated",
+    "Dark patterns & legal deception companies use"
+  ],
+  "audience": "Curious skeptics 18-45 who like true-crime, business breakdowns, and 'how it actually works' content. People who think they're too smart to be scammed — and their parents.",
+  "tone": "Calm, forensic, slightly chilling. Explain the mechanism like a case study, never like a tutorial. Sympathy for victims, never mockery. Always end on the tell that would have saved them.",
+  "core_hashtags": [
+    "#scams",
+    "#truecrime",
+    "#psychology",
+    "#fraud",
+    "#scamalert"
+  ],
+  "extra_hashtags": [
+    "#shorts"
+  ],
+  "hook_templates": [
+    "This scam worked because it was designed to look fake.",
+    "{x} works because every single step feels normal.",
+    "By the time anyone recognizes {x}, it is already too late.",
+    "Here's the exact psychology that makes {x} work on smart people.",
+    "Nobody falls for {x}. They fall for the thing that comes before it."
+  ],
+  "title_keywords": [
+    "pig butchering scam explained",
+    "deepfake video call fraud",
+    "AI voice clone scam",
+    "why scammers ask for gift cards",
+    "ponzi scheme explained",
+    "slot machine near miss",
+    "dark patterns subscription trap",
+    "romance scam warning signs",
+    "art forgery how it worked",
+    "how con artists build trust"
+  ],
+  "fillers": {
+    "x": [
+      "the pig butchering scam",
+      "a deepfake video call",
+      "a cloned voice on the phone",
+      "the safe account scam",
+      "a $4 QR code sticker",
+      "a fake remote job offer",
+      "the overpayment scam",
+      "a Ponzi scheme",
+      "love bombing",
+      "the recovery scam"
+    ]
+  },
+  "hard_rules": [
+    "Educate about the deception, never provide operational instructions for committing it.",
+    "Show the manipulation from the victim's side: what they saw, what they felt, what they missed.",
+    "Every video ends with the tell, the warning sign, or how it was exposed.",
+    "Never mock victims. The thesis is always 'this would work on you too.'",
+    "Use only public, widely reported cases. No naming private individuals.",
+    "No celebrity likenesses, no bodycam or courtroom footage, no copyrighted assets."
+  ]
+}

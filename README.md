@@ -95,6 +95,23 @@ generate more.
 > instruction, never glorification. That's the ethical line and it's also
 > YouTube's suicide & self-harm policy line; the script pack states it up front.
 
+### The Setup (elaborate scam mechanics niche)
+
+A true-crime-adjacent explainer niche — **how elaborate scams actually work**,
+from pig butchering and deepfake video calls to Ponzi mechanics, art forgery,
+and the dark patterns companies use legally. Pass `--niche-file
+niche-scams.json` to `generate_ideas.py` to target it.
+
+| Path | What it does |
+|---|---|
+| [`docs/IDEA_BANK_SCAMS.md`](docs/IDEA_BANK_SCAMS.md) | **50 ranked Shorts concepts**, culled from ~150 — each with hook, curiosity gap, retention driver, emotional triggers, retention/viral/AI-difficulty/production/evergreen scores, visual count, style, palette, thumbnail, search intent, and ending twist. Plus 5 runnable series, a reusable 6-beat script structure, AI-image casting rules, and the channel palette. |
+| `tools/niche-scams.json` | The Setup niche config — pillars, voice, hook templates, and the hard content rules. |
+
+> The line that keeps this niche monetized: explain **how victims are
+> manipulated**, never how to run the play. No operational detail, no tooling,
+> no targeting, no mockery of victims — every video ends on the tell that would
+> have saved them. The safe framing is also the highest-retention framing.
+
 ## Setup
 
 ```bash
