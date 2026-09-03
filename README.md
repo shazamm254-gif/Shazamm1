@@ -105,6 +105,7 @@ niche-scams.json` to `generate_ideas.py` to target it.
 | Path | What it does |
 |---|---|
 | [`docs/IDEA_BANK_SCAMS.md`](docs/IDEA_BANK_SCAMS.md) | **50 ranked Shorts concepts**, culled from ~150 — each with hook, curiosity gap, retention driver, emotional triggers, retention/viral/AI-difficulty/production/evergreen scores, visual count, style, palette, thumbnail, search intent, and ending twist. Plus 5 runnable series, a reusable 6-beat script structure, AI-image casting rules, and the channel palette. |
+| [`docs/SCRIPT_PACK_SCAMS.md`](docs/SCRIPT_PACK_SCAMS.md) | **Full scripts for the top 10 concepts** — complete voiceovers (all timed under 60s), on-screen text, shot-by-shot visuals, loop endings, paste-ready titles/descriptions, and a source line per script. Plus voice direction, a batch production plan, and the reusable assets worth building once. |
 | `tools/niche-scams.json` | The Setup niche config — pillars, voice, hook templates, and the hard content rules. |
 
 > The line that keeps this niche monetized: explain **how victims are

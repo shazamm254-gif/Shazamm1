@@ -32,6 +32,10 @@ make it tonight on a phone.
 
 ---
 
+> **Concepts #1–10 are fully scripted** in
+> [`docs/SCRIPT_PACK_SCAMS.md`](SCRIPT_PACK_SCAMS.md) — complete voiceovers,
+> on-screen text, shot lists, paste-ready titles/descriptions, and sources.
+
 ## Ranking table
 
 | # | Concept | Format | Ret | Viral | AI | Prod | Ever |
