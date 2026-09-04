@@ -357,14 +357,22 @@ def concat_segments(segment_paths, out_path, list_file):
     return out_path
 
 
-def mux_audio(video_path, audio_path, out_path):
-    subprocess.run(
-        ["ffmpeg", "-y", "-i", video_path, "-i", audio_path,
-         "-map", "0:v:0", "-map", "1:a:0",
-         "-c:v", "copy", "-c:a", "aac", "-b:a", "160k",
-         "-shortest", out_path],
-        check=True, capture_output=True,
-    )
+def mux_audio(video_path, audio_path, out_path, target_lufs=-14.0):
+    """
+    Attach the audio track, normalised to `target_lufs`.
+
+    YouTube normalises toward roughly -14 LUFS and only ever turns loud audio
+    DOWN -- it does not lift quiet audio up. A voiceover exported at -24 LUFS
+    therefore plays quieter than everything around it in the feed for the
+    life of the video, which costs retention in the first second. Pass
+    target_lufs=None to mux the audio untouched.
+    """
+    args = ["ffmpeg", "-y", "-i", video_path, "-i", audio_path,
+            "-map", "0:v:0", "-map", "1:a:0", "-c:v", "copy"]
+    if target_lufs is not None:
+        args += ["-af", f"loudnorm=I={target_lufs}:TP=-1.5:LRA=11"]
+    args += ["-c:a", "aac", "-b:a", "160k", "-shortest", out_path]
+    subprocess.run(args, check=True, capture_output=True)
     return out_path
 
 

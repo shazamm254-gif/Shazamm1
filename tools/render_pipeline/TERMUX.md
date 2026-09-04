@@ -162,6 +162,14 @@ python3 make_video.py \
 This is far lighter than the full pipeline — no TTS, no script building, no
 `openai` dependency. On a phone it is the fastest path to a finished video.
 
+### Audio loudness
+
+Every render normalises the finished audio to **-14 LUFS**, which is what
+YouTube normalises toward. This matters more than it sounds: YouTube only
+turns loud audio *down*, never quiet audio up, so a voiceover exported at
+-24 LUFS stays quieter than everything around it in the feed permanently.
+Pass `--loudness 0` to keep your source levels untouched.
+
 ### If your images already have text in them
 
 Panels that come with their own burned-in text need two extra flags, and

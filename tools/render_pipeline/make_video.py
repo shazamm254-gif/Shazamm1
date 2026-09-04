@@ -168,7 +168,8 @@ def overlay_timed_captions(video_path, entries, out_path, build_dir, config,
 
 
 
-def mix_music(voice_path, music_path, out_path, volume=0.18, duck=True, fade=1.5):
+def mix_music(voice_path, music_path, out_path, volume=0.18, duck=True, fade=1.5,
+              target_lufs=-14.0):
     """
     Mix a music bed under narration.
 
@@ -191,15 +192,17 @@ def mix_music(voice_path, music_path, out_path, volume=0.18, duck=True, fade=1.5
             f"[0:a]asplit=2[v1][v2];"
             f"[music][v1]sidechaincompress="
             f"threshold=0.02:ratio=12:attack=15:release=380:makeup=1[ducked];"
-            f"[v2][ducked]amix=inputs=2:duration=first:dropout_transition=0,"
-            f"alimiter=limit=0.95[a]"
+            f"[v2][ducked]amix=inputs=2:normalize=0:duration=first:dropout_transition=0,"
+            f"alimiter=limit=0.95,"
+            f"loudnorm=I={target_lufs}:TP=-1.5:LRA=11[a]"
         )
     else:
         filt = (
             f"[1:a]volume={volume},afade=t=in:st=0:d={fade},"
             f"afade=t=out:st={max(voice_dur - fade, 0):.2f}:d={fade}[music];"
-            f"[0:a][music]amix=inputs=2:duration=first:dropout_transition=0,"
-            f"alimiter=limit=0.95[a]"
+            f"[0:a][music]amix=inputs=2:normalize=0:duration=first:dropout_transition=0,"
+            f"alimiter=limit=0.95,"
+            f"loudnorm=I={target_lufs}:TP=-1.5:LRA=11[a]"
         )
 
     subprocess.run(
@@ -334,12 +337,20 @@ def main():
     p.add_argument("--min-shot", type=float, default=1.8,
                    help="Shortest a single shot may be, in seconds (default 1.8). Short shots "
                         "are lengthened and the time taken from longer ones. 0 disables.")
+    p.add_argument("--loudness", type=float, default=-14.0, metavar="LUFS",
+                   help="Normalise the finished audio to this integrated loudness "
+                        "(default -14, which is what YouTube normalises toward). "
+                        "YouTube only turns loud audio DOWN, never quiet audio up, so "
+                        "a quiet export stays quiet next to everything else in the "
+                        "feed. Pass 0 to disable and keep the source levels.")
     p.add_argument("--keep-build", action="store_true", help="Keep intermediate files for inspection")
     args = p.parse_args()
 
     config = Config()
     config.check_dependencies()
     config.FIT_MODE = args.fit
+    if args.loudness == 0:
+        args.loudness = None            # explicit opt-out, keep source levels
 
     safe_margins = None
     if args.safe_margins:
@@ -493,15 +504,18 @@ def main():
             print(f"Music file not found: {args.music}")
             sys.exit(1)
         mixed = os.path.join(build_dir, "mixed.m4a")
+        # Normalised inside the mix, so don't normalise again on the way out.
         mix_music(args.voiceover, args.music, mixed,
                   volume=args.music_volume, duck=not args.no_duck,
-                  fade=args.music_fade)
-        mux_audio(concat, mixed, args.out)
+                  fade=args.music_fade, target_lufs=args.loudness)
+        mux_audio(concat, mixed, args.out, target_lufs=None)
     else:
-        mux_audio(concat, args.voiceover, args.out)
+        mux_audio(concat, args.voiceover, args.out, target_lufs=args.loudness)
 
     final_dur = ffprobe_duration(args.out)
     print(f"\nDone: {args.out}  ({final_dur:.1f}s)")
+    if args.loudness is not None:
+        print(f"  audio normalised to {args.loudness} LUFS")
 
     if args.keep_build:
         print(f"Intermediates kept in: {build_dir}")
