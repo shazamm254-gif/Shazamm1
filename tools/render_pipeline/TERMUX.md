@@ -199,9 +199,18 @@ has to start *smaller* to leave room to grow into. At the default 1.18x zoom
 a 4:5 panel is capped at 788px wide; with `--gentle` it is 894px. Same
 safety, noticeably bigger picture.
 
-`--safe-area` requires `--fit contain` and `--pad` — it deliberately leaves
-a margin, and that margin has to be filled with something. The script exits
-with that message rather than silently ignoring the flag.
+`--safe-area` requires `--fit contain` — with `cover` the image is cropped to
+fill the frame, so there is no margin to keep clear. The script exits saying
+so rather than silently ignoring the flag.
+
+`--pad` is optional. Without it the margin fills with a heavily blurred,
+dimmed copy of the panel, so its own colour continues to the frame edge and a
+4:5 panel reads as a 9:16 composition instead of a letterboxed one. Use
+`--pad '#0b0b0d'` only if you actually want flat bars.
+
+**If your images are already 9:16**, skip all of this and use `--fit cover`:
+they fill the frame exactly and nothing needs protecting except the captions,
+which are lifted clear automatically.
 
 Add `--no-captions` whenever the text is already in the images, or you will
 have two layers of text on screen at once. Keep passing `--srt` even so: the
