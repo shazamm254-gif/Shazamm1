@@ -1,0 +1,66 @@
+{
+  "channel_name": "The Wealth Paradox",
+  "handle": "@WealthParadoxDaily",
+  "one_line": "The history nobody taught you — how power, punishment and spectacle actually worked.",
+  "pillars": [
+    "Punishment and Power",
+    "Spectacle and Control",
+    "Everyday Life in the Ancient World",
+    "Money and Empire",
+    "The Detail Textbooks Skip"
+  ],
+  "audience": "People who like history delivered as a single startling fact with the context that makes it land.",
+  "tone": "Plain, unsentimental, specific. States what the sources say and lets it be disturbing on its own.",
+  "core_hashtags": [
+    "#history",
+    "#ancientrome",
+    "#romanempire",
+    "#ancienthistory",
+    "#rome"
+  ],
+  "extra_hashtags": [
+    "#shorts",
+    "#colosseum",
+    "#gladiators",
+    "#historyfacts",
+    "#archaeology",
+    "#ancient",
+    "#empire",
+    "#didyouknow"
+  ],
+  "title_keywords": [
+    "rome",
+    "roman",
+    "history",
+    "ancient",
+    "empire",
+    "colosseum",
+    "gladiator",
+    "arena",
+    "emperor",
+    "caesar",
+    "punishment",
+    "sentence"
+  ],
+  "hook_templates": [
+    "Rome had {object} that {verb}.",
+    "This is what {object} actually meant.",
+    "Why the {place} was never only about {object}.",
+    "Nobody tells you what happened to {object}."
+  ],
+  "fillers": {
+    "object": [
+      "the condemned",
+      "a death sentence",
+      "the arena"
+    ],
+    "verb": [
+      "turned execution into entertainment"
+    ],
+    "place": [
+      "arena",
+      "forum",
+      "colosseum"
+    ]
+  }
+}
