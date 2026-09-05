@@ -14,6 +14,7 @@ already exists, so both scripts simply write it.
 
 | Script | Use when |
 |---|---|
+| `align_script.py` | **The one to reach for.** You have the real script AND the audio. Recognition supplies the clock, your script supplies the words, so the text is exactly right and most of it sits on measured times. On the Rome voiceover, 72 of 100 script words anchored to real timings and every recognised phrase boundary landed exactly. |
 | `sphinx_to_transcript.py` | You need *a* transcript and Whisper is unavailable. Offline, no download. Timings are real; **the words are unreliable** — it rendered "damnatio ad bestias" as "AT BEST HEROES" on screen. |
 | `srt_to_words.py` | You already have correct wording in an SRT. Spreads each caption's words across its own span, weighted by length. Text is exactly right; only the highlight sweep *inside* a phrase is approximate. |
 
