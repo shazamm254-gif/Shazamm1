@@ -162,6 +162,37 @@ python3 make_video.py \
 This is far lighter than the full pipeline — no TTS, no script building, no
 `openai` dependency. On a phone it is the fastest path to a finished video.
 
+### Getting the captions written for you
+
+Typing an SRT by hand against a stopwatch is the slowest part of making one
+of these. `make_captions.py` does the timing for you:
+
+```bash
+python3 make_captions.py --audio vo.mp3 --out beats.srt
+```
+
+**The timings are reliable; the words are a draft.** Timings come from
+measuring where the speaker actually pauses. Checked against three SRTs that
+were built by hand from the same audio, it reproduced 12/12, 13/14 and 18/19
+of the chosen cut points to within 50ms.
+
+The words are another matter — offline recognition mangles proper nouns
+badly ("damnatio ad bestias" came back as "them not she'll at best heroes").
+Every line is written out anyway, because fixing a word is much faster than
+typing the line and timing it yourself. Captions the recogniser was least
+sure of get a trailing `# ?`; `make_video.py` strips anything after `  #`
+before burning, so a marker left in by mistake cannot reach the screen.
+
+Then edit the wording and render:
+
+```bash
+python3 make_video.py --images ./shots --voiceover vo.mp3 \
+    --srt beats.srt --fit cover --out video.mp4
+```
+
+`--max-words` controls caption length (12 is a good starting point) and
+`--min-pause` how readily it starts a new one.
+
 ### Audio loudness
 
 Every render normalises the finished audio to **-14 LUFS**, which is what

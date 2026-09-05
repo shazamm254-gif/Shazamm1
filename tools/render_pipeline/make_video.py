@@ -127,6 +127,10 @@ def parse_srt(path):
             return h * 3600 + mi * 60 + sec + ms / (1000 if len(g[3]) == 3 else 100)
         start, end = secs(m[0]), secs(m[1])
         text = " ".join(lines[lines.index(tline) + 1:]).strip()
+        # make_captions.py marks lines it is unsure of with a trailing "  # ?".
+        # Strip anything from "  #" on, so a marker left in by accident cannot
+        # end up burned into the video.
+        text = text.split("  #")[0].strip()
         if text and end > start:
             entries.append((start, end, text))
     entries.sort(key=lambda e: e[0])
