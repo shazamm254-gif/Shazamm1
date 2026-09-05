@@ -1,6 +1,6 @@
 # Paste-ready metadata — "The edge of the world"
 
-Checked with `tools/optimize_metadata.py` against `tools/niche-darkhistory.json`.
+Checked with `tools/optimize_metadata.py` against `tools/niche-rome.json`.
 All three titles pass length, hook opener, power word and keyword.
 
 **Note on the writing.** This one is atmosphere rather than a claim: it evokes
@@ -27,7 +27,7 @@ At the frozen frontiers of Britannia, ten thousand men held the line against an 
 
 Sworn to a Caesar who had forgotten them, and a Rome that demanded everything. And in the end, they paid the price.
 
-Subscribe for more of the history nobody taught you.
+Subscribe to The Roman Machine for how the empire actually worked.
 
 #shorts #history #ancientrome #romanempire #rome #ancienthistory #legion #britannia
 ```

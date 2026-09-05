@@ -1,0 +1,79 @@
+{
+  "channel_name": "The Roman Machine",
+  "handle": "@TheRomanMachine",
+  "one_line": "How the Roman Empire actually worked — the machinery of power, spectacle and punishment, and the people it ground through.",
+  "pillars": [
+    "Spectacle and Control (the arena, the triumph, punishment as public theatre)",
+    "The Frontier (legions, garrisons, and the edge of the known world)",
+    "Power and Punishment (law, sentencing, slavery, who the state could destroy)",
+    "The Machinery (engineering, grain, roads, money, logistics of empire)",
+    "The People Underneath (soldiers, slaves, the condemned, the poor)"
+  ],
+  "audience": "People who want Roman history as a system rather than a list of emperors — one startling fact, then the mechanism that makes it make sense.",
+  "tone": "Plain, unsentimental, specific. States what the sources say and lets it be disturbing on its own. Every script closes on a flat one-line reframe rather than a summary.",
+  "core_hashtags": [
+    "#history",
+    "#ancientrome",
+    "#romanempire",
+    "#rome",
+    "#ancienthistory"
+  ],
+  "extra_hashtags": [
+    "#shorts",
+    "#colosseum",
+    "#gladiators",
+    "#romanhistory",
+    "#legion",
+    "#historyfacts",
+    "#empire",
+    "#romanarmy"
+  ],
+  "title_keywords": [
+    "rome",
+    "roman",
+    "empire",
+    "ancient",
+    "legion",
+    "colosseum",
+    "arena",
+    "gladiator",
+    "caesar",
+    "emperor",
+    "history",
+    "frontier"
+  ],
+  "hook_templates": [
+    "Rome had {object} that {verb}.",
+    "Why Rome {verb} {object}.",
+    "This is what {object} actually meant.",
+    "Why the {place} was never only about {object}.",
+    "Nobody tells you what Rome did to {object}.",
+    "{object} was not what you think it was."
+  ],
+  "fillers": {
+    "object": [
+      "a death sentence",
+      "the condemned",
+      "the arena",
+      "its own soldiers",
+      "the frontier",
+      "the grain supply",
+      "its slaves"
+    ],
+    "verb": [
+      "turned execution into entertainment",
+      "abandoned",
+      "fed",
+      "policed",
+      "forgot",
+      "rebuilt"
+    ],
+    "place": [
+      "arena",
+      "colosseum",
+      "forum",
+      "frontier",
+      "camp"
+    ]
+  }
+}

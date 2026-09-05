@@ -1,6 +1,6 @@
 # Paste-ready metadata — damnatio ad bestias
 
-Checked with `tools/optimize_metadata.py` against `tools/niche-darkhistory.json`.
+Checked with `tools/optimize_metadata.py` against `tools/niche-rome.json`.
 All three titles pass length, hook opener, power word and keyword; the
 description carries the core hashtags, `#shorts` and a call to action.
 
@@ -30,7 +30,7 @@ Ancient sources place it among Rome's most extreme penalties, alongside crucifix
 
 Death was partly theatre.
 
-Subscribe for more of the history nobody taught you.
+Subscribe to The Roman Machine for how the empire actually worked.
 
 #shorts #history #ancientrome #romanempire #rome #ancienthistory #colosseum #gladiators
 ```
@@ -56,6 +56,7 @@ history" and "roman empire", and archaeology is not what this video is about.
 Redundant and off-topic tags dilute rather than help.
 
 **Niche.** This sits in a different niche from the money Shorts in
-`METADATA_WEALTH_PARADOX.md`. `niche-darkhistory.json` exists so the tooling
-works on it, but posting both to one channel teaches the algorithm two
-different audiences. Worth deciding deliberately rather than by accident.
+`METADATA_WEALTH_PARADOX.md`. This is now its own channel, **The Roman Machine** —
+separate from the money Shorts, which stay on The Wealth Paradox. Splitting
+them was the deliberate call: one channel teaching the algorithm two
+audiences is worse than two channels each teaching it one.
