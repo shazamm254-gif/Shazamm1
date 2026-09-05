@@ -25,6 +25,7 @@ analyze what's working and help you package and ideate faster.
 | `tools/generate_ideas.py` | Generates Short ideas + hooks for your niche (offline, or richer with AI). |
 | `tools/niche_generator.py` | Discovers and scores new viral niches or sub-niches (offline or AI), explains why each one works, and can export a pick straight into the `niche.json` format. |
 | `tools/viral_generator.py` | **End-to-end niche + script generator** — generates and ranks proven-viral niches, picks the winner, and writes complete ready-to-produce Short scripts for it (hook, timed VO beats, on-screen text, visuals, loop ending, title/desc). Also scripts any existing `niche*.json` via `--niche-file`, and exports markdown production packs with `--export-md`. |
+| [`tools/shortscaptioner/`](tools/shortscaptioner/) | **Burns viral-style animated captions onto a finished 9:16 video** — word-level Whisper transcription, 2-4 word cards, heavy outlined font, and the spoken word flipping to a highlight colour (the Hormozi/TikTok karaoke look). Cards spring in, active words bounce, and multiple clips can be joined with crossfades first. Runs fully local. |
 | `tools/niche.json` | Your channel's niche, pillars, voice, and hook templates — edit this to retune every tool. |
 | [`product/faceless-ai-shorts-starter-kit/`](product/faceless-ai-shorts-starter-kit/) | A **sellable digital product** — packages the system into a faceless-channel starter kit, with paste-ready sales copy and pricing. |
 | [`product/cosmic-ai-prompt-pack/`](product/cosmic-ai-prompt-pack/) | **300+ cosmic AI image/video prompts** with a cohesive style system + shot lists for the 10 scripts. A standalone product, the Pro-tier upsell, and your own production shortcut. |
@@ -128,6 +129,16 @@ You need a free **YouTube Data API key** for the analytics (read-only public
 data — it can't change your channel). The AI features in the optimizer and idea
 generator are optional and need an Anthropic API key. See `.env.example`.
 
+The captioner has its own heavier dependencies (Whisper, Pillow, and a system
+ffmpeg) and is installed separately, only if you want it:
+
+```bash
+pip install -r tools/shortscaptioner/requirements.txt
+```
+
+See [`tools/shortscaptioner/README.md`](tools/shortscaptioner/README.md) for the
+ffmpeg and font setup.
+
 ## Quick start
 
 ```bash
@@ -147,6 +158,9 @@ python tools/generate_ideas.py -n 20
 
 # 3. Check an upload's packaging before you publish
 python tools/optimize_metadata.py --title "What happens if you fall into a black hole"
+
+# 4. Caption the finished cut (needs ffmpeg + a font — see the tool's README)
+python tools/shortscaptioner/app.py -i clip.mp4 -f Montserrat-Black.ttf -o final.mp4
 ```
 
 Add `--use-claude` to the optimizer or idea generator for AI-written titles and

@@ -1,0 +1,20 @@
+# ShortsCaptioner dependencies.
+#   pip install -r tools/shortscaptioner/requirements.txt
+#
+# You ALSO need ffmpeg + ffprobe on your PATH — they are system binaries, not
+# pip packages. See README.md in this folder.
+
+# Local word-level speech-to-text. Downloads the model weights on first run
+# (~150 MB for 'base', ~3 GB for 'large-v3') and caches them in ~/.cache.
+faster-whisper>=1.0.0
+
+# Text rasterising: fonts, strokes, shadows, rounded highlight boxes.
+pillow>=10.0.0
+
+# Frame buffers and the per-frame alpha composite.
+numpy>=1.24.0
+
+# Optional. The renderer talks to ffmpeg directly over pipes and does not need
+# MoviePy; install it only if you want to script extra edits around the
+# captioning step (concatenating clips, adding b-roll, and so on).
+# moviepy>=1.0.3
