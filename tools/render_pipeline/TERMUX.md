@@ -162,6 +162,30 @@ python3 make_video.py \
 This is far lighter than the full pipeline — no TTS, no script building, no
 `openai` dependency. On a phone it is the fastest path to a finished video.
 
+### Using generated clips instead of stills
+
+If your shots already move — Veo, Kling, Runway — use `make_video_clips.py`
+instead of `make_video.py`. Same flags:
+
+```bash
+python3 make_video_clips.py --clips ./veo --voiceover vo.mp3 \
+    --srt beats.srt --shot-map 0,1,1,2,3 --out video.mp4
+```
+
+There is deliberately no Ken Burns: a zoom on top of footage that is already
+drifting reads as a mistake. What it does instead is cut each clip to its
+beat, hold the last frame if a clip is shorter than its beat (rather than
+slowing or looping it), normalise everything to one size and frame rate, and
+**mute the clips' own audio** — Veo generates sound with the picture and it
+fights the narration. `--clip-audio 0.08` mixes it back in low if you want
+room tone.
+
+Reusing a clip is normal with a small set, so each further use starts
+`--reuse-offset` seconds deeper into the source. One eight-second clip then
+gives you several different-looking shots instead of a visible repeat.
+
+Captions and source cards work exactly the same afterwards.
+
 ### Getting the captions written for you
 
 Typing an SRT by hand against a stopwatch is the slowest part of making one
