@@ -68,8 +68,37 @@ def collect_clips(folder):
     return sorted(set(out))
 
 
+def probe_height(path):
+    """Source height in pixels, or None if ffprobe cannot say."""
+    try:
+        out = subprocess.run(
+            ["ffprobe", "-v", "error", "-select_streams", "v:0",
+             "-show_entries", "stream=height", "-of", "csv=p=0", path],
+            check=True, capture_output=True, text=True).stdout.strip()
+        return int(out.splitlines()[0])
+    except Exception:
+        return None
+
+
+def upscale_sharpen(src, height):
+    """
+    How much to sharpen a clip that has to be enlarged to fill the canvas.
+
+    The free image-to-video models render well below 1080x1920 -- Wan 2.2
+    hands back something in the 480-832px range -- so filling the frame
+    means a 2x upscale, and an upscale is soft by construction. Sharpening
+    proportionally to how far the clip is being stretched puts the edge
+    back without touching footage that arrives at full size, where the same
+    filter would only add ringing.
+    """
+    src_h = probe_height(src)
+    if not src_h or src_h >= height:
+        return 0.0
+    return min(1.0, (height / src_h - 1.0) * 0.7)
+
+
 def prepare_segment(src, start, duration, out_path, width, height, fps,
-                    clip_audio=0.0):
+                    clip_audio=0.0, sharpen="auto"):
     """
     Cut one beat out of one clip, normalised so concat will accept it.
 
@@ -80,20 +109,26 @@ def prepare_segment(src, start, duration, out_path, width, height, fps,
     src_dur = ffprobe_duration(src)
     avail = max(src_dur - start, 0.0)
 
+    amount = upscale_sharpen(src, height) if sharpen == "auto" else float(sharpen)
+
     vf = (f"scale={width}:{height}:force_original_aspect_ratio=increase,"
           f"crop={width}:{height},fps={fps},setsar=1,format=yuv420p")
+    if amount > 0.01:
+        vf += f",unsharp=5:5:{amount:.2f}:5:5:0.0"
 
     if avail + 1e-3 < duration:
         # Not enough footage left: hold the final frame for the remainder.
         # Slowing the clip to fit would change the motion the shot was
         # generated for, which is the one thing worth protecting here.
         vf += f",tpad=stop_mode=clone:stop_duration={duration - avail:.3f}"
-        take = avail
-    else:
-        take = duration
 
+    # -t caps the OUTPUT, so it has to be the length we want after padding,
+    # never the length of footage we had. Capping it at the footage length
+    # trims off precisely the frames tpad just cloned, which silently left
+    # every short clip at its own duration and ran the video short against
+    # the narration.
     cmd = ["ffmpeg", "-y", "-ss", f"{start:.3f}", "-i", src,
-           "-t", f"{take:.3f}", "-vf", vf]
+           "-t", f"{duration:.3f}", "-vf", vf]
     if clip_audio > 0:
         cmd += ["-af", f"volume={clip_audio}", "-c:a", "aac", "-b:a", "128k"]
     else:
@@ -130,6 +165,11 @@ def main():
                             "pan_left_right", "pan_right_left"],
                    help="Camera move applied to stills so they sit alongside "
                         "footage (default static_drift, the gentlest)")
+    p.add_argument("--clip-sharpen", default="auto",
+                   help="Sharpening for clips that must be enlarged to fill "
+                        "1080x1920 (default auto, scaled to the upscale "
+                        "factor). Free image-to-video models render small. "
+                        "Pass 0 to disable or a number to force an amount.")
     p.add_argument("--min-shot", type=float, default=1.2)
     p.add_argument("--loudness", type=float, default=-14.0, metavar="LUFS")
     p.add_argument("--keep-build", action="store_true")
@@ -199,14 +239,19 @@ def main():
             # Through the same normaliser as the footage, so concat sees one
             # consistent stream rather than two encoders' output.
             prepare_segment(kb, 0.0, dur, seg, config.WIDTH, config.HEIGHT,
-                            config.FPS, clip_audio=0.0)
+                            config.FPS, clip_audio=0.0, sharpen=0.0)
             n_still += 1
             note = f"  (still, {args.still_motion})"
         else:
             start = n * args.reuse_offset      # later uses start further in
             prepare_segment(src, start, dur, seg, config.WIDTH, config.HEIGHT,
-                            config.FPS, clip_audio=args.clip_audio)
+                            config.FPS, clip_audio=args.clip_audio,
+                            sharpen=args.clip_sharpen)
+            amt = (upscale_sharpen(src, config.HEIGHT)
+                   if args.clip_sharpen == "auto" else float(args.clip_sharpen))
             note = f", from {start:.1f}s (use {n + 1})" if n else ""
+            if amt > 0.01:
+                note += f" [upscaled, sharpen {amt:.2f}]"
 
         segments.append(seg)
         print(f"  [{i+1}/{len(order)}] {os.path.basename(src)} -> {dur:.1f}s{note}")
