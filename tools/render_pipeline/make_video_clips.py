@@ -38,18 +38,32 @@ import tempfile
 
 from make_video import (enforce_min_duration, mix_music, parse_srt,
                         shots_from_srt)
-from pipeline.assemble import concat_segments, ffprobe_duration, mux_audio
+from pipeline.assemble import (concat_segments, ffprobe_duration,
+                               fit_image_to_canvas, ken_burns_segment, mux_audio)
 from pipeline.config import Config
 
 CLIP_EXTS = ("mp4", "mov", "webm", "m4v", "MP4", "MOV", "WEBM")
+STILL_EXTS = ("jpg", "jpeg", "png", "webp", "JPG", "JPEG", "PNG")
+
+
+def is_still(path):
+    return path.rsplit(".", 1)[-1] in STILL_EXTS
 
 
 def collect_clips(folder):
+    """
+    Everything in the folder, in filename order -- clips and stills together.
+
+    A set of generated shots is almost never all footage. Some prompts get
+    refused, some shots are not worth a generation because nothing in them
+    is supposed to move, and credits run out. Mixing is the normal case, so
+    the builder takes both and the shot map does not care which is which.
+    """
     if not os.path.isdir(folder):
         print(f"Not a folder: {folder}")
         sys.exit(1)
     out = []
-    for ext in CLIP_EXTS:
+    for ext in CLIP_EXTS + STILL_EXTS:
         out.extend(glob.glob(os.path.join(folder, f"*.{ext}")))
     return sorted(set(out))
 
@@ -111,6 +125,11 @@ def main():
     p.add_argument("--music-volume", type=float, default=0.16)
     p.add_argument("--no-duck", action="store_true")
     p.add_argument("--music-fade", type=float, default=1.5)
+    p.add_argument("--still-motion", default="static_drift",
+                   choices=["static_drift", "push_in", "pull_out",
+                            "pan_left_right", "pan_right_left"],
+                   help="Camera move applied to stills so they sit alongside "
+                        "footage (default static_drift, the gentlest)")
     p.add_argument("--min-shot", type=float, default=1.2)
     p.add_argument("--loudness", type=float, default=-14.0, metavar="LUFS")
     p.add_argument("--keep-build", action="store_true")
@@ -154,20 +173,42 @@ def main():
     order = [(c, d) for (c, _old), d in zip(order, durations)]
 
     build = tempfile.mkdtemp(prefix="clipvid_")
-    print(f"{len(clips)} source clip(s) -> {len(order)} shot(s), "
-          f"voiceover {audio_duration:.1f}s")
+    n_clips = sum(1 for c in clips if not is_still(c))
+    print(f"{n_clips} clip(s) + {len(clips) - n_clips} still(s) -> "
+          f"{len(order)} shot(s), voiceover {audio_duration:.1f}s")
 
     seen = {}
     segments = []
+    n_still = 0
     for i, (src, dur) in enumerate(order):
         n = seen.get(src, 0)
         seen[src] = n + 1
-        start = n * args.reuse_offset          # later uses start further in
         seg = os.path.join(build, f"seg_{i:03d}.mp4")
-        prepare_segment(src, start, dur, seg, config.WIDTH, config.HEIGHT,
-                        config.FPS, clip_audio=args.clip_audio)
+
+        if is_still(src):
+            # Give the still a slow move so it reads as a shot rather than a
+            # held photograph. Deliberately gentler than the stills pipeline
+            # uses: next to real footage a pronounced Ken Burns is what makes
+            # a mixed edit look mixed.
+            fitted = os.path.join(build, f"fit_{i:03d}.png")
+            fit_image_to_canvas(src, fitted, config.WIDTH, config.HEIGHT,
+                                mode="cover", sharpen=0.4)
+            kb = os.path.join(build, f"kb_{i:03d}.mp4")
+            ken_burns_segment(fitted, dur, kb, config, motion=args.still_motion,
+                              build_dir=build, tag=f"kb_{i:03d}")
+            # Through the same normaliser as the footage, so concat sees one
+            # consistent stream rather than two encoders' output.
+            prepare_segment(kb, 0.0, dur, seg, config.WIDTH, config.HEIGHT,
+                            config.FPS, clip_audio=0.0)
+            n_still += 1
+            note = f"  (still, {args.still_motion})"
+        else:
+            start = n * args.reuse_offset      # later uses start further in
+            prepare_segment(src, start, dur, seg, config.WIDTH, config.HEIGHT,
+                            config.FPS, clip_audio=args.clip_audio)
+            note = f", from {start:.1f}s (use {n + 1})" if n else ""
+
         segments.append(seg)
-        note = f", from {start:.1f}s (use {n + 1})" if n else ""
         print(f"  [{i+1}/{len(order)}] {os.path.basename(src)} -> {dur:.1f}s{note}")
 
     concat = os.path.join(build, "concat.mp4")
