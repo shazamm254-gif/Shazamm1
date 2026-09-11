@@ -116,6 +116,28 @@ niche-scams.json` to `generate_ideas.py` to target it.
 > no targeting, no mockery of victims — every video ends on the tell that would
 > have saved them. The safe framing is also the highest-retention framing.
 
+## Make money from it — the affiliate system
+
+The content engine above creates attention. [`affiliate/`](affiliate/) turns it
+into revenue, via ClickBank and Digistore24. Built to run entirely from a phone,
+with Claude as the back office.
+
+| Path | What it does |
+|---|---|
+| [`affiliate/README.md`](affiliate/README.md) | **Start here.** How the system works and what's realistic. |
+| [`affiliate/00-QUICKSTART.md`](affiliate/00-QUICKSTART.md) | Your first 48 hours, step by step. |
+| [`affiliate/01-OFFER-SELECTION.md`](affiliate/01-OFFER-SELECTION.md) | Picking what to promote — ~70% of the outcome. |
+| [`affiliate/02-TRAFFIC-PLAYBOOK.md`](affiliate/02-TRAFFIC-PLAYBOOK.md) | Intent traffic (pays in days) + content traffic (pays in weeks). |
+| [`affiliate/03-FUNNEL-AND-EMAIL.md`](affiliate/03-FUNNEL-AND-EMAIL.md) | Bridge page, list building, and 9 ready-to-paste emails. |
+| [`affiliate/04-SHORTS-TO-OFFER.md`](affiliate/04-SHORTS-TO-OFFER.md) | 10 Short formats engineered for clicks, not just views. |
+| [`affiliate/05-TRACKING-AND-DECISIONS.md`](affiliate/05-TRACKING-AND-DECISIONS.md) | The five numbers, and the rules for killing and scaling. |
+| [`affiliate/06-COMPLIANCE.md`](affiliate/06-COMPLIANCE.md) | FTC + network rules. Protects the whole business. |
+| [`affiliate/bridge/`](affiliate/bridge/) | A working bridge page — free GitHub Pages hosting, keeps your tracking intact. |
+| `tools/offer_scorer.py` | Scores offers 0-100 and gives a PROMOTE / TEST / SKIP verdict. |
+| `tools/link_builder.py` | Builds tracked ClickBank HopLinks + Digistore24 promolinks per channel. |
+| `tools/funnel_math.py` | Income goal → traffic needed; actuals → which funnel stage is leaking. |
+| `tools/campaign_tracker.py` | Logs results, then tells you what to kill and what to scale. |
+
 ## Setup
 
 ```bash

@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Before You Try Anything Else — Read This</title>
+<meta name="description" content="The 60-second version of what actually worked.">
+<meta name="robots" content="noindex">
+<style>
+  /* ---------------------------------------------------------------
+     Self-contained on purpose: no fonts, no frameworks, no trackers.
+     Your traffic is on phone data and will bounce before a CDN loads.
+     --------------------------------------------------------------- */
+  :root{
+    --bg:#0f1115; --card:#171a21; --line:#272c36;
+    --text:#e9ecf1; --muted:#a3abb8; --accent:#ffc531; --accent-ink:#1a1405;
+    --ok:#4ade80;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:560px;margin:0 auto;padding:24px 18px 64px}
+  .kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);font-weight:700;margin-bottom:10px}
+  h1{font-size:27px;line-height:1.22;margin:0 0 14px;letter-spacing:-.02em}
+  h1 em{font-style:normal;color:var(--accent)}
+  .lede{color:var(--muted);font-size:17px;margin:0 0 22px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:18px;margin:0 0 18px}
+  ul{margin:0;padding:0;list-style:none}
+  li{position:relative;padding:0 0 0 28px;margin:0 0 13px;font-size:15.5px}
+  li:last-child{margin-bottom:0}
+  li:before{content:"";position:absolute;left:6px;top:8px;width:7px;height:7px;
+    border-radius:50%;background:var(--accent)}
+  .cta{display:block;background:var(--accent);color:var(--accent-ink);
+    text-decoration:none;text-align:center;font-weight:800;font-size:18px;
+    padding:17px 20px;border-radius:12px;margin:22px 0 10px;
+    box-shadow:0 6px 20px rgba(255,197,49,.22)}
+  .cta:active{transform:translateY(1px)}
+  .sub{text-align:center;color:var(--muted);font-size:13px;margin:0 0 26px}
+  form{display:flex;flex-direction:column;gap:10px}
+  input[type=email]{width:100%;padding:15px;border-radius:11px;
+    border:1px solid var(--line);background:#0c0e12;color:var(--text);font-size:16px}
+  input[type=email]::placeholder{color:#6b7280}
+  button{background:#2a2f3a;color:var(--text);border:1px solid var(--line);
+    padding:15px;border-radius:11px;font-size:16px;font-weight:700}
+  .note{font-size:12.5px;color:var(--muted);text-align:center;margin-top:8px}
+  .disclosure{border-top:1px solid var(--line);margin-top:34px;padding-top:16px;
+    font-size:12.5px;color:var(--muted)}
+  .disclosure a{color:var(--muted)}
+  @media (prefers-color-scheme: light){
+    :root{--bg:#fbfbfc;--card:#fff;--line:#e4e7ec;--text:#15181e;--muted:#5b6472;
+      --accent:#c8860a;--accent-ink:#fff}
+    input[type=email]{background:#fff}
+    button{background:#f1f3f6;color:var(--text)}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============================================================
+       EDIT EVERYTHING BETWEEN HERE AND THE NEXT MARKER.
+       Rule: this page does ONE job — turn a curious viewer into a
+       warm, pre-sold click. It does not sell. The offer page sells.
+       ============================================================ -->
+
+  <div class="kicker">From the video</div>
+
+  <h1>The thing I mentioned — <em>here's the actual detail</em></h1>
+
+  <p class="lede">
+    Short version, because you came here from a 30-second video and I'm
+    not going to waste your time.
+  </p>
+
+  <div class="card">
+    <ul>
+      <li><strong>What the problem actually is.</strong> One sentence naming
+        the thing they feel, in their words — not yours.</li>
+      <li><strong>Why the usual advice fails.</strong> This is the line that
+        earns your credibility. Be specific and slightly contrarian.</li>
+      <li><strong>What changed things.</strong> Introduce the approach, not
+        the product name. Curiosity, not a pitch.</li>
+      <li><strong>What to expect when you click.</strong> Tell them honestly:
+        "it opens with a video presentation" — an expectation set here stops
+        the bounce on the offer page.</li>
+    </ul>
+  </div>
+
+  <a class="cta" id="offer-cta" href="#">See how it works &rsaquo;</a>
+  <p class="sub">Takes you to the official page. I may earn a commission.</p>
+
+  <div class="card">
+    <p style="margin:0 0 12px;font-weight:700">Not ready? Get the free version.</p>
+    <p style="margin:0 0 14px;color:var(--muted);font-size:14.5px">
+      Name your lead magnet here — the one-page checklist or 5-day breakdown
+      that solves the <em>first</em> step of their problem for free.
+    </p>
+    <!-- Replace the action= with your email tool's form endpoint
+         (MailerLite, ConvertKit, Beehiiv, Brevo — all have free tiers and
+         all give you a plain form URL you can paste here). -->
+    <form action="PASTE_YOUR_EMAIL_FORM_URL_HERE" method="post" target="_blank">
+      <input type="email" name="email" placeholder="your@email.com" required>
+      <input type="hidden" name="source" id="source-field" value="">
+      <button type="submit">Send it to me</button>
+    </form>
+    <p class="note">No spam. Unsubscribe anytime.</p>
+  </div>
+
+  <!-- ==================== END EDIT ZONE ==================== -->
+
+  <div class="disclosure">
+    <strong>Affiliate disclosure:</strong> Some links on this page are
+    affiliate links. If you buy through them, I may earn a commission at no
+    extra cost to you. I only link to things I've personally reviewed. This
+    page is not medical, financial, or legal advice — results vary and are
+    not typical.
+  </div>
+
+</div>
+
+<script>
+/* ---------------------------------------------------------------------
+   Tracking relay. link_builder.py sends traffic here as:
+       https://you.github.io/repo/affiliate/bridge/?src=ytnerve07
+   This reads that ?src= and passes it to the network as the tracking ID,
+   so a sale still tells you which video produced it. Without this, the
+   bridge page destroys your attribution.
+   --------------------------------------------------------------------- */
+var OFFER = {
+  network: "clickbank",          // "clickbank" or "digistore24"
+  affiliate: "YOURCBNICK",       // CB nickname, or your Digistore24 ID
+  vendor: "VENDORNICK",          // ClickBank only
+  productId: "",                 // Digistore24 only
+  fallbackTid: "bridge"          // used when no ?src= is present
+};
+
+(function () {
+  var src = new URLSearchParams(location.search).get("src") || OFFER.fallbackTid;
+  var tid = src.replace(/[^A-Za-z0-9]/g, "").slice(0, 24) || OFFER.fallbackTid;
+
+  var url = OFFER.network === "digistore24"
+    ? "https://www.checkout-ds24.com/redir/" + OFFER.productId + "/" +
+      OFFER.affiliate + "/" + tid + "/"
+    : "https://" + OFFER.affiliate + "." + OFFER.vendor +
+      ".hop.clickbank.net/?tid=" + tid;
+
+  document.getElementById("offer-cta").href = url;
+
+  var field = document.getElementById("source-field");
+  if (field) field.value = tid;   // so your email tool knows the source too
+})();
+</script>
+</body>
+</html>

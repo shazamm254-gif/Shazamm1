@@ -1,0 +1,29 @@
+{
+  "_comment": "Your affiliate identities and defaults. Affiliate IDs are public (they appear in every link you post), so this file is safe to commit. Replace the placeholders below.",
+
+  "clickbank_nickname": "YOURCBNICK",
+  "digistore24_id": "YOURDS24ID",
+
+  "clickbank_link_style": "subdomain",
+  "_clickbank_link_style_options": "subdomain = https://NICK.VENDOR.hop.clickbank.net/?tid=... | query = https://hop.clickbank.net/?affiliate=NICK&vendor=VENDOR&tid=...",
+
+  "digistore24_domain": "www.checkout-ds24.com",
+
+  "channels": {
+    "yt": "YouTube Shorts",
+    "ytd": "YouTube long-form / description",
+    "tt": "TikTok",
+    "ig": "Instagram Reels",
+    "fb": "Facebook",
+    "pin": "Pinterest",
+    "em": "Email broadcast",
+    "seq": "Email sequence",
+    "blog": "Blog / article",
+    "quora": "Quora / forum",
+    "red": "Reddit",
+    "bio": "Link-in-bio page"
+  },
+
+  "bridge_page_base": "https://yourdomain.com/go",
+  "_bridge_page_base_comment": "Where your bridge pages live. link_builder can wrap hoplinks in a bridge URL so you never post a raw affiliate link on a platform that blocks them."
+}
