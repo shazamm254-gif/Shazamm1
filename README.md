@@ -105,6 +105,7 @@ niche-scams.json` to `generate_ideas.py` to target it.
 
 | Path | What it does |
 |---|---|
+| [`docs/GROWTH_STRATEGY_SCAMS.md`](docs/GROWTH_STRATEGY_SCAMS.md) | The launch playbook for **The Setup** — day-0 channel setup copy, hook rules, the 5 series, cadence, the 6-beat structure, and a 30-day plan that schedules the first 10 scripts. **Start here if the channel isn't live yet.** |
 | [`docs/IDEA_BANK_SCAMS.md`](docs/IDEA_BANK_SCAMS.md) | **50 ranked Shorts concepts**, culled from ~150 — each with hook, curiosity gap, retention driver, emotional triggers, retention/viral/AI-difficulty/production/evergreen scores, visual count, style, palette, thumbnail, search intent, and ending twist. Plus 5 runnable series, a reusable 6-beat script structure, AI-image casting rules, and the channel palette. |
 | [`docs/PRODUCTION_PACK_SCAMS.md`](docs/PRODUCTION_PACK_SCAMS.md) | **All-in-one, phone-friendly** — every script's voiceover plus all 56 self-contained image prompts (style suffix already baked in) in one file, no tables and nothing to cross-reference. Make all 10 Shorts from this file alone, from a phone. |
 | [`docs/SCRIPT_PACK_SCAMS.md`](docs/SCRIPT_PACK_SCAMS.md) | **Full scripts for the top 10 concepts** — complete voiceovers (all timed under 60s), on-screen text, shot-by-shot visuals, loop endings, paste-ready titles/descriptions, and a source line per script. Plus voice direction, a batch production plan, and the reusable assets worth building once. |
