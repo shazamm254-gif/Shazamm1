@@ -16,7 +16,8 @@ analyze what's working and help you package and ideate faster.
 
 | Path | What it does |
 |---|---|
-| [`docs/GROWTH_STRATEGY.md`](docs/GROWTH_STRATEGY.md) | The playbook — hooks, series, cadence, a 30-day plan, all tuned to this niche. **Start here.** |
+| `tools/agent.py` | **Your personal AI agent** — a conversation that can actually run this repo: brainstorms hooks, scores your packaging, pulls your real stats, drafts scripts, writes docs, fact-checks on the web, and remembers you between sessions. **Start here.** |
+| [`docs/GROWTH_STRATEGY.md`](docs/GROWTH_STRATEGY.md) | The playbook — hooks, series, cadence, a 30-day plan, all tuned to this niche. Read it once, end to end. |
 | [`docs/PRODUCTION-PACK.md`](docs/PRODUCTION-PACK.md) | **All-in-one** — every script's voiceover + the 4 ready-to-paste image prompts together. Make all 10 Shorts from this one file (phone-friendly). |
 | [`docs/FIRST_10_SHORTS.md`](docs/FIRST_10_SHORTS.md) | 10 ready-to-produce Short scripts — hook, full voiceover, on-screen text, visuals, and paste-ready titles/descriptions. |
 | [`docs/THUMBNAIL_CHECKLIST.md`](docs/THUMBNAIL_CHECKLIST.md) | First-frame / thumbnail checklist to win the swipe, tuned to this niche. |
@@ -116,6 +117,48 @@ niche-scams.json` to `generate_ideas.py` to target it.
 > no targeting, no mockery of victims — every video ends on the tell that would
 > have saved them. The safe framing is also the highest-retention framing.
 
+## Your personal AI agent
+
+Everything below is a separate script you have to remember to run. `agent.py`
+is the one thing that ties them together — you talk to it, and it decides which
+tool to reach for.
+
+```bash
+pip install anthropic
+export ANTHROPIC_API_KEY="..."         # see .env.example
+
+python tools/agent.py                  # chat
+python tools/agent.py -p "score this title: The scam that looked too fake to work"
+python tools/agent.py --niche-file niche-scams.json --continue
+```
+
+It is not a wrapper around a chat box. It has real tools:
+
+| Tool | What it does |
+|---|---|
+| `list_niches` / `read_niche` | Sees every niche config in this repo |
+| `brainstorm_hooks` | Fills your proven hook templates — free, instant |
+| `score_packaging` | Runs the Shorts linter on a title, description and tags |
+| `discover_niches` | Generates and ranks new niches with the 0-100 scorer |
+| `draft_scripts` | Builds script skeletons — hook, timed beats, visuals, loop |
+| `analyze_channel` | Pulls your real public YouTube stats and best posting time |
+| `list_docs` / `read_doc` / `save_doc` | Reads and writes the repo's docs |
+| `remember` / `forget` | Keeps durable notes about you and the channel |
+| `web_search` | Fact-checks a claim before it goes in a script |
+
+Because it can read `docs/` and your niche configs, it already knows the
+channel's voice, pillars and content rules — including the lines that keep the
+scam, death and herbal niches monetized. Ask it for "three hooks for the
+pig-butchering script, then score the title" and it chains the tools itself.
+
+**What it remembers.** `remember` writes to `.agent/memory.json`, loaded into
+every future session; `--continue` resumes your last conversation from
+`.agent/session.json`. Both are gitignored — they're yours, not the repo's.
+
+**Flags:** `--niche-file` picks the niche it works in, `--effort low|high|max`
+trades thinking depth against cost, `--no-web` disables search, `--list-tools`
+prints the tool list without touching the API.
+
 ## Setup
 
 ```bash
@@ -129,6 +172,13 @@ data — it can't change your channel). The AI features in the optimizer and ide
 generator are optional and need an Anthropic API key. See `.env.example`.
 
 ## Quick start
+
+```bash
+# The short version: just ask the agent.
+python tools/agent.py -p "What should I make this week?"
+```
+
+Or drive the individual tools yourself:
 
 ```bash
 # 0. Not sure what niche to run at all? Generate and score some options first
