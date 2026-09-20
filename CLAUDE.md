@@ -170,8 +170,15 @@ honestly rather than burning the balance on two videos and stalling.
 
 ## Where the channel actually is
 
-- **The pick: The Setup** (`@thesetupexplained`, `tools/niche-scams.json`) —
-  scam-mechanics explainers. Decided 2026-09-17.
+- **The pick: Cosmic Dread** (`@CosmicDread`, `tools/niche.json`) — black
+  holes, dying stars, cosmic scale. Chosen 2026-09-20 on pipeline fit: every
+  shot is wide atmospheric spectacle with no text and no faces, which is what
+  image models do best, and space is slow enough that stills with a pan read as
+  real footage. It is also the most complete niche in the repo.
+- **The Setup is parked, not dead.** `@thesetupexplained` has 10 scripts, a
+  launch playbook and a finished voiceover for Short #1 (in this session's
+  history). It fights the pipeline — its shots are phone screens and
+  dashboards — so it waits. Don't reopen it unless the user asks.
 - **Nothing is live.** No channel created yet, no uploads, no subscribers, no
   analytics. `YOUTUBE_API_KEY` is unset, so `analyze_channel.py` cannot run and
   there is no performance data to reason about. Don't pretend otherwise.
@@ -179,12 +186,16 @@ honestly rather than burning the balance on two videos and stalling.
   strategy across six niches and ~35 finished scripts. It does not need more.
   Adding another niche, idea bank or script pack is almost always the wrong
   move — say so plainly if asked, then help them produce and post instead.
-- **Next concrete action:** upload #1, "The wrong number" (pig butchering).
+- **Next concrete action:** produce Short #1, "Falling Into a Black Hole."
+  Voiceover not yet generated (~14 credits); images blocked until the daily
+  ZeroGPU quota resets.
 
 ### The live working surface
 
-The production deck — Day 0 channel setup plus all 10 scripts with 56 copyable
-image prompts, phone-first:
+The production deck — all 10 Cosmic Dread Shorts with voiceovers and 40
+Flux-tuned image prompts, phone-first. **Version 2 replaced The Setup's deck at
+this same URL**, deliberately: one stable link beats two on a phone. The Setup's
+deck is reconstructible from `docs/PRODUCTION_PACK_SCAMS.md` if they go back.
 
 **https://claude.ai/artifact/XZgdvrkdDSwwtGP8mDcanB**
 
@@ -218,7 +229,10 @@ niche carries no health claims, no dosages, no cures.
 | Path | What it is |
 |---|---|
 | `docs/` | Strategy playbooks, script packs, visual packs, thumbnail checklists — one set per niche |
-| `docs/PRODUCTION_PACK_SCAMS.md` | The source of truth for the first 10 Shorts: VO + every image prompt inline |
+| `docs/IMAGE_PROMPTS_FLUX_COSMIC.md` | **Active niche.** All 10 Cosmic Shorts: VO + 40 Flux-tuned prompts |
+| `docs/PRODUCTION-PACK.md` | The original Cosmic pack (Midjourney-era prompts — prefer the Flux file) |
+| `docs/IMAGE_PROMPTS_FLUX.md` | The Flux prompt rules, worked through on the scam niche |
+| `docs/PRODUCTION_PACK_SCAMS.md` | The Setup's 10 Shorts — parked |
 | `docs/GROWTH_STRATEGY_SCAMS.md` | The Setup's launch plan — day-0 setup, the 5 series, 30-day schedule |
 | `tools/niche*.json` | Niche configs — pillars, voice, hooks, hard rules. Editing one retunes every tool |
 | `tools/*.py` | CLI tools: channel analytics, metadata linter, idea/niche/script generators, the agent |
