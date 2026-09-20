@@ -99,6 +99,39 @@ The egress proxy blocks `*.hf.space`, so images cannot be downloaded and
 attached as files — hand over the Space URLs (temporary) or rely on the inline
 render.
 
+### Free clips: Flux still -> Wan 2.2 image-to-video (no credits)
+
+`zerogpu-aoti/wan2-2-fp8da-aoti-faster` animates a still into an MP4 (~3.5s
+default, 24fps) from an image URL plus a motion prompt. It accepts **a public
+URL, and previously generated Space URLs work** — so a Flux output feeds
+straight in with no download, which sidesteps the egress proxy block on
+`*.hf.space` entirely.
+
+So the whole free pipeline is: **Flux still -> Wan 2.2 clip -> real motion, zero
+credits.** Shares the same daily ZeroGPU quota as image generation, and video is
+heavier, so expect only a few clips per day. Untested as of 2026-09-20 (quota
+was already spent). `mcp-tools/wan-2-2-first-last-frame` interpolates between a
+start and end frame as an alternative.
+
+Paid alternative when quality matters: `vidiq_generate_video` (Veo 3.1, Sora 2,
+Kling 3, Seedance, `gemini-omni-flash` is the budget option). Priced per second
+and quoted only at submit.
+
+### Stills vs clips is a per-niche decision
+
+**Some niches need motion and some do not, and this drives the whole cost.**
+
+- **Weather, animals, disasters: the subject IS motion.** A tornado, a
+  firestorm, a breaking wave. A still with a Ken Burns push reads as a
+  slideshow, so these niches want real clips and cost more to make well.
+- **Cosmic tolerates stills beautifully.** Space is slow — a slow push into a
+  nebula or a drift toward an accretion disk looks exactly like real footage,
+  because that is how the real thing moves. Ken Burns is not a compromise here,
+  it is accurate.
+
+This is a further point in Cosmic Dread's favour and worth saying out loud when
+the niche is in question.
+
 ### Pipeline fit decides the niche — this is new and it overrides the scores
 
 **Image models render atmospheric spectacle beautifully and UI text terribly.**
