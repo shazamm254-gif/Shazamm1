@@ -84,6 +84,36 @@ news-broadcast register matches the niche's calm/forensic tone. Backup:
 `nPczCjzI2devNBz1zQrb` ("Brian, deep, resonant"). Avoid the warm storyteller
 voices — warmth reads as gleeful on scam material, which breaks a hard rule.
 
+### Free images: Hugging Face Flux (no credits, but a daily cap)
+
+`mcp__HF_Direct__dynamic_space` -> `evalstate/flux1_schnell` (768x1344, 4 steps)
+generates images for **zero credits**. Tuned prompts and the rules that make
+them work are in `docs/IMAGE_PROMPTS_FLUX.md`.
+
+**ZeroGPU quota is account-level and daily.** It ran out after ~7 images on
+2026-09-20, and switching to another Space does not help — they share the pool.
+Roughly one video's worth of images per day, which suits a daily cadence but
+blocks batch-producing a week in one sitting. Resets next day.
+
+The egress proxy blocks `*.hf.space`, so images cannot be downloaded and
+attached as files — hand over the Space URLs (temporary) or rely on the inline
+render.
+
+### Pipeline fit decides the niche — this is new and it overrides the scores
+
+**Image models render atmospheric spectacle beautifully and UI text terribly.**
+Proven on 2026-09-20: the "forty phones on a desk" wide shot landed first try
+and looked genuinely good; the phone-screen shots took four attempts and one
+came back rendering fake UI text reading "Bole 1".
+
+This is structural, not bad luck: **The Setup is *about* screens** — phone
+threads, dashboards, banking notifications — so it fights the pipeline on almost
+every shot. A spectacle niche (weather, deep sea, animals, cosmic) is all wide
+atmospheric scenes with no text, which is exactly what the model does well.
+
+`niche_generator.py` scores these candidates within 72-74/100 of each other, so
+it cannot make this call. Pipeline fit should outweigh the score.
+
 ### Credits — real money, always confirm before spending
 
 Checked 2026-09-20: **95 credits, free plan (150 cap), resets 2026-10-15.**
