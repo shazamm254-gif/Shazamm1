@@ -46,6 +46,65 @@ agent**, in whatever chat surface they are talking to you through.
 
 ---
 
+## They do not edit. This is a hard blocker, not a preference.
+
+The owner **has CapCut and finds it frustrating. They do not like editing.**
+Any plan whose step 3 is "now cut this together" will stall there every time —
+that is the real reason nothing has shipped, not laziness and not the scripts.
+
+**Never hand them an edit to do.** Assembling footage, timing cuts, syncing
+captions — none of it. If a deliverable needs editing, either you do it or the
+plan is wrong.
+
+### Apps they actually have
+
+Gemini, ChatGPT, Qwen (all on the phone), and CapCut (disliked). All three AI
+apps can generate images for free — useful, but getting a phone-held image to a
+public HTTPS URL is friction, so prefer pipelines that need nothing from them.
+
+### The no-editing pipeline (vidIQ MCP, attached to this session)
+
+This session has vidIQ tools that can produce a finished Short end-to-end, so
+the user's only step is uploading the file:
+
+1. `vidiq_voiceover_generate` — narration MP3 from the script text.
+2. `vidiq_motion_graphics` — renders animated typography to MP4 with **no source
+   footage needed**. This is the key tool: it removes the image-generation step
+   entirely. Kinetic typography suits this niche — the channel's own casting
+   rule says screens and text carry ~80% of these videos, and several scripts
+   (e.g. #1 "The wrong number") are literally about text on a phone screen.
+3. `vidiq_compose` — assembles scenes + voiceover + Ken Burns + text overlays
+   into a 9:16 MP4. **This is the editing step, done by you.**
+
+There is **no text-to-image tool** in this session. `vidiq_generate_video` does
+text-to-video but is priced per second and is expensive.
+
+**Chosen voice: `onwK4e9ZLuTAKqWW03F9` — "Daniel, Steady Broadcaster."** The
+news-broadcast register matches the niche's calm/forensic tone. Backup:
+`nPczCjzI2devNBz1zQrb` ("Brian, deep, resonant"). Avoid the warm storyteller
+voices — warmth reads as gleeful on scam material, which breaks a hard rule.
+
+### Credits — real money, always confirm before spending
+
+Checked 2026-09-20: **95 credits, free plan (150 cap), resets 2026-10-15.**
+Check with `vidiq_balance` (free) before proposing anything.
+
+Free: `vidiq_balance`, `vidiq_voiceover_list_voices`, `vidiq_job_poll`,
+`vidiq_video_upload`. Priced: voiceover 14/1000 chars, thumbnail 22, music 25,
+titles 5, `vidiq_generate_video` duration x rate x 20. `vidiq_motion_graphics`
+and `vidiq_compose` quote at submit.
+
+**Never spend credits without explicit approval.** On 2026-09-20 the user was
+offered a full build of video #1 and chose "spend nothing yet" — respect that
+until they say otherwise.
+
+**The hard math:** at ~14 credits of narration per video plus render and
+compose, 95 credits is roughly two finished videos, not ten. This pipeline
+proves the format; it does not sustain a daily channel on the free tier. Say so
+honestly rather than burning the balance on two videos and stalling.
+
+---
+
 ## Where the channel actually is
 
 - **The pick: The Setup** (`@thesetupexplained`, `tools/niche-scams.json`) —
