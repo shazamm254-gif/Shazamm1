@@ -113,7 +113,11 @@ heavier, so expect only a few clips per day. `mcp-tools/wan-2-2-first-last-frame
 interpolates between a start and end frame as an alternative.
 
 **Confirmed working 2026-09-21.** A Flux URL passed straight in as `input_image`
-returned a 4s MP4 (steps 6). Note the tool's return value concatenates the video
+returned a 4s MP4 (steps 6). **`duration_seconds` caps at 5.0** — asking for 7
+is rejected outright, so a clip can never cover more than 5s of narration.
+Plan shot counts around that: a 25s voiceover needs five or more shots at 1:1,
+or the clips get slowed in the edit. Clips cost far more quota than stills —
+four images plus four clips exhausted a day's allowance. Note the tool's return value concatenates the video
 URL and the seed with no separator — split the trailing digits off before using
 the URL. **Neither Claude nor the sandbox can view the result** (the proxy
 blocks `*.hf.space` and video is not renderable inline), so the user is the only

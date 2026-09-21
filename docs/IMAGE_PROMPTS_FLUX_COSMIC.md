@@ -54,9 +54,14 @@ All four stills animated via `zerogpu-aoti/wan2-2-fp8da-aoti-faster`,
 | 4 | `1851443852` | Crescent narrowing and dimming — patient fade to black |
 
 **Timing mismatch to fix in the edit.** The voiceover is 25.5s and four 4s clips
-total 16s. Either slow each clip to ~0.62x (6.4s per shot — fine for motion this
-slow, and free), or regenerate with `duration_seconds: 7`, which costs more
-quota. Setting the duration to match the VO up front is the better habit.
+total 16s. **`duration_seconds` caps at 5.0**, so longer clips cannot close the
+gap on their own — four maxed clips still only reach 20s.
+
+The real fix is slowing the clips, which is free and suits the subject: cosmic
+motion should feel unhurried, so 0.62x on a rotating accretion disk reads as
+more majestic rather than stretched. The structural fix for future scripts is
+**five or six shots per 25s voiceover instead of four**, so each clip runs near
+its natural length.
 
 ---
 
