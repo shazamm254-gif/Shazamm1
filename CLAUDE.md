@@ -109,9 +109,15 @@ straight in with no download, which sidesteps the egress proxy block on
 
 So the whole free pipeline is: **Flux still -> Wan 2.2 clip -> real motion, zero
 credits.** Shares the same daily ZeroGPU quota as image generation, and video is
-heavier, so expect only a few clips per day. Untested as of 2026-09-20 (quota
-was already spent). `mcp-tools/wan-2-2-first-last-frame` interpolates between a
-start and end frame as an alternative.
+heavier, so expect only a few clips per day. `mcp-tools/wan-2-2-first-last-frame`
+interpolates between a start and end frame as an alternative.
+
+**Confirmed working 2026-09-21.** A Flux URL passed straight in as `input_image`
+returned a 4s MP4 (steps 6). Note the tool's return value concatenates the video
+URL and the seed with no separator — split the trailing digits off before using
+the URL. **Neither Claude nor the sandbox can view the result** (the proxy
+blocks `*.hf.space` and video is not renderable inline), so the user is the only
+one who can judge a clip: hand over the URL and say plainly that it is unviewed.
 
 Paid alternative when quality matters: `vidiq_generate_video` (Veo 3.1, Sora 2,
 Kling 3, Seedance, `gemini-omni-flash` is the budget option). Priced per second
@@ -149,7 +155,8 @@ it cannot make this call. Pipeline fit should outweigh the score.
 
 ### Credits — real money, always confirm before spending
 
-Checked 2026-09-20: **95 credits, free plan (150 cap), resets 2026-10-15.**
+Checked 2026-09-21: **67 credits** after two voiceovers (free plan, 150 cap,
+resets 2026-10-15).
 Check with `vidiq_balance` (free) before proposing anything.
 
 Free: `vidiq_balance`, `vidiq_voiceover_list_voices`, `vidiq_job_poll`,
