@@ -22,6 +22,27 @@ suns, violet/teal for nebulae) against `#05060A` near-black.
 
 ---
 
+## Generated: Short #1 (2026-09-21)
+
+All four rendered **first try, no iteration** — the whole argument for this
+niche in one run. Yesterday's scam-niche opener took four attempts and still
+came back with garbled UI text.
+
+| Shot | Seed | What it is |
+|---|---|---|
+| 1 | `356237554` | Drift toward the accretion disk — molten orange ring on black |
+| 2 | `1995309685` | Silhouette with light streaming off it, stretching into a thread |
+| 3 | `540643467` | The full ring around the dark sphere, star field bent into arcs |
+| 4 | `577506513` | Dark sphere, one thin crescent of orange along the edge — the loop |
+
+Shots 3 and 4 are two of the five rewritten prompts. Under the original
+Midjourney wording ("glowing ring around absolute black", "pure black filling
+the frame") both would have returned empty rectangles.
+
+Settings: `evalstate/flux1_schnell`, 768x1344, 4 steps, seeds above.
+
+---
+
 ## 1 — Falling Into a Black Hole · *Space Horror*
 
 **Hook:** This is what happens if you fall into a black hole.
