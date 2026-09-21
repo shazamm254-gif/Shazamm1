@@ -41,6 +41,23 @@ the frame") both would have returned empty rectangles.
 
 Settings: `evalstate/flux1_schnell`, 768x1344, 4 steps, seeds above.
 
+### Motion clips (Wan 2.2, free)
+
+All four stills animated via `zerogpu-aoti/wan2-2-fp8da-aoti-faster`,
+`duration_seconds: 4`, `steps: 6`, at zero credits.
+
+| Shot | Clip seed | Motion asked for |
+|---|---|---|
+| 1 | `964384035` | Disk rotating, gas streaming, slow push into the centre |
+| 2 | `583065181` | Silhouette elongating downward, light threads flowing up |
+| 3 | `748985217` | Ring rotating around the sphere, bent star field shimmering |
+| 4 | `1851443852` | Crescent narrowing and dimming — patient fade to black |
+
+**Timing mismatch to fix in the edit.** The voiceover is 25.5s and four 4s clips
+total 16s. Either slow each clip to ~0.62x (6.4s per shot — fine for motion this
+slow, and free), or regenerate with `duration_seconds: 7`, which costs more
+quota. Setting the duration to match the VO up front is the better habit.
+
 ---
 
 ## 1 — Falling Into a Black Hole · *Space Horror*
