@@ -27,6 +27,7 @@ analyze what's working and help you package and ideate faster.
 | `tools/viral_generator.py` | **End-to-end niche + script generator** — generates and ranks proven-viral niches, picks the winner, and writes complete ready-to-produce Short scripts for it (hook, timed VO beats, on-screen text, visuals, loop ending, title/desc). Also scripts any existing `niche*.json` via `--niche-file`, and exports markdown production packs with `--export-md`. |
 | `tools/niche.json` | Your channel's niche, pillars, voice, and hook templates — edit this to retune every tool. |
 | [`product/faceless-ai-shorts-starter-kit/`](product/faceless-ai-shorts-starter-kit/) | A **sellable digital product** — packages the system into a faceless-channel starter kit, with paste-ready sales copy and pricing. |
+| [`docs/OSS_TOOLCHAIN.md`](docs/OSS_TOOLCHAIN.md) | **The build-vs-buy survey** — the open-source repos that close this repo's render/voiceover/publish gap, with licences checked and a recommended all-permissive stack. |
 | [`product/cosmic-ai-prompt-pack/`](product/cosmic-ai-prompt-pack/) | **300+ cosmic AI image/video prompts** with a cohesive style system + shot lists for the 10 scripts. A standalone product, the Pro-tier upsell, and your own production shortcut. |
 
 ### Money Decoded (personal-finance niche)
