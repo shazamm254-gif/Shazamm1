@@ -1,0 +1,16 @@
+{
+  "name": "motion-studio",
+  "version": "1.0.0",
+  "description": "Free, mobile-first image-to-video motion tool. Runs entirely in the browser.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "start": "node backend/server.js",
+    "test": "node tests/e2e.mjs && node tests/e2e.mjs --encoder webcodecs-vp9",
+    "test:workflow": "node tests/e2e.mjs",
+    "test:exact": "node tests/e2e.mjs --encoder webcodecs-vp9",
+    "sheet": "node tests/contact-sheet.mjs"
+  },
+  "engines": { "node": ">=18" }
+}

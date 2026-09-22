@@ -28,6 +28,7 @@ analyze what's working and help you package and ideate faster.
 | `tools/niche.json` | Your channel's niche, pillars, voice, and hook templates — edit this to retune every tool. |
 | [`product/faceless-ai-shorts-starter-kit/`](product/faceless-ai-shorts-starter-kit/) | A **sellable digital product** — packages the system into a faceless-channel starter kit, with paste-ready sales copy and pricing. |
 | [`product/cosmic-ai-prompt-pack/`](product/cosmic-ai-prompt-pack/) | **300+ cosmic AI image/video prompts** with a cohesive style system + shot lists for the 10 scripts. A standalone product, the Pro-tier upsell, and your own production shortcut. |
+| [`motion-studio/`](motion-studio/) | **Turn your AI stills into motion** — a free, phone-first image-to-video tool. Upload a still, pick a camera move or weather effect, download a 1080×1920 MP4 for Shorts. Runs entirely in the browser; no upload, no account, no API key. |
 
 ### Money Decoded (personal-finance niche)
 

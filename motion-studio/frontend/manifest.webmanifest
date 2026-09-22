@@ -1,0 +1,19 @@
+{
+  "name": "Motion Studio",
+  "short_name": "Motion",
+  "description": "Turn still images into 9:16 cinematic motion clips, entirely on your phone.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0b0f",
+  "theme_color": "#0a0b0f",
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

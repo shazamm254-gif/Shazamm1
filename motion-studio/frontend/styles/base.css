@@ -1,0 +1,202 @@
+/* Mobile-first. Every size below is tuned for a 360–430px Android screen;
+   there is no desktop layout being squeezed down. */
+
+:root {
+  --bg: #0a0b0f;
+  --bg-raised: #14161d;
+  --bg-card: #191c25;
+  --bg-chip: #21252f;
+  --bg-chip-active: #f0f2f7;
+
+  --fg: #f2f4f8;
+  --fg-dim: #9aa2b4;
+  --fg-faint: #636b7c;
+
+  --accent: #6c5cff;
+  --accent-2: #00d4c8;
+  --accent-grad: linear-gradient(135deg, #6c5cff 0%, #a34bff 55%, #ff4d9d 100%);
+  --danger: #ff5c72;
+  --ok: #34d99a;
+
+  --line: #262a35;
+  --radius: 18px;
+  --radius-sm: 12px;
+  --radius-lg: 26px;
+
+  --tap: 52px;               /* minimum touch target */
+  --gutter: 16px;
+  --sheet-shadow: 0 -12px 40px rgba(0, 0, 0, .55);
+
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-t: env(safe-area-inset-top, 0px);
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overscroll-behavior: none;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font: 15px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* The app owns the viewport; only designated panes scroll. */
+#app {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+button, input, select { font: inherit; color: inherit; }
+button { border: 0; background: none; cursor: pointer; }
+
+h1, h2, h3, p { margin: 0; }
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.hidden { display: none !important; }
+
+.scroll {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* --------------------------------- bars -------------------------------- */
+
+.appbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: calc(var(--safe-t) + 10px) var(--gutter) 10px;
+  flex: none;
+}
+
+.appbar__mark {
+  width: 28px; height: 28px;
+  border-radius: 9px;
+  background: var(--accent-grad);
+  flex: none;
+}
+
+.appbar__title {
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: -.01em;
+}
+
+.appbar__sub {
+  font-size: 12px;
+  color: var(--fg-faint);
+  margin-top: 1px;
+}
+
+.appbar__spacer { flex: 1; }
+
+.iconbtn {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--bg-chip);
+  color: var(--fg-dim);
+  font-size: 17px;
+  flex: none;
+}
+.iconbtn:active { background: #2b303c; }
+
+/* -------------------------------- buttons ------------------------------ */
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: var(--tap);
+  padding: 0 20px;
+  border-radius: var(--radius);
+  font-size: 16px;
+  font-weight: 620;
+  letter-spacing: .01em;
+  background: var(--bg-chip);
+  color: var(--fg);
+  transition: transform .09s ease, filter .12s ease;
+  width: 100%;
+}
+.btn:active { transform: scale(.975); }
+.btn[disabled] { opacity: .45; pointer-events: none; }
+
+.btn--primary {
+  background: var(--accent-grad);
+  color: #fff;
+  min-height: 58px;
+  font-size: 17px;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(108, 92, 255, .32);
+}
+
+.btn--ghost {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--fg-dim);
+}
+
+.btn--row { width: auto; flex: 1; }
+
+.btn__hint {
+  font-size: 12px;
+  font-weight: 500;
+  opacity: .8;
+}
+
+/* -------------------------------- toast -------------------------------- */
+
+.toast-host {
+  position: fixed;
+  left: 0; right: 0;
+  bottom: calc(var(--safe-b) + 84px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+  z-index: 90;
+  padding: 0 var(--gutter);
+}
+
+.toast {
+  background: #242835;
+  color: var(--fg);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 11px 16px;
+  font-size: 14px;
+  max-width: 100%;
+  box-shadow: 0 10px 30px rgba(0,0,0,.5);
+  animation: toast-in .18s ease-out;
+}
+.toast--error { border-color: #5a2a33; background: #2a1c22; }
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
