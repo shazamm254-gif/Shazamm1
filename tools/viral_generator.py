@@ -423,8 +423,10 @@ def main():
     niche_doc = None
 
     if args.niche_file:
+        # Accept "niche.json", "tools/niche.json", or an absolute path — the
+        # last two both resolve against tools/, where the niche files live.
         path = args.niche_file if os.path.isabs(args.niche_file) \
-            else os.path.join(HERE, args.niche_file)
+            else os.path.join(HERE, os.path.basename(args.niche_file))
         with open(path, encoding="utf-8") as f:
             niche_doc = json.load(f)
         name = niche_doc.get("channel_name", os.path.basename(path))

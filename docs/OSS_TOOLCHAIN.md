@@ -137,10 +137,48 @@ youtube-shorts-pipeline    →  assemble + upload (MIT)
 Sequenced:
 
 1. **Render one Short end to end.** One file, start to finish, no automation. You're finding out where it actually breaks — expect that to be the visuals, not the code.
-2. **Wire `viral_generator.py` into the pipeline's script stage.** Its output is already structured as timed VO beats; this is a format adapter, not a rewrite.
+2. ~~**Wire `viral_generator.py` into the pipeline's script stage.**~~ **Shipped** — see [`tools/to_verticals.py`](../tools/to_verticals.py) and the section below.
 3. **Batch the prompt pack through ComfyUI.** The largest manual time sink you currently have, and the one most worth deleting.
 4. **Only then automate uploads.** Publishing bad videos faster is not progress, and mass-uploading unreviewed output is how channels get flagged.
 5. **Add translation.** Once one language ships reliably, the others are nearly free.
+
+---
+
+## The adapter (shipped)
+
+[`tools/to_verticals.py`](../tools/to_verticals.py) converts `viral_generator.py`
+output into the draft JSON that Verticals v3 consumes, so the pipeline starts at
+its b-roll stage and never rewrites our voiceover:
+
+```
+generate (ours)                    render (theirs)
+viral_generator.py --json  ->  [ to_verticals.py ]  ->  verticals produce
+```
+
+```bash
+# One pipe: generate scripts, convert them, emit a matching niche profile
+python tools/viral_generator.py --niche-file niche.json --scripts 5 --use-claude --json \
+  | python tools/to_verticals.py --from-json - --niche-file niche.json \
+      --niches-dir ../youtube-shorts-pipeline/niches
+
+# Then, in the pipeline's repo
+python -m verticals produce --draft ~/.verticals/drafts/<job_id>.json
+```
+
+It also writes a niche profile YAML mapped from `tools/niche*.json`, so the
+pipeline's voice, captions, music and thumbnail stages run in the channel's tone
+instead of falling back to its generic `general` profile.
+
+**It refuses offline scripts by default.** `viral_generator.py` leaves
+`[FACT: ...]` research slots in offline mode, and text-to-speech reads those
+aloud verbatim — "FACT: the most extreme number or case on record" would end up
+in the audio. The adapter skips those scripts and names the slots. Either fill
+them in, or generate with `--use-claude`, which writes complete voiceovers.
+Pass `--allow-placeholders` to override.
+
+Verified against the pipeline's own code: the drafts resume correctly at the
+b-roll stage, carry every key its produce/upload/thumbnail stages read, and the
+emitted profile loads as a real niche rather than the `general` fallback.
 
 ### What not to do
 
