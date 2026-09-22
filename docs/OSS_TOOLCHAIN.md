@@ -128,7 +128,9 @@ Boring, all-permissive, and it closes the gap end to end:
 
 ```
 tools/viral_generator.py   →  script            (already yours, MIT repo)
+  └ tools/to_verticals.py  →  hand-off          (shipped)
 hexgrad/kokoro             →  voiceover         (Apache-2.0)
+  └ tools/kokoro_vo.py     →  hand-off          (shipped)
 ComfyUI + cosmic-ai-prompt-pack → visuals       (GPL-3.0 tool, your prompts)
 m1guelpf/auto-subtitle     →  burned captions   (MIT)
 youtube-shorts-pipeline    →  assemble + upload (MIT)
@@ -179,6 +181,37 @@ Pass `--allow-placeholders` to override.
 Verified against the pipeline's own code: the drafts resume correctly at the
 b-roll stage, carry every key its produce/upload/thumbnail stages read, and the
 emitted profile loads as a real niche rather than the `general` fallback.
+
+## The voiceover step (shipped)
+
+The pipeline ships Edge TTS, ElevenLabs, MiniMax, 60db and macOS `say`; Kokoro
+is on its roadmap, not in it. [`tools/kokoro_vo.py`](../tools/kokoro_vo.py)
+records the voiceover here instead of forking the pipeline, writing the audio
+into its work directory and marking the `voiceover` stage done — the same
+resume mechanism the script adapter uses:
+
+```
+to_verticals.py  ->  [ kokoro_vo.py ]  ->  verticals produce
+                        (voiceover)        (b-roll, captions, assemble)
+```
+
+```bash
+pip install kokoro soundfile && apt-get install espeak-ng   # once
+python tools/kokoro_vo.py --draft ~/.verticals/drafts/<job_id>.json --voice af_heart
+python -m verticals produce --draft ~/.verticals/drafts/<job_id>.json
+```
+
+**Pick the voice deliberately.** Kokoro publishes grades for its own voices and
+most are mediocre: only `af_heart` (A), `af_bella` (A-), `af_nicole` (B-) and
+`bf_emma` (B-) reach B- or better, and all four are female. The best male
+voices are C+ (`am_michael`, `am_fenrir`, `am_puck`), which is worth knowing
+before committing a channel to a male narrator — on a faceless channel the
+voice *is* the product. `--list-voices` prints the table and the tool warns
+before synthesising with anything graded D or below. Voices can also be blended
+(`--voice af_heart,af_bella`), and `--speed 0.9`-`0.95` suits ominous narration.
+
+Like the script adapter, it refuses scripts with unfilled `[FACT: ...]` slots —
+the same guard, imported rather than duplicated.
 
 ### What not to do
 
