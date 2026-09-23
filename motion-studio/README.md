@@ -143,16 +143,32 @@ happens the result screen says so and suggests lowering the quality.
 
 ## Deploying
 
-The `frontend/` folder *is* the site.
+The `frontend/` folder *is* the site — no build command, no output directory.
 
-- **GitHub Pages** — push the repo, then Settings → Pages → Deploy from
-  branch, folder `/`. The app lives at `…/motion-studio/frontend/`.
-- **Netlify / Cloudflare Pages / Vercel** — drag the folder in, or point the
-  project at it. No build command, no output directory.
+### GitHub Pages
 
-HTTPS matters: `VideoEncoder` is only exposed in a secure context, so an
-`http://` LAN address quietly falls back to the MediaRecorder encoder.
-`http://localhost` counts as secure.
+On github.com → **Settings** → **Pages** → *Build and deployment*, set
+**Source** to *Deploy from a branch*, pick the branch, keep the folder as
+**`/ (root)`**, and Save. One minute later the app is live at:
+
+```
+https://<user>.github.io/<repo>/
+```
+
+The repository root holds an `index.html` that redirects there, so the short
+URL is all you need to type on a phone. The app itself is at
+`…/<repo>/motion-studio/frontend/`.
+
+### Anywhere else
+
+Netlify, Cloudflare Pages and Vercel all take the folder as-is — drag it in
+or point the project at `motion-studio/frontend`.
+
+### HTTPS matters
+
+`VideoEncoder` is only exposed in a secure context. `https://` and
+`http://localhost` qualify; a plain `http://192.168.x.x` LAN address does
+not, and quietly falls back to the MediaRecorder encoder.
 
 ## Tests
 
