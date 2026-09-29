@@ -75,9 +75,43 @@ def probe(path):
     return info
 
 
+def json_report(info):
+    """
+    The `-print_format json -show_streams -show_format` shape.
+
+    ShortsCaptioner asks for this rather than named entries, so the shim has
+    to speak it too. Only the keys that are actually read are emitted;
+    `nb_frames` is deliberately left out because `ffmpeg -i` does not print
+    a frame count, and the caller already falls back to duration x fps.
+    Inventing a number there would be worse than omitting it.
+    """
+    streams = []
+    v = info["video"]
+    if v:
+        s = {"codec_type": "video", "codec_name": v.get("codec_name", "h264")}
+        if "width" in v:
+            s["width"] = int(v["width"])
+            s["height"] = int(v["height"])
+        if "r_frame_rate" in v:
+            s["r_frame_rate"] = v["r_frame_rate"]
+            s["avg_frame_rate"] = v["r_frame_rate"]
+        if "duration" in info["format"]:
+            s["duration"] = info["format"]["duration"]
+        streams.append(s)
+    a = info["audio"]
+    if a:
+        s = {"codec_type": "audio", "codec_name": a.get("codec_name", "aac")}
+        for k in ("sample_rate", "channels"):
+            if k in a:
+                s[k] = int(a[k]) if k == "channels" else a[k]
+        streams.append(s)
+    return {"streams": streams, "format": dict(info["format"])}
+
+
 def main(argv):
     args = argv[1:]
     entries, fmt, path, streams = None, "default", None, None
+    as_json = False
     i = 0
     while i < len(args):
         a = args[i]
@@ -85,21 +119,38 @@ def main(argv):
             entries = args[i + 1]; i += 2
         elif a == "-of":
             fmt = args[i + 1]; i += 2
+        elif a == "-print_format":
+            if args[i + 1] == "json":
+                as_json = True
+            i += 2
+        elif a in ("-show_streams", "-show_format"):
+            as_json = as_json or True; i += 1
         elif a == "-select_streams":
             streams = args[i + 1]; i += 2
-        elif a in ("-v", "-loglevel", "-hide_banner"):
-            i += 2 if a != "-hide_banner" else 1
+        elif a in ("-v", "-loglevel"):
+            i += 2
+        elif a == "-hide_banner":
+            i += 1
         elif a == "-version":
             print("ffprobe shim (ffmpeg -i parser) -- not the real ffprobe")
             return 0
         else:
             path = a; i += 1
 
-    if not path or not entries:
-        sys.stderr.write("ffprobe shim: need a file and -show_entries\n")
+    if not path:
+        sys.stderr.write("ffprobe shim: need a file\n")
         return 2
 
     info = probe(path)
+
+    if as_json and not entries:
+        import json
+        print(json.dumps(json_report(info), indent=2))
+        return 0
+
+    if not entries:
+        sys.stderr.write("ffprobe shim: need -show_entries or -print_format json\n")
+        return 2
     want_audio = bool(streams and streams.startswith("a"))
 
     values = []
@@ -125,7 +176,9 @@ def main(argv):
         sep = "x" if "s=x" in fmt else ","
         print(sep.join(v for _k, v in values))
     else:                                   # default=...
-        nk = "nk=1" in fmt
+        # ffprobe accepts both the short and long spellings of these flags,
+        # and this repository uses each in different places.
+        nk = "nk=1" in fmt or "nokey=1" in fmt
         for k, v in values:
             print(v if nk else f"{k}={v}")
     return 0
