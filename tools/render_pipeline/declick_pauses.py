@@ -82,6 +82,38 @@ def write_wav(y, sr, path):
         input=y.astype(np.float32).tobytes(), check=True)
 
 
+def truncation_report(x, sr, min_pause):
+    """
+    Utterances that stop while still loud, i.e. cut before the word ended.
+
+    This is a different defect from a click and a far worse one. A click is
+    a step at a boundary and a fade removes it. A truncation is missing
+    audio: the renderer ended the chunk part-way through the final
+    phoneme, and nothing downstream can put the syllable back. It sounds
+    like the speaker stumbling at the end of nearly every line, and it
+    survives every repair in this file -- so it is reported loudly rather
+    than silently half-fixed.
+
+    A word that finishes decays to near nothing over its last 50-100ms.
+    One still within 6 dB of its own recent peak 5ms before the silence
+    did not finish.
+    """
+    out = []
+    for s, e in silence_runs(x, int(sr * min_pause)):
+        def lvl(ms_from, ms_to):
+            i = max(s - int(sr * ms_from / 1000), 0)
+            j = max(s - int(sr * ms_to / 1000), i + 1)
+            seg = x[i:j]
+            return float(np.abs(seg).max()) if seg.size else 0.0
+        far = lvl(80, 75)
+        near = lvl(5, 0)
+        if near > 1e-4 and far > 1e-6:
+            ratio_db = 20 * np.log10(near / far)
+            if ratio_db > -6 and 20 * np.log10(near) > -40:
+                out.append((s / sr, 20 * np.log10(near)))
+    return out
+
+
 def main():
     p = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -113,6 +145,16 @@ def main():
               f"step {20*np.log10(step):6.1f} dBFS")
     if not loud:
         print("  Nothing above the threshold -- this file did not need fixing.")
+
+    cut = truncation_report(x, sr, args.min_pause)
+    if cut:
+        print(f"\n  WARNING: {len(cut)} of {len(report)} utterance(s) end while "
+              f"still loud -- cut before the word finished.")
+        for at, lv in sorted(cut, key=lambda c: -c[1])[:6]:
+            print(f"    {at:6.2f}s  still at {lv:5.1f} dBFS when the audio stops")
+        print("  This is MISSING AUDIO, not a click, and nothing here can "
+              "restore it.\n  The renderer must stop trimming each chunk "
+              "before the word has decayed.\n")
 
     write_wav(y, sr, args.out)
     worst = max((r[2] for r in silence_report(y, sr, args.min_pause)), default=0.0)
