@@ -271,3 +271,22 @@ Add `--no-captions` whenever the text is already in the images, or you will
 have two layers of text on screen at once. Keep passing `--srt` even so: the
 timings are still used to cut the shots on the spoken lines, and `--shot-map`
 needs them.
+
+## When the machine has ffmpeg but no ffprobe
+
+A rebuilt cloud container can come back without either. `imageio-ffmpeg`
+installs ffmpeg from PyPI and works behind a restrictive proxy, but ships
+**no ffprobe**; the packages that bundle both fetch a zip from GitHub, which
+a blocked network refuses. `ffprobe_shim.py` closes that gap by parsing
+`ffmpeg -i` output, which already contains everything this pipeline asks for.
+
+```bash
+pip install imageio-ffmpeg
+python3 -c "import imageio_ffmpeg,shutil,os; p=imageio_ffmpeg.get_ffmpeg_exe(); \
+    shutil.copy(p,'/usr/local/bin/ffmpeg'); os.chmod('/usr/local/bin/ffmpeg',0o755)"
+cp tools/render_pipeline/ffprobe_shim.py /usr/local/bin/ffprobe
+chmod +x /usr/local/bin/ffprobe
+```
+
+It answers only the queries this repository makes and exits non-zero on
+anything else, rather than returning a plausible wrong number.
