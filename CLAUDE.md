@@ -280,8 +280,8 @@ Facts established while building it — don't re-derive:
 
 - **Narration pace is 2.45 words/s**, measured from Short #1 (63 spoken
   words in 25.5s). The scorer uses it to time beats and find the 2s mark.
-- **Cosmic `hard_rules` are drafted, not approved.** Added to
-  `tools/niche.json` on 2026-10-01 with `hard_rules_status: DRAFT`. Checking the
+- **Cosmic `hard_rules` are approved** (owner, 2026-10-01). They live in
+  `tools/niche.json` and are listed under "Content rules" below. Checking the
   10 existing scripts against them found #2 factually wrong (light *can* cross
   10 billion light-years in 13.8 billion years) and its structure disputed,
   #3 wrong on timing (Caltech: about -100°F after a year; the air freezes far
@@ -322,6 +322,21 @@ and worth making:
 - Public, widely reported cases only. No private individuals, no celebrity
   likenesses, no bodycam or courtroom footage.
 - Never fabricate a source, statistic or citation.
+
+Cosmic Dread (the active niche) has its own, from `hard_rules` in
+`tools/niche.json`, approved by the owner on 2026-10-01:
+
+- Every number, name and mechanism matches a mainstream source (NASA, ESA,
+  peer-reviewed). Contested values: say "about" or use the conservative one.
+- Hypotheticals stay labelled as hypotheticals.
+- No invented imminent threat to Earth. The dread comes from scale and time.
+- Never fabricate a source, quote, statistic or "scientists say".
+- Awe and unease, never despair aimed at the viewer's own life.
+- AI visuals are illustrations: tick YouTube's altered-or-synthetic disclosure
+  for photoreal shots of real objects or places; never call one a photo.
+- No NASA/ESA logos, real mission footage, copyrighted music or likenesses.
+- Every Short is written for its topic: no noun-swapped templates, no batches
+  of near-identical videos (YouTube's inauthentic-content policy).
 
 Parallel rules exist for the other niches: the death/mortality niche is
 documentary framing only (never method, never glorification), and the herbal

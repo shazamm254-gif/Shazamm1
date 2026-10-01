@@ -58,7 +58,8 @@
       "a gamma-ray burst hit Earth", "the galaxies all merged"
     ]
   },
-  "hard_rules_status": "DRAFT 2026-10-01 — awaiting owner approval. Do not treat as final.",
+  "hard_rules_status": "approved",
+  "hard_rules_approved": "2026-10-01 by the owner",
   "hard_rules": [
     "Every number, name and mechanism matches a mainstream source (NASA, ESA or peer-reviewed). If a value is contested, say 'about' or use the conservative figure.",
     "Hypotheticals stay labelled as hypotheticals. Never present a speculative scenario as happening, confirmed or likely.",
