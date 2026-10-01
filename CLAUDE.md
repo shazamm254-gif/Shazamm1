@@ -213,6 +213,34 @@ deck is reconstructible from `docs/PRODUCTION_PACK_SCAMS.md` if they go back.
 Republish to that same URL to update it (pass it as `url`), rather than creating
 a second page and leaving them holding two links.
 
+### The Algorithm Killer (in progress, started 2026-10-01)
+
+A retention engine for a Short before it's published. Component 1 is built:
+`tools/retention_score.py` scores a script beat by beat; weights and the
+ranking signal behind each rule live in `tools/retention_rules.json`;
+`tools/algorithm_killer_page.py` renders the phone page. Live page (republish
+to the same URL):
+
+**https://claude.ai/artifact/M93xpM1UeCfzew2ceNRAfQ**
+
+To score a draft the owner pastes in chat: save it to a text file, run
+`retention_score.py --file draft.txt --html page.html`, publish the page.
+
+Facts established while building it — don't re-derive:
+
+- **Narration pace is 2.45 words/s**, measured from Short #1 (63 spoken
+  words in 25.5s). The scorer uses it to time beats and find the 2s mark.
+- **Cosmic `tools/niche.json` has no `hard_rules`.** Only `niche-scams.json`
+  does. Any rewriter needs Cosmic rules drafted and approved by the owner.
+- **The YouTube Data API key is not reaching this environment.** A real call
+  on 2026-10-01 returned 403 "unregistered callers": no key, no injected
+  `X-Goog-Api-Key` header.
+- **The Data API cannot return retention at any key level.** Average
+  percentage viewed and viewed-vs-swiped-away need the YouTube Analytics API
+  with the channel owner's OAuth, or YouTube Studio. The feedback loop must
+  get retention another way: vidIQ's connected-channel tools, or the owner
+  reading two numbers off the Studio app.
+
 ---
 
 ## Content rules that are not negotiable

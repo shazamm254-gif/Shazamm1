@@ -1,0 +1,66 @@
+{
+  "_about": "Weights and rules for tools/retention_score.py. Every rule names the ranking signal it serves and whether it rests on evidence or inference. tools/feedback_loop.py (Component 4) recalibrates the weights against real channel data; until then these are priors, not measurements.",
+  "version": 1,
+  "calibrated_on_videos": 0,
+
+  "signals": {
+    "swipe_away": {
+      "name": "Viewed vs. swiped away",
+      "what": "Share of feed impressions where the viewer chose to watch instead of swiping past. Decided in the first ~2 seconds.",
+      "basis": "evidence",
+      "source": "YouTube Studio metric for Shorts ('How many chose to view'), announced by YouTube: https://support.google.com/youtube/community-video/273390203/new-youtube-shorts-metric-viewed-vs-swiped-away"
+    },
+    "avg_pct_viewed": {
+      "name": "Average percentage viewed",
+      "what": "How much of the Short the average viewer watches. A loop that triggers a rewatch can push it above 100%.",
+      "basis": "evidence for the metric, inference for its ranking weight",
+      "source": "averageViewPercentage is a YouTube Analytics API core metric: https://developers.google.com/youtube/analytics/channel_reports . YouTube does not publish how heavily Shorts ranking weights it; 'retention over views' is the consensus of creator-side analysis, not an official statement."
+    },
+    "replays": {
+      "name": "Replays",
+      "what": "Since 31 March 2025 a Shorts view counts every start or replay, so a seamless loop produces counted rewatches.",
+      "basis": "evidence for the counting change, inference for the ranking effect",
+      "source": "https://techcrunch.com/2025/03/26/youtube-is-changing-how-youtube-shorts-views-are-counted"
+    }
+  },
+
+  "pace_words_per_second": 2.45,
+  "_pace_source": "Measured: Cosmic Short #1 voiceover, 63 spoken words in 25.5s (docs/IMAGE_PROMPTS_FLUX_COSMIC.md). Recalibrate if the voice changes.",
+
+  "hook_window_seconds": 2.0,
+  "rewrite_threshold": 60,
+
+  "section_weights": {
+    "_signal": "Hook carries swipe_away; body and ending carry avg_pct_viewed and replays. Hook weighted hardest because a viewer lost there never reaches any other beat. Inference.",
+    "hook": 0.45,
+    "body": 0.35,
+    "ending": 0.20
+  },
+
+  "hook_rubric": {
+    "promise_in_window": {"points": 40, "signal": "swipe_away", "basis": "inference", "why": "Something must be promised before the swipe decision, roughly 2s in."},
+    "subject_in_hook":   {"points": 20, "signal": "swipe_away", "basis": "inference", "why": "The viewer has to know what the video is about inside the hook sentence."},
+    "no_setup_opener":   {"points": 25, "signal": "swipe_away", "basis": "inference", "why": "Openers like 'Scientists have long…' or 'Did you know' spend the 2s window on context instead of outcome."},
+    "hook_brevity":      {"points": 15, "signal": "swipe_away", "basis": "inference", "why": "A hook sentence over ~14 words (~6s) delays the first payoff.", "max_words": 14}
+  },
+
+  "beat_rubric": {
+    "opens_loop":  {"points": 35, "signal": "avg_pct_viewed", "basis": "inference", "why": "Raises a question, stake or unexplained term the viewer wants resolved."},
+    "closes_loop": {"points": 30, "signal": "avg_pct_viewed", "basis": "inference", "why": "Pays off something already promised with a concrete fact, so the promise felt worth keeping."},
+    "carry":       {"points": 35, "signal": "avg_pct_viewed", "basis": "inference", "why": "Gives a concrete reason to stay into the next beat: an escalation, a 'then', an unanswered consequence."}
+  },
+
+  "ending_rubric": {
+    "loops_to_hook": {"points": 45, "signal": "replays", "basis": "inference", "why": "Last line echoes the hook so the cut back to frame 1 reads as continuous."},
+    "lands_new_turn": {"points": 35, "signal": "avg_pct_viewed", "basis": "inference", "why": "Ends on a final twist or implication, not a restated fact."},
+    "no_outro":      {"points": 20, "signal": "replays", "basis": "inference", "why": "'Subscribe' or 'thanks for watching' breaks the loop and signals the video is over."}
+  },
+
+  "killers": {
+    "context_before_hook": {"name": "Context before the hook", "penalty": 15, "signal": "swipe_away", "basis": "inference"},
+    "two_ideas":           {"name": "Two ideas in one video", "penalty": 10, "signal": "avg_pct_viewed", "basis": "inference"},
+    "flat_ending":         {"name": "Flat ending that doesn't loop", "penalty": 8, "signal": "replays", "basis": "inference"},
+    "mid_lull":            {"name": "Mid-script lull", "penalty": 8, "signal": "avg_pct_viewed", "basis": "inference"},
+    "length":              {"name": "Runtime outside 20-35s", "penalty": 6, "signal": "avg_pct_viewed", "basis": "inference", "min_s": 20, "max_s": 35, "source": "docs/GROWTH_STRATEGY.md section 5 (repo guidance, not external research)"}
+  }
+}
