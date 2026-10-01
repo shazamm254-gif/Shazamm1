@@ -167,6 +167,26 @@ section { display: flex; flex-direction: column; gap: 12px; min-width: 0 }
 .fixline::before { content: "Fix  "; font: 600 11px var(--f-data); letter-spacing: .08em; color: var(--accent) }
 .basis { font: 11px var(--f-data); color: var(--muted); margin-left: 24px }
 
+/* feedback loop */
+.fb { display: flex; flex-direction: column; gap: 12px }
+.src { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; background: var(--surface);
+  border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; align-items: start }
+.src .pill { font: 600 10.5px var(--f-data); letter-spacing: .06em; text-transform: uppercase; border-radius: 3px;
+  padding: 2px 6px; white-space: nowrap; margin-top: 2px }
+.pill.ready { background: var(--good-bg); color: var(--good) } .pill.blocked { background: var(--bad-bg); color: var(--bad) }
+.src b { display: block }
+.src .d { color: var(--muted); font-size: 13px; overflow-wrap: anywhere }
+.steps { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px }
+.drift { width: 100%; border-collapse: collapse; font-size: 13px }
+.drift th { text-align: left; font: 600 10.5px var(--f-data); letter-spacing: .06em; text-transform: uppercase;
+  color: var(--muted); padding: 4px 6px; border-bottom: 1px solid var(--line) }
+.drift td { padding: 6px; border-bottom: 1px solid var(--line); vertical-align: top }
+.tbl { overflow-x: auto }
+.v-supported { color: var(--good); font-weight: 600 } .v-contradicted { color: var(--bad); font-weight: 600 }
+.v-none { color: var(--warn) } .v-wait { color: var(--muted) }
+.sim { border: 1px dashed var(--warn); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 10px }
+.sim .eyebrow { color: var(--warn) }
+
 details { border-top: 1px solid var(--line); padding-top: 12px }
 summary { cursor: pointer; font-weight: 600; min-height: 32px }
 .how { display: flex; flex-direction: column; gap: 12px; font-size: 14px; padding-top: 8px }
@@ -181,7 +201,7 @@ summary { cursor: pointer; font-weight: 600; min-height: 32px }
 
 <div class="wrap">
   <header class="head">
-    <span class="eyebrow">Algorithm Killer · Score, rewrite, package</span>
+    <span class="eyebrow">Algorithm Killer · Score, rewrite, package, measure</span>
     <nav class="picker" id="picker" aria-label="Choose a script"></nav>
     <h1 id="title"></h1>
     <div class="scoreline">
@@ -226,6 +246,11 @@ summary { cursor: pointer; font-weight: 600; min-height: 32px }
     <div class="script"><p id="scripttext"></p><button class="copy" id="copyscript" type="button">Copy script</button></div>
   </section>
 
+  <section aria-labelledby="h-fb">
+    <h2 id="h-fb">Feedback loop · your channel's real numbers</h2>
+    <div class="fb" id="fb"></div>
+  </section>
+
   <details>
     <summary>How the score works</summary>
     <div class="how" id="how"></div>
@@ -236,6 +261,7 @@ summary { cursor: pointer; font-weight: 600; min-height: 32px }
 <script>
 const DATA = __DATA__;
 const RULES = __RULES__;
+const FEEDBACK = __FEEDBACK__;
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const band = s => s >= 75 ? "good" : s >= RULES.rewrite_threshold ? "warn" : "bad";
@@ -419,6 +445,62 @@ function show(idx) {
   $("copyscript").onclick = () => copyText($("copyscript"), script);
 }
 
+function ruleLabel(id) {
+  const [g, k] = id.split(".");
+  if (g === "killers") return "No " + (RULES.killers[k] || {}).name?.toLowerCase();
+  const sec = {hook_rubric: "Hook", beat_rubric: "Body", ending_rubric: "Ending"}[g];
+  if (sec) return `${sec}: ${(LABEL[k] || k).toLowerCase()}`;
+  if (g === "packaging") return "Packaging: " + id.split(".").slice(2).join(".");
+  return id;
+}
+
+function driftTable(rows) {
+  const cls = {supported: "v-supported", contradicted: "v-contradicted", "no clear effect": "v-none"};
+  return `<div class="tbl"><table class="drift"><thead><tr><th>Rule</th><th>Your data says</th><th>Evidence</th></tr></thead><tbody>
+    ${rows.map(r => `<tr><td>${esc(ruleLabel(r.rule))}<br><span class="sig">${esc(r.signal || "")}</span></td>
+      <td class="${cls[r.verdict] || "v-wait"}">${esc(r.verdict)}</td><td>${esc(r.detail || "")}</td></tr>`).join("")}
+    </tbody></table></div>`;
+}
+
+function renderFeedback() {
+  if (!FEEDBACK) { $("fb").innerHTML = ""; return; }
+  const rep = FEEDBACK.report, src = rep.sources || {};
+  const blocked = s => /error|verification_required|blocked/i.test(s || "");
+  const rows = [["studio", "YouTube Studio app (you)"], ["vidiq", "vidIQ"], ["data_api", "YouTube Data API"]];
+  let html = `<p class="verdict" style="font-size:15px">${rep.registered ? `${rep.registered} Shorts registered, ${rep.with_retention} with retention numbers.`
+      : "Nothing published yet, so there's nothing to measure. The loop is wired and waiting for your first Short."}</p>`;
+  html += rows.map(([k, name]) => { const x = src[k] || {}; return `<div class="src">
+      <span class="pill ${blocked(x.result) ? "blocked" : "ready"}">${blocked(x.result) ? "Blocked" : "Ready"}</span>
+      <div><b>${name}</b><span class="d">Gives: ${esc(x.provides || "")}</span><br><span class="d">${esc(x.result || "Not tested")} (${esc(x.tested || "")})</span></div></div>`; }).join("");
+  html += `<div><h2 style="margin-bottom:8px">After you publish a Short</h2><ol class="steps">
+      <li>Send Claude the video link and which Short it is. Claude saves the score it predicted, before any numbers exist.</li>
+      <li>After ${rep.mature_days} days, open the YouTube Studio app, tap the Short, then Analytics. Send Claude two numbers:
+        <b>average percentage viewed</b> and <b>viewed vs swiped away</b> (the share who chose to view). The labels may differ slightly in the app.</li>
+      <li>Claude stores them next to the prediction, and adds vidIQ numbers once credits and verification allow.</li></ol></div>`;
+  const retention = Object.keys(RULES.hook_rubric).map(k => "hook_rubric." + k)
+    .concat(Object.keys(RULES.beat_rubric).map(k => "beat_rubric." + k))
+    .concat(Object.keys(RULES.ending_rubric).map(k => "ending_rubric." + k))
+    .concat(Object.keys(RULES.killers).map(k => "killers." + k));
+  const live = rep.rules.length ? rep.rules : retention.map(r => ({rule: r, verdict: "not enough data",
+      detail: `0 of ${rep.min_report} videos.`}));
+  html += `<div><h2 style="margin-bottom:8px">Which rules your channel supports</h2>
+    <p class="foot" style="margin-bottom:8px">A rule gets a verdict after ${rep.min_report} videos with at least 3 on each side of it.
+    Weights change only after ${rep.min_calibrate}, and each move is pulled back toward the current value so one odd video can't swing it.</p>
+    ${driftTable(live)}</div>`;
+  if (rep.calibrations.length)
+    html += `<p class="foot">Last recalibration: ${esc(rep.calibrations.at(-1).at)} on ${rep.calibrations.at(-1).n} videos (rules v${rep.calibrations.at(-1).version}).</p>`;
+  const sim = FEEDBACK.simulated;
+  if (sim) html += `<details><summary>Preview with simulated numbers</summary><div class="sim">
+      <span class="eyebrow">Simulated · not your channel</span>
+      <p class="foot" style="color:var(--fg)">${sim.n} made-up Shorts with effects planted on purpose: keeping the 2-second promise adds 12 points of retention,
+      looping the ending costs 9 (a planted contradiction), and carry does nothing. This is what the loop has to find, and it does.</p>
+      ${driftTable(sim.rows)}
+      <p class="foot" style="color:var(--fg)">Weights it would change: ${sim.changes.map(c => `${esc(ruleLabel(c.rule))} ${c.from} → ${c.to}`).join("; ")}.
+      Each rubric is rescaled to stay out of 100, so the other items shift a little too.</p></div></details>`;
+  $("fb").innerHTML = html;
+}
+renderFeedback();
+
 $("how").innerHTML = `<p>Each beat is one spoken sentence, timed at your measured narration pace. The score adds up
   the points listed on each beat; nothing else goes in. Beats under ${RULES.rewrite_threshold} are marked for rewrite.</p>`
   + Object.values(RULES.signals).map(s => `<p><b>${esc(s.name)}</b>
@@ -439,12 +521,26 @@ show(start);
 """
 
 
-def render(results, niche, rules):
+def render(results, niche, rules, feedback=None):
     if isinstance(results, dict):
         results = [results]
-    data = json.dumps(results, ensure_ascii=False).replace("</", "<\\/")
-    rl = json.dumps(rules, ensure_ascii=False).replace("</", "<\\/")
-    return PAGE.replace("__DATA__", data).replace("__RULES__", rl)
+    dump = lambda x: json.dumps(x, ensure_ascii=False).replace("</", "<\\/")
+    return (PAGE.replace("__DATA__", dump(results)).replace("__RULES__", dump(rules))
+            .replace("__FEEDBACK__", dump(feedback)))
+
+
+def feedback_data():
+    """The real ledger's report, plus a labelled preview on a simulated channel."""
+    import feedback_loop as fl
+    rep = fl.report(fl.load_ledger())
+    sim_led = fl.simulate(30)
+    sim_rep = fl.report(sim_led, on="2026-10-01")
+    keep = [fl.PROMISE, fl.LOOP, fl.CARRY]
+    sim_rows = [r for r in sim_rep["rules"] if r["rule"] in keep]
+    rules = fl._read_json(fl.RULES)
+    _, changes, _, _ = fl.propose(sim_led, rules, on="2026-10-01")
+    return {"report": rep, "simulated": {
+        "n": 30, "rows": sim_rows, "changes": [c for c in changes if c["rule"] in keep]}}
 
 
 def build_deck(extra=()):
@@ -472,7 +568,7 @@ def build_deck(extra=()):
         if r.get("rewrite") is not None:
             r["rewrite"]["packaging_why"] = props.get(s["num"], {}).get("packaging", {}).get("why", {})
     out.extend(extra)
-    return render(out, niche, rules)
+    return render(out, niche, rules, feedback_data())
 
 
 if __name__ == "__main__":

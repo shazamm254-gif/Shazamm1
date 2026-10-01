@@ -1,0 +1,22 @@
+{
+  "_about": "Predictions vs real performance for published Shorts. Written by tools/feedback_loop.py. Commit after every change.",
+  "videos": [],
+  "calibrations": [],
+  "sources": {
+    "data_api": {
+      "tested": "2026-10-01",
+      "result": "Blocked: Google refused the call (403). No API key reaches it from this environment. It can't give retention anyway.",
+      "provides": "views, likes, comments, real duration"
+    },
+    "vidiq": {
+      "tested": "2026-10-01",
+      "result": "Blocked: needs your YouTube verification, and 5 credits per pull. You have 3 until 15 Oct. It's connected to channel UCTTxQCp98YU2eYiWIwXwslg, not yet confirmed as Cosmic Dread.",
+      "provides": "average percentage viewed, engaged views, retention curve"
+    },
+    "studio": {
+      "tested": "2026-10-01",
+      "result": "Always works: you read two numbers in the Studio app and paste them into chat.",
+      "provides": "viewed vs swiped away, average percentage viewed"
+    }
+  }
+}

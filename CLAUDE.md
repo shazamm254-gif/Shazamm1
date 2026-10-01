@@ -252,6 +252,27 @@ Search demand reads `tools/keyword_demand.json`, which Claude fills from
 The tag rule was changed: YouTube Help says tags "play a minimal role" and
 excessive tags break spam policy, so the linter no longer asks for 10–15.
 
+Component 4, the feedback loop, is `tools/feedback_loop.py`, tested by
+`tools/test_feedback_loop.py` (8 tests, simulated channels with planted
+effects). The ledger is **`data/feedback_ledger.json`, committed to git**,
+because the container is temporary. Commit and push after every change.
+Workflow once a Short is live:
+1. `register --short N --video-id ID --published DATE` as soon as the owner
+   sends the link. This freezes the prediction before any numbers exist.
+2. After 7 days the owner pastes average percentage viewed and viewed vs
+   swiped away from the Studio app. Store them with
+   `record --source studio --apv X --viewed-pct Y`.
+3. Once credits and verification allow, save a `vidiq_channel_analytics`
+   response (dimensions video; metrics averageViewPercentage, engagedViews,
+   views) to a file and load it with `ingest-vidiq`. The parser hasn't been
+   tested on a live vidIQ response.
+4. `report` gives rule-by-rule verdicts from 8 videos. `calibrate --apply`
+   changes weights only from 20 videos, shrunk toward the prior, and keeps old
+   rule versions in `data/rules_history/`.
+`analyze_channel.py` no longer requires `YOUTUBE_API_KEY`: without it, it
+sends bare requests so an injected header could authorise them. On
+2026-10-01 those still got 403 "unregistered callers".
+
 The scorer reads wording, not truth: on #3, #6 and #9 the false lines scored
 higher than the corrected ones. Never let the score argue a rule fix away.
 

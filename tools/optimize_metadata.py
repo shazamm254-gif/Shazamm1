@@ -247,8 +247,20 @@ ROOT = os.path.dirname(HERE)
 CHECKLIST_DOC = os.path.join(ROOT, "docs", "THUMBNAIL_CHECKLIST.md")
 DEMAND_CACHE = os.path.join(HERE, "keyword_demand.json")
 
+
+def _read_json(path):
+    with open(path, encoding="utf-8") as fh:
+        return json.load(fh)
+
 PACKAGING_WEIGHTS = {  # inference: the frame decides the swipe; the title is read with it
     "first_frame": 0.45, "onscreen_text": 0.15, "title": 0.25, "description": 0.10, "search": 0.05}
+
+# Stable names for the existing linters' messages, so the feedback loop can
+# compare the same rule across videos.
+STABLE_NAME = {"chars": "Title length", "hook": "Opens with a hook", "power words": "Power words",
+               "niche keyword": "Niche keyword", "hashtags in the description": "No hashtags in the title",
+               "all caps": "Not all caps", "context": "Description gives context",
+               "core hashtags": "Core hashtags"}
 
 # What the existing linters' messages serve. None = no ranking signal: shown, not scored.
 EXISTING_SIGNAL = [
@@ -291,7 +303,8 @@ def _check(name, ok, detail, fix, signal, basis, points, warn=False):
 def checklist_items():
     """The niche's own first-frame checklist, quoted so the page can show its source."""
     try:
-        md = open(CHECKLIST_DOC, encoding="utf-8").read()
+        with open(CHECKLIST_DOC, encoding="utf-8") as fh:
+            md = fh.read()
     except OSError:
         return []
     return [_re.sub(r"\*\*|\*", "", m).strip() for m in _re.findall(r"^- (?:\[ \] )?(.+)$", md, _re.M)]
@@ -367,12 +380,12 @@ def score_title_packaging(title, script, niche):
     issues, wins = lint_title(title, niche)
     out = []
     for msg in wins + issues:
-        sig = next(((sg, b) for k, sg, b in EXISTING_SIGNAL if k in msg.lower()), ("swipe_away", "inference"))
+        key, sig = next(((k, (sg, b)) for k, sg, b in EXISTING_SIGNAL if k in msg.lower()), (None, ("swipe_away", "inference")))
         if sig[0] is None:
             continue
         head, _, rest = msg.partition(". ")
-        out.append(_check(head.split(" — ")[0].rstrip("."), msg in wins, msg if msg in wins else head + ".",
-                          rest or head, sig[0], sig[1], 10))
+        out.append(_check(STABLE_NAME.get(key) or head.split(" — ")[0].rstrip("."), msg in wins,
+                          msg if msg in wins else head + ".", rest or head, sig[0], sig[1], 10))
     # Title must promise what the script delivers: misleading metadata is out of
     # bounds, and a broken promise is a swipe at second 3.
     tw = [w for w in _re.findall(r"[a-z][a-z'-]+", title.lower()) if w not in STOP and len(w) > 3]
@@ -404,13 +417,13 @@ def score_description_packaging(desc, niche, changed_lines=()):
     out = []
     unscored = []
     for msg in wins + issues:
-        sig = next(((sg, b) for k, sg, b in EXISTING_SIGNAL if k in msg.lower()), ("search", "inference"))
+        key, sig = next(((k, (sg, b)) for k, sg, b in EXISTING_SIGNAL if k in msg.lower()), (None, ("search", "inference")))
         if sig[0] is None:
             unscored.append(msg)
             continue
         head, _, rest = msg.partition(". ")
-        out.append(_check(head.split(" — ")[0].rstrip("."), msg in wins, msg if msg in wins else head + ".",
-                          rest or head, sig[0], sig[1], 15))
+        out.append(_check(STABLE_NAME.get(key) or head.split(" — ")[0].rstrip("."), msg in wins,
+                          msg if msg in wins else head + ".", rest or head, sig[0], sig[1], 15))
     low = desc.lower()
     stale = [c for c in changed_lines if c and (c.lower() in low or _phrase_overlap(c, low, niche["title_keywords"]))]
     out.append(_check("Doesn't repeat a corrected claim", not stale,
@@ -448,7 +461,7 @@ def search_demand(keyword):
     (vidiq_keyword_research costs credits); without an entry the check is skipped,
     never guessed."""
     try:
-        cache = json.load(open(DEMAND_CACHE, encoding="utf-8"))
+        cache = _read_json(DEMAND_CACHE)
     except (OSError, ValueError):
         cache = {}
     hit = cache.get((keyword or "").lower())
@@ -525,7 +538,7 @@ def _section(checks):
     return round(100 * sum(c["earned"] for c in checks) / total)
 
 
-def packaging_for_short(num, image=None, doc=None):
+def packaging_for_short(num, image=None, doc=None, use_proposal=True):
     """Packaging score for a Short in the production doc, using any checked rewrite."""
     import glob
     sys.path.insert(0, HERE)
@@ -535,7 +548,8 @@ def packaging_for_short(num, image=None, doc=None):
     s = next((x for x in rs.load_doc_shorts(doc) if x["num"] == num), None)
     if not s:
         raise SystemExit(f"No Short #{num} in the doc.")
-    md = open(doc, encoding="utf-8").read()
+    with open(doc, encoding="utf-8") as fh:
+        md = fh.read()
     sec = _re.search(rf"^## {num} — .*?(?=^## |\Z)", md, _re.S | _re.M).group(0)
     field = lambda k: (_re.search(rf"\*\*{k}:\*\*\s*`?(.+?)`?\s*$", sec, _re.M) or [None, ""])[1].strip()
     title, desc, onscreen = field("Title"), field("Description"), field("On-screen")
@@ -544,8 +558,8 @@ def packaging_for_short(num, image=None, doc=None):
 
     # A checked rewrite changes the script, may replace shot 1, and may fix the description.
     prop = None
-    for path in glob.glob(os.path.join(HERE, "rewrites", "*.json")):
-        p = json.load(open(path, encoding="utf-8"))
+    for path in glob.glob(os.path.join(HERE, "rewrites", "*.json")) if use_proposal else []:
+        p = _read_json(path)
         if p.get("short") == num:
             prop = p
     changed = []

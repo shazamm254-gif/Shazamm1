@@ -8,7 +8,8 @@ to your account and cannot change anything on your channel — it only reads the
 same public numbers any viewer can see.
 
 Usage:
-    export YOUTUBE_API_KEY="..."          # see .env.example
+    export YOUTUBE_API_KEY="..."          # optional if the environment injects
+                                          # an X-Goog-Api-Key header instead
     python tools/analyze_channel.py --channel "@CosmicDread"
     python tools/analyze_channel.py --channel UCxxxxxxxx --csv reports/videos.csv
 
@@ -37,8 +38,15 @@ except ImportError:
 API = "https://www.googleapis.com/youtube/v3"
 
 
+class YouTubeAPIError(RuntimeError):
+    pass
+
+
 def _get(endpoint, params, key):
-    params = {**params, "key": key}
+    """GET from the Data API. With no key, the request goes out bare so a key
+    injected by the environment as an X-Goog-Api-Key header can authorise it."""
+    if key:
+        params = {**params, "key": key}
     r = requests.get(f"{API}/{endpoint}", params=params, timeout=30)
     if r.status_code != 200:
         # Surface the API's own error message — usually a clear cause
@@ -47,7 +55,10 @@ def _get(endpoint, params, key):
             msg = r.json()["error"]["message"]
         except Exception:
             msg = r.text[:300]
-        sys.exit(f"YouTube API error ({r.status_code}): {msg}")
+        if "unregistered callers" in msg:
+            msg += (" — no API key reached Google: YOUTUBE_API_KEY is unset and no "
+                    "X-Goog-Api-Key header was injected.")
+        raise YouTubeAPIError(f"YouTube API error ({r.status_code}): {msg}")
     return r.json()
 
 
@@ -167,10 +178,15 @@ def main():
     ap.add_argument("--top", type=int, default=5, help="How many top/bottom to show")
     args = ap.parse_args()
 
+    # Optional: when unset, requests rely on an injected X-Goog-Api-Key header.
     key = os.environ.get("YOUTUBE_API_KEY")
-    if not key:
-        sys.exit("Set YOUTUBE_API_KEY (see .env.example).")
+    try:
+        run(args, key)
+    except YouTubeAPIError as e:
+        sys.exit(str(e))
 
+
+def run(args, key):
     cid = resolve_channel_id(args.channel, key)
     ch = fetch_channel(cid, key)
     st = ch["statistics"]
