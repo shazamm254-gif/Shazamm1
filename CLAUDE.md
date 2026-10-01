@@ -159,8 +159,8 @@ it cannot make this call. Pipeline fit should outweigh the score.
 
 ### Credits — real money, always confirm before spending
 
-Checked 2026-09-21: **67 credits** after two voiceovers (free plan, 150 cap,
-resets 2026-10-15).
+Checked 2026-10-01: **3 credits** (free plan, 150 cap, resets 2026-10-15).
+On 2026-09-21 it was 67. That's below one 5-credit analytics call.
 Check with `vidiq_balance` (free) before proposing anything.
 
 Free: `vidiq_balance`, `vidiq_voiceover_list_voices`, `vidiq_job_poll`,
@@ -230,8 +230,12 @@ Facts established while building it — don't re-derive:
 
 - **Narration pace is 2.45 words/s**, measured from Short #1 (63 spoken
   words in 25.5s). The scorer uses it to time beats and find the 2s mark.
-- **Cosmic `tools/niche.json` has no `hard_rules`.** Only `niche-scams.json`
-  does. Any rewriter needs Cosmic rules drafted and approved by the owner.
+- **Cosmic `hard_rules` are drafted, not approved.** Added to
+  `tools/niche.json` on 2026-10-01 with `hard_rules_status: DRAFT`. Checking the
+  10 existing scripts against them found #2 factually wrong (light *can* cross
+  10 billion light-years in 13.8 billion years), #6 ending on an invented
+  imminent threat, and #9 overstating a gamma-ray burst ("strip our
+  atmosphere"). #3's "within a year, the air itself" still needs a source.
 - **The YouTube Data API key is not reaching this environment.** A real call
   on 2026-10-01 returned 403 "unregistered callers": no key, no injected
   `X-Goog-Api-Key` header.
@@ -240,6 +244,15 @@ Facts established while building it — don't re-derive:
   with the channel owner's OAuth, or YouTube Studio. The feedback loop must
   get retention another way: vidIQ's connected-channel tools, or the owner
   reading two numbers off the Studio app.
+- **vidIQ is the retention route.** `vidiq_channel_analytics` returns
+  `averageViewPercentage`, `engagedViews` and the per-video drop-off curve
+  (`report: audience_retention`). The vidIQ account already has one channel
+  connected, `UCTTxQCp98YU2eYiWIwXwslg`. Not yet confirmed to be @CosmicDread.
+  On 2026-10-01 `vidiq_authorize_with_youtube` returned
+  `verification_required` (YouTube MFA), which only the owner can complete.
+  Every analytics call costs 5 credits.
+- **youtube.com is blocked by the egress proxy**, so a channel can't be
+  checked from its public page.
 
 ---
 

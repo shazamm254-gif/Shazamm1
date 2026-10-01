@@ -57,5 +57,16 @@
       "the universe stopped expanding", "the last star burned out",
       "a gamma-ray burst hit Earth", "the galaxies all merged"
     ]
-  }
+  },
+  "hard_rules_status": "DRAFT 2026-10-01 — awaiting owner approval. Do not treat as final.",
+  "hard_rules": [
+    "Every number, name and mechanism matches a mainstream source (NASA, ESA or peer-reviewed). If a value is contested, say 'about' or use the conservative figure.",
+    "Hypotheticals stay labelled as hypotheticals. Never present a speculative scenario as happening, confirmed or likely.",
+    "No invented imminent threat. Never imply a real danger to Earth is near, likely or under way when the science says it isn't. The dread comes from scale and time, not fake danger.",
+    "Never fabricate a source, quote, statistic or 'scientists say'.",
+    "Awe and unease, never despair. Never tie cosmic insignificance to self-harm or hopelessness about the viewer's own life.",
+    "AI visuals are illustrations. Tick YouTube's altered-or-synthetic disclosure when a shot is photorealistic and shows a real object or place, and never call an AI image a photo or telescope image.",
+    "No NASA or ESA logos, real mission footage, copyrighted music or real people's likenesses unless licensed.",
+    "Every Short gets its own structure and a script written for its topic. No reusing a script with the nouns swapped, no batches of near-identical videos."
+  ]
 }
