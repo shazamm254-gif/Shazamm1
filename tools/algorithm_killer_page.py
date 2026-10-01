@@ -1,10 +1,16 @@
 """
 algorithm_killer_page.py — renders Algorithm Killer results as one
 self-contained, phone-first Artifact page. Imported by retention_score.py
-(--html); later components add their sections here.
+and rewrite.py (--html); later components add their sections here.
+
+Rebuild the whole deck page (rewrites where tools/rewrites/ has a proposal):
+    python tools/algorithm_killer_page.py --deck page.html
 """
 
+import argparse
+import glob
 import json
+import os
 
 PAGE = r"""<title>Algorithm Killer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -110,6 +116,37 @@ section { display: flex; flex-direction: column; gap: 12px; min-width: 0 }
 .script p { margin: 0; font: italic 17px/1.5 var(--f-voice) }
 .script .copy { align-self: flex-start }
 
+/* rewrite */
+.status { border-radius: 8px; padding: 10px 12px; margin: 0; display: flex; flex-direction: column; gap: 2px }
+.status.pass { background: var(--good-bg) } .status.fail { background: var(--bad-bg) }
+.status b { font-size: 15px }
+.draftnote { font-size: 12.5px; color: var(--warn); margin: 0 }
+.breaks { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 14px }
+.rw { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px;
+  display: flex; flex-direction: column; gap: 10px; min-width: 0 }
+.rw.rejected { border-color: var(--bad) }
+.rwh { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap }
+.rwh .bh { font: 12px var(--f-data); color: var(--muted); letter-spacing: .03em }
+.delta { font: 600 15px var(--f-data); white-space: nowrap }
+.ba { display: grid; grid-template-columns: 1fr 1fr; gap: 10px }
+.ba > div { min-width: 0; display: flex; flex-direction: column; gap: 4px }
+.ba .lbl { font: 600 10.5px var(--f-data); letter-spacing: .08em; text-transform: uppercase; color: var(--muted) }
+.ba .old { font: italic 14.5px/1.45 var(--f-voice); color: var(--muted); text-decoration: line-through;
+  text-decoration-color: color-mix(in srgb, var(--bad) 55%, transparent) }
+.ba .new { font: italic 14.5px/1.45 var(--f-voice) }
+.ba .new.cut { color: var(--muted); font-style: normal; font-family: var(--f-body) }
+.why { margin: 0; font-size: 14px }
+.checks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; font-size: 13px }
+.checks li { display: grid; grid-template-columns: 18px 1fr; gap: 6px }
+.checks .mk { font: 600 13px var(--f-data) }
+.checks .d { color: var(--muted) }
+.srcs { margin: 0; padding-left: 18px; font-size: 13px; display: flex; flex-direction: column; gap: 3px }
+.srcs a { color: var(--accent); word-break: break-word }
+.row { display: flex; gap: 8px; flex-wrap: wrap }
+.prompt { font: 13px/1.5 var(--f-data); background: var(--bg); border-radius: 6px; padding: 8px 10px; margin: 0;
+  white-space: pre-wrap; word-break: break-word }
+.tagrw { color: var(--accent) }
+
 details { border-top: 1px solid var(--line); padding-top: 12px }
 summary { cursor: pointer; font-weight: 600; min-height: 32px }
 .how { display: flex; flex-direction: column; gap: 12px; font-size: 14px; padding-top: 8px }
@@ -124,7 +161,7 @@ summary { cursor: pointer; font-weight: 600; min-height: 32px }
 
 <div class="wrap">
   <header class="head">
-    <span class="eyebrow">Algorithm Killer · Retention scorer</span>
+    <span class="eyebrow">Algorithm Killer · Score &amp; rewrite</span>
     <nav class="picker" id="picker" aria-label="Choose a script"></nav>
     <h1 id="title"></h1>
     <div class="scoreline">
@@ -134,6 +171,11 @@ summary { cursor: pointer; font-weight: 600; min-height: 32px }
     <p class="verdict" id="verdict"></p>
     <p class="calib" id="calib"></p>
   </header>
+
+  <section aria-labelledby="h-rw" id="rwsec" hidden>
+    <h2 id="h-rw">Rewrites</h2>
+    <div id="rw"></div>
+  </section>
 
   <section aria-labelledby="h-time">
     <h2 id="h-time">Where viewers leave</h2>
@@ -155,6 +197,7 @@ summary { cursor: pointer; font-weight: 600; min-height: 32px }
 
   <section aria-labelledby="h-script">
     <h2 id="h-script">Script as scored</h2>
+    <p class="foot" id="scriptnote" hidden>This is the rewritten script. The scores above are for this version.</p>
     <div class="script"><p id="scripttext"></p><button class="copy" id="copyscript" type="button">Copy script</button></div>
   </section>
 
@@ -162,7 +205,7 @@ summary { cursor: pointer; font-weight: 600; min-height: 32px }
     <summary>How the score works</summary>
     <div class="how" id="how"></div>
   </details>
-  <p class="foot">To score a new draft, paste it into the chat with Claude. You'll get this page back with your script in it.</p>
+  <p class="foot">To score and rewrite a new draft, paste it into the chat with Claude. You'll get this page back with your script in it. Scripts marked ✎ have checked rewrites.</p>
 </div>
 
 <script>
@@ -196,16 +239,70 @@ function verdict(r) {
     + `${worst.length} beat${worst.length > 1 ? "s" : ""} fall below ${RULES.rewrite_threshold}, between ${span}.`;
 }
 
+function checksHtml(list) {
+  return `<ul class="checks">${list.map(c => `<li><span class="mk ${c.ok ? (c.warn ? "t-warn" : "t-good") : "t-bad"}">${c.ok ? (c.warn ? "!" : "✓") : "✗"}</span>
+    <span><b>${esc(c.name)}</b> <span class="d">${esc(c.detail)}</span></span></li>`).join("")}</ul>`;
+}
+
+function renderRewrite(r) {
+  const w = r.rewrite;
+  $("rwsec").hidden = !w; $("scriptnote").hidden = !w;
+  $("h-script").textContent = w ? "Rewritten script" : "Script as scored";
+  if (!w) return;
+  const failed = w.rewrites.filter(x => !x.accepted).length + w.shots.filter(x => !x.accepted).length;
+  const cost = r.overall - w.before_overall;
+  let html = `<div class="status ${w.all_accepted ? "pass" : "fail"}">
+      <b>${w.all_accepted ? "Every rewrite passed its checks" : `${failed} rewrite${failed === 1 ? "" : "s"} rejected`}</b>
+      <span>Script score ${w.before_overall} → <span class="t-${band(r.overall)}">${r.overall}</span>.
+      ${w.rule_fix && cost < 0 ? `Fixing the hard-rule breaks cost ${-cost} point${cost === -1 ? "" : "s"}: the scorer liked the old wording. The rules win.` : ""}
+      ${!w.overall_ok ? "The overall score dropped, so a score-only rewrite can't be accepted." : ""}</span></div>`;
+  if (w.hard_rules_status !== "approved")
+    html += `<p class="draftnote">Checked against the draft Cosmic hard rules. They aren't approved yet.</p>`;
+  if (w.original_breaks.length)
+    html += `<div><h2 style="margin-bottom:6px">Hard-rule breaks in the original</h2><ul class="breaks">${w.original_breaks.map(o =>
+      `<li>Beat ${o.beat} breaks rule ${o.rule}: ${esc((w.hard_rules[o.rule - 1] || "").split(".")[0])}. <span class="d" style="color:var(--muted)">${esc(o.detail)}</span></li>`).join("")}</ul></div>`;
+  html += w.rewrites.map(x => {
+    const reason = x.reason === "rule" ? `Hard rule ${x.rule}` : "Retention";
+    const d = x.after_score == null ? "cut" : `${x.before_score} → ${x.after_score}`;
+    const dcls = x.after_score == null ? "" : `t-${band(x.after_score)}`;
+    return `<article class="rw${x.accepted ? "" : " rejected"}">
+      <div class="rwh"><span class="bh">Beat ${x.beat} · ${reason}${x.accepted ? "" : " · REJECTED"}</span><span class="delta ${dcls}">${d}</span></div>
+      <div class="ba"><div><span class="lbl">Before</span><span class="old">${esc(x.before)}</span>
+        <span class="d" style="font-size:12px;color:var(--muted)">${esc(x.old_issues.join(" · ") || (x.reason === "rule" ? "Breaks a hard rule" : ""))}</span></div>
+        <div><span class="lbl">After</span>${x.after ? `<span class="new">${esc(x.after)}</span>` : `<span class="new cut">Line removed.</span>`}</div></div>
+      <p class="why">${esc(x.why)}</p>
+      ${checksHtml(x.checks)}
+      ${(x.sources || []).length ? `<ul class="srcs">${x.sources.map(s => `<li>${esc(s.claim)}: <a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url.replace(/^https?:\/\//, ""))}</a></li>`).join("")}</ul>` : ""}
+      ${x.after ? `<div class="row"><span hidden>${esc(x.after)}</span><button class="copy" type="button" data-copy="${esc(x.after)}">Copy new line</button></div>` : ""}
+    </article>`;
+  }).join("");
+  html += w.shots.map(sh => `<article class="rw${sh.accepted ? "" : " rejected"}">
+      <div class="rwh"><span class="bh">${sh.replaces ? `Replaces ${esc(sh.replaces)}` : "New shot"} · ${sh.kind === "still" ? "Flux still, slow push" : "Wan 2.2 clip"} · ${sh.span_s}s</span></div>
+      <p class="prompt">${esc(sh.prompt)}</p>
+      <div class="row"><button class="copy" type="button" data-copy="${esc(sh.prompt)}">Copy image prompt</button>
+        <button class="copy" type="button" data-copy="${esc(sh.motion)}">Copy motion</button></div>
+      <p class="why"><b>Motion:</b> ${esc(sh.motion)}</p>
+      ${checksHtml(sh.checks)}</article>`).join("");
+  if (w.existing_shot_problems.length)
+    html += `<div class="status fail"><b>Existing shots to fix</b>${w.existing_shot_problems.map(s =>
+      `<span>${esc(s.name)}: ${esc(s.problems.join("; "))}</span>`).join("")}</div>`;
+  if (w.notes.length)
+    html += `<div><h2 style="margin-bottom:6px">Production notes</h2><ul class="breaks">${w.notes.map(n => `<li>${esc(n)}</li>`).join("")}</ul></div>`;
+  $("rw").innerHTML = html;
+  $("rw").querySelectorAll("[data-copy]").forEach(b => b.onclick = () => copyText(b, b.dataset.copy));
+}
+
 function show(idx) {
   const r = DATA[idx];
   document.querySelectorAll("#picker button").forEach((b, i) => b.setAttribute("aria-pressed", i === idx));
   try { localStorage.setItem("ak-pick", idx); } catch (e) {}
-  $("title").textContent = r.label;
+  $("title").textContent = r.label + (r.rewrite ? " · rewritten" : "");
   $("overall").innerHTML = `<span class="t-${band(r.overall)}">${r.overall}</span><small>/100</small>`;
   $("parts").innerHTML = [["Hook", r.sections.hook, RULES.section_weights.hook], ["Body", r.sections.body, RULES.section_weights.body],
     ["Ending", r.sections.ending, RULES.section_weights.ending]].map(([n, v, w]) =>
     `<div>${n} ×${w}<b class="t-${band(v)}">${v}</b></div>`).join("")
-    + (r.penalty ? `<div>Killers<b class="t-bad">−${r.penalty}</b></div>` : "");
+    + (r.penalty ? `<div>Killers<b class="t-bad">−${r.penalty}</b></div>` : "")
+    + (r.rewrite ? `<div>Before<b class="t-${band(r.rewrite.before_overall)}">${r.rewrite.before_overall}</b></div>` : "");
   $("verdict").textContent = verdict(r);
   $("calib").textContent = r.calibrated_on_videos
     ? `Weights calibrated on ${r.calibrated_on_videos} of your published Shorts.`
@@ -236,7 +333,7 @@ function show(idx) {
       : `<p class="ok">Holds. Nothing to fix.</p>`;
     const role = {hook: "Hook", body: "Beat", ending: "Ending"}[b.role];
     return `<article class="beat${b.needs_rewrite ? " flag" : ""}" id="beat-${b.n}">
-      <span class="bh">${b.n} · ${role} · ${b.start}–${b.end}s${b.needs_rewrite ? " · REWRITE" : ""}</span>
+      <span class="bh">${b.n} · ${role} · ${b.start}–${b.end}s${b.rewritten ? ' · <span class="tagrw">REWRITTEN</span>' : ""}${b.needs_rewrite ? " · BELOW " + RULES.rewrite_threshold : ""}</span>
       <span class="sc t-${band(b.score)}">${b.score}</span>
       <span></span>
       <blockquote>${esc(b.text)}</blockquote>
@@ -246,6 +343,8 @@ function show(idx) {
   }).join("");
   $("beats").querySelectorAll(".fix .copy").forEach(btn =>
     btn.onclick = () => copyText(btn, btn.previousElementSibling.textContent));
+
+  renderRewrite(r);
 
   const script = r.beats.map(b => b.text).join(" ");
   $("scripttext").textContent = script;
@@ -262,7 +361,7 @@ $("how").innerHTML = `<p>Each beat is one spoken sentence, timed at your measure
      the feedback loop checks every rule against your own retention numbers and keeps the ones your channel supports.</p>`;
 
 $("picker").innerHTML = DATA.map((r, i) =>
-  `<button type="button" aria-pressed="false"><span class="num t-${band(r.overall)}">${r.overall}</span>${esc(r.label.replace(/^#\d+ /, m => m))}</button>`).join("");
+  `<button type="button" aria-pressed="false"><span class="num t-${band(r.overall)}">${r.overall}</span>${esc(r.label)}${r.rewrite ? ' <span class="tagrw">✎</span>' : ""}</button>`).join("");
 $("picker").querySelectorAll("button").forEach((b, i) => b.onclick = () => show(i));
 if (DATA.length < 2) $("picker").hidden = true;
 let start = 0;
@@ -278,3 +377,36 @@ def render(results, niche, rules):
     data = json.dumps(results, ensure_ascii=False).replace("</", "<\\/")
     rl = json.dumps(rules, ensure_ascii=False).replace("</", "<\\/")
     return PAGE.replace("__DATA__", data).replace("__RULES__", rl)
+
+
+def build_deck(extra=()):
+    """Every Short in the doc: its checked rewrite if one exists, else its score."""
+    import rewrite
+    import retention_score as rs
+    niche, rules = rs.load_niche(), rs.load_rules()
+    here = os.path.dirname(os.path.abspath(__file__))
+    props = {}
+    for path in glob.glob(os.path.join(here, "rewrites", "*.json")):
+        with open(path, encoding="utf-8") as f:
+            p = json.load(f)
+        if "short" in p:
+            props[p["short"]] = p
+    out = []
+    for s in rs.load_doc_shorts():
+        if s["num"] in props:
+            out.append(rewrite.run(props[s["num"]], niche, rules))
+        else:
+            out.append(rs.score_script("", niche, rules, label=f"#{s['num']} {s['title']}",
+                                       beats=rs.doc_beats(s)))
+    out.extend(extra)
+    return render(out, niche, rules)
+
+
+if __name__ == "__main__":
+    import sys
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--deck", required=True, help="Write the deck page here")
+    a = ap.parse_args()
+    with open(a.deck, "w", encoding="utf-8") as f:
+        f.write(build_deck())

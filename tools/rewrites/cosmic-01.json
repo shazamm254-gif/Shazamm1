@@ -1,0 +1,48 @@
+{
+  "short": 1,
+  "rewrites": [
+    {
+      "beat": 3,
+      "reason": "score",
+      "after": "But from inside, it's far worse. Gravity stretches your body into a thread.",
+      "why": "The old beat stated the stretching and stopped. 'But from inside, it's far worse' turns the outside/inside contrast into a promise, then pays it off in one short line.",
+      "sources": [
+        {
+          "claim": "Tidal pull on your feet is stronger than on your head, stretching you thin",
+          "url": "https://www.space.com/black-holes-event-horizon-explained.html"
+        }
+      ]
+    },
+    {
+      "beat": 4,
+      "reason": "score",
+      "after": "Astronomers call it spaghettification, and it isn't even the end.",
+      "why": "The name was a dead end at 16.7s. Keeping it and adding 'it isn't even the end' makes the label a hand-off into what comes next.",
+      "sources": []
+    },
+    {
+      "beat": 5,
+      "reason": "score",
+      "after": "In NASA's simulation, a camera lasts just 12.8 seconds past the edge.",
+      "why": "'You never hit a surface' denied an expectation but paid nothing off. A real number from a real simulation is the strongest payoff in the script, and 12.8 seconds sets up the 'forever' contrast in the last line.",
+      "sources": [
+        {
+          "claim": "NASA Goddard supercomputer simulation: a camera crossing a Sagittarius A*-sized black hole's horizon is destroyed by tidal forces 12.8 seconds later",
+          "url": "https://svs.gsfc.nasa.gov/14576"
+        }
+      ]
+    },
+    {
+      "beat": 6,
+      "reason": "score",
+      "after": "",
+      "why": "Cut. 'You just become part of the dark' was mood with no content, and every replacement I tried (e.g. 'every path leads inward') still added nothing new. Without it, the 12.8-second payoff hands straight to 'from outside, you're still falling': seconds inside, forever outside.",
+      "sources": []
+    }
+  ],
+  "shots": [],
+  "notes": [
+    "No new shots. The four existing shots still cover the beats in order: disk (hook, beat 2), stretching silhouette (beats 3–4), full ring (beat 5), crescent (ending).",
+    "Runtime stays inside 30 seconds: the rewrite trades the feet-and-head explanation for the 12.8-second payoff. Shot 2 already shows the stretching, so the picture carries what the words dropped."
+  ]
+}

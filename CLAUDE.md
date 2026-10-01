@@ -223,8 +223,21 @@ to the same URL):
 
 **https://claude.ai/artifact/M93xpM1UeCfzew2ceNRAfQ**
 
-To score a draft the owner pastes in chat: save it to a text file, run
-`retention_score.py --file draft.txt --html page.html`, publish the page.
+Component 2, the rewriter, is built too. Claude writes rewrites as a
+proposals JSON in `tools/rewrites/`; `tools/rewrite.py` is the referee and
+rejects any rewrite that doesn't lift its beat, breaks a hard rule, adds a
+number or name without a source, breaks tone, baits engagement, or asks for
+a shot the pipeline can't make (faces, readable text, a clip over 5s). A
+hard-rule fix is accepted even when it costs points; a score-only rewrite
+may never lower the script's score. Rebuild the whole deck page with
+`python tools/algorithm_killer_page.py --deck page.html`.
+
+To score and rewrite a draft the owner pastes in chat: save it as text, run
+`retention_score.py --file draft.txt --json out.json`, write a proposals file
+with `"text": ...`, run `rewrite.py proposals.json --html page.html`, publish.
+
+The scorer reads wording, not truth: on #3, #6 and #9 the false lines scored
+higher than the corrected ones. Never let the score argue a rule fix away.
 
 Facts established while building it — don't re-derive:
 
@@ -233,9 +246,12 @@ Facts established while building it — don't re-derive:
 - **Cosmic `hard_rules` are drafted, not approved.** Added to
   `tools/niche.json` on 2026-10-01 with `hard_rules_status: DRAFT`. Checking the
   10 existing scripts against them found #2 factually wrong (light *can* cross
-  10 billion light-years in 13.8 billion years), #6 ending on an invented
-  imminent threat, and #9 overstating a gamma-ray burst ("strip our
-  atmosphere"). #3's "within a year, the air itself" still needs a source.
+  10 billion light-years in 13.8 billion years) and its structure disputed,
+  #3 wrong on timing (Caltech: about -100°F after a year; the air freezes far
+  later), #6 inventing a threat ("fling Earth out of orbit … It would already
+  be too late"), and #9 overstating a gamma-ray burst and ending on "One may
+  already be on its way". All five have checked rewrites in `tools/rewrites/`
+  (#1 for retention). The doc itself is not yet updated with them.
 - **The YouTube Data API key is not reaching this environment.** A real call
   on 2026-10-01 returned 403 "unregistered callers": no key, no injected
   `X-Goog-Api-Key` header.

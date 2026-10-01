@@ -1,0 +1,61 @@
+{
+  "short": 9,
+  "rewrites": [
+    {
+      "beat": 1,
+      "reason": "rule",
+      "rule": 1,
+      "after": "This is the most powerful explosion in the entire universe.",
+      "why": "'Deadliest event in the universe' can't be sourced. 'Most powerful explosion' is what astronomers actually say about gamma-ray bursts, and it keeps the superlative in the first two seconds.",
+      "sources": [
+        {
+          "claim": "Gamma-ray bursts are the most energetic explosions known",
+          "url": "https://en.wikipedia.org/wiki/Gamma-ray_burst"
+        }
+      ]
+    },
+    {
+      "beat": 3,
+      "reason": "rule",
+      "rule": 1,
+      "after": "From a few thousand light-years away, one could strip much of our ozone and leave Earth under harsh ultraviolet for up to a decade. Some scientists think one already did, 440 million years ago.",
+      "why": "'Strip our atmosphere and end nearly all life' overstates the research, which describes ozone loss and a decade of DNA-damaging UV. The Ordovician hypothesis adds a real, sourced twist, labelled as a hypothesis.",
+      "sources": [
+        {
+          "claim": "A burst within a few kiloparsecs would deplete much of the ozone layer; DNA-damaging UV for up to a decade",
+          "url": "https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2005GL023073"
+        },
+        {
+          "claim": "Hypothesis that a gamma-ray burst helped trigger the Late Ordovician mass extinction ~440 million years ago (Melott et al. 2004)",
+          "url": "https://arxiv.org/pdf/astro-ph/0309415"
+        }
+      ]
+    },
+    {
+      "beat": 5,
+      "reason": "rule",
+      "rule": 3,
+      "after": "Somewhere in the universe, one goes off about once a day.",
+      "why": "'One may already be on its way' implies a burst is heading for Earth. Nothing suggests that. Satellites really do detect about one a day, which is true, unsettling, and ties back to the hook's 'universe'.",
+      "sources": [
+        {
+          "claim": "Gamma-ray bursts are detected at a rate of about one per day",
+          "url": "https://en.wikipedia.org/wiki/Gamma-ray_burst"
+        }
+      ]
+    }
+  ],
+  "shots": [
+    {
+      "for_beats": [
+        3
+      ],
+      "kind": "still",
+      "prompt": "Earth seen from orbit with a thin glowing atmosphere, a faint violet beam of radiation striking it from deep space, auroral light rippling across the night side, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain",
+      "motion": "Slow push toward Earth as the violet light spreads across the atmosphere"
+    }
+  ],
+  "notes": [
+    "'And we would get no warning at all' is kept: a burst arrives at the speed of light, so no warning is possible. That's physics, not an invented threat."
+  ]
+}

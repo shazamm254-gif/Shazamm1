@@ -42,6 +42,9 @@ STRONG_OPEN = [
      "makes a superlative claim to prove"),
     (r"\bsomething\b", "withholds what 'something' is"),
     (r"\bhere's (how|why|what)\b", "promises an explanation"),
+    (ESCALATION := r"\b(it gets worse|far worse|even worse|isn't even the (end|worst)|"
+                   r"that's not (all|the worst)|but that's not|it doesn't stop there)\b",
+     "promises escalation"),
 ]
 WEAK_OPEN = [
     (r"\b(die|dies|death|end all|end nearly|destroy|freeze|freezes|vanish|strip|swallow|fling|stretch|stretches|tear|crash|collide|explode|kill|no warning|too late|forever|alone)\b",
@@ -55,10 +58,11 @@ WEAK_OPEN = [
 # even without a number ("you freeze at the edge").
 OUTCOME = (r"\b(freeze|freezes|stretch|stretches|slow down|vanish|flies off|strip|end|"
            r"burn|burns|goes out|fades|collapse|swallow|pull|pulls|circling|orbiting|"
-           r"shakes|stretched|frozen|wandering|dragging|become)\b")
+           r"shakes|stretched|frozen|wandering|dragging|become|ice|ices|snow|colder|"
+           r"torn apart|dies|die|burns out|goes dark|stops)\b")
 NEGATION = r"\b(never|not|no|nothing|can't|don't)\b"
 CLOSE_NUMBER = (r"\b(\d[\d,\.]*|one|two|three|four|five|six|seven|eight|nine|ten|"
-                r"twelve|hundred|thousand|million|billion|trillion|half)\b")
+                r"twelve|hundreds?|thousands?|millions?|billions?|trillions?|half)\b")
 CLOSE_NAME = r"\b(they call it|we call it|it's called|called|known as)\b"
 CLOSE_EXPLAIN = r"\b(because|which means|that's why|so that|the light reaching)\b"
 CONNECTIVE_START = (r"^(then|but|and|within|after that|until|so|including|now|yet|"
@@ -192,13 +196,17 @@ def carry_strength(text, nxt):
     val = 0.0
     if re.search(r"(—|-{2}|\.\.\.|…)\s*$", text):
         val, reasons = 1.0, ["ends mid-thought"]
+    if nxt is not None and text.rstrip().endswith("?"):
+        val = 1.0; reasons.append("asks what the next beat answers")
     if nxt is not None:
-        if re.search(CONNECTIVE_START, nxt.lower()):
+        if re.search(CONNECTIVE_START, re.sub(r"^[\W_]+", "", nxt.lower())):
             val = max(val, 0.7); reasons.append("next beat opens with a connective")
         if find(STRONG_OPEN, nxt):
             val = min(1.0, val + 0.4); reasons.append("next beat raises a new question")
     if nxt is not None and re.search(NEGATION, text.lower()):
         val = max(val, 0.5); reasons.append("leaves 'then what?' open")
+    if re.search(ESCALATION, text.lower()):
+        val = 1.0; reasons.append("promises more is coming")
     if re.search(FORWARD_IN_BEAT, text.lower()):
         val = min(1.0, val + 0.3); reasons.append("promises what comes next")
     return val, reasons
@@ -209,8 +217,13 @@ def quote(text, n=8):
     return " ".join(words[:n]) + ("…" if len(words) > n else "")
 
 
-def score_script(text, niche, rules, label=""):
-    beats_text = split_beats(text)
+def doc_beats(short):
+    """Voiceover split into sentences; the doc's end line stays one delivered beat."""
+    return split_beats(short["voiceover"]) + ([short["end_line"]] if short["end_line"] else [])
+
+
+def score_script(text, niche, rules, label="", beats=None):
+    beats_text = beats or split_beats(text)
     if not beats_text:
         raise ValueError("No sentences found in the script.")
     wps = rules["pace_words_per_second"]
@@ -499,8 +512,7 @@ def main():
             if not shorts:
                 sys.exit(f"No Short #{args.doc_short} in {args.doc}.")
         for s in shorts:
-            text = s["voiceover"] + (" " + s["end_line"] if s["end_line"] else "")
-            r = score_script(text, niche, rules, label=f"#{s['num']} {s['title']}")
+            r = score_script("", niche, rules, label=f"#{s['num']} {s['title']}", beats=doc_beats(s))
             r["source"] = {"doc": os.path.relpath(args.doc, ROOT), **s}
             results.append(r)
     else:
