@@ -52,11 +52,22 @@
       ],
       "kind": "still",
       "prompt": "A distant brilliant white star in deep space briefly swelling brighter as a small dark planet silhouette passes in front of it, faint ring of bent starlight around the planet, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain",
-      "motion": "Slow push toward the star as it brightens; a still, because the beat runs past the 5-second clip cap"
+      "motion": "Slow push toward the star as it brightens; a still, because the beat runs past the 5-second clip cap",
+      "replaces": "Shot 3"
+    },
+    {
+      "for_beats": [
+        6
+      ],
+      "replaces": "Shot 4",
+      "kind": "still",
+      "prompt": "Countless small frozen worlds scattered through the dark between distant stars, each lit only by a faint rim of cold blue starlight, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain",
+      "motion": "Slow drift past the scattered worlds"
     }
   ],
   "notes": [
-    "Beat 3's 'billions of them, more than there are stars' is kept: Osaka/NASA research estimates about 20 rogue planets per star, so 'billions' is an undercount, not an overclaim."
+    "Beat 3's 'billions of them, more than there are stars' is kept: Osaka/NASA research estimates about 20 rogue planets per star, so 'billions' is an undercount, not an overclaim.",
+    "Shots 3 and 4 showed a rogue planet nearing Earth and Earth knocked out of orbit, which illustrates the removed threat. They're replaced: Shot 3 shows how we detect them, Shot 4 the closing line."
   ],
   "packaging": {
     "onscreen": "BILLIONS, ALONE",
@@ -64,5 +75,19 @@
       "onscreen": "'ROGUE PLANETS' had no number or stakes and half its words repeat the title. 'Billions' and 'alone' both come from the script.",
       "shot1": "Frame 1 opened on 'A dark frozen rogue planet', and Flux turns a darkness-led prompt into a black frame. Leading with the lit rim keeps the planet dark but visible."
     }
+  },
+  "original": {
+    "beats": [
+      "There are planets drifting in the dark with no sun at all.",
+      "Rogue planets — flung out of their solar systems, wandering between the stars, frozen and alone.",
+      "There may be billions of them, more than there are stars.",
+      "One could drift through our system and fling Earth out of orbit.",
+      "And we'd never see it coming.",
+      "It would already be too late."
+    ],
+    "title": "There are planets with no sun, drifting in the dark",
+    "description": "Billions of frozen rogue planets wander between the stars. Subscribe for more cosmic dread. #space #universe #cosmos #astronomy #shorts #cosmichorror #scifi",
+    "onscreen": "ROGUE PLANETS",
+    "shot1": "A dark frozen rogue planet drifting through starless black, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain"
   }
 }

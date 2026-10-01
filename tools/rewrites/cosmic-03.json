@@ -50,5 +50,20 @@
     "why": {
       "shot1": "Frame 1 was 'The Sun blinking out, the frame falling into darkness'. Flux reads darkness literally, and on this pipeline that has produced a black rectangle. A black first frame is the one thing guaranteed to be swiped. The new prompt leads with the blazing Sun and adds Earth for scale; the clip does the vanishing."
     }
+  },
+  "original": {
+    "beats": [
+      "What if the Sun vanished right now?",
+      "For eight minutes, you'd notice nothing — the light reaching you already left it.",
+      "Then darkness.",
+      "Then the Earth, with nothing to hold it, flies off in a straight line into deep space.",
+      "Within weeks, the oceans freeze.",
+      "Within a year, the air itself.",
+      "Look up. That light is already eight minutes old."
+    ],
+    "title": "What if the Sun disappeared right now?",
+    "description": "8 minutes of warning, then Earth flies into the dark. Subscribe for more cosmic dread. #space #universe #cosmos #astronomy #shorts #spacefacts #physics",
+    "onscreen": "8 MINUTES OF LIGHT",
+    "shot1": "The Sun blinking out, the frame falling into darkness, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain"
   }
 }

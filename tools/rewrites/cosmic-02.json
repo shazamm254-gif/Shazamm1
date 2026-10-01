@@ -76,11 +76,21 @@
       "kind": "still",
       "prompt": "A single tiny bright point of light lost deep inside a vast glowing web of galaxy filaments stretching to every edge of the frame, the point small but clearly visible, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain",
       "motion": "Very slow pull back, the point shrinking as more filaments enter the frame"
+    },
+    {
+      "for_beats": [
+        4
+      ],
+      "replaces": "Shot 3",
+      "kind": "still",
+      "prompt": "Earth as a small blue dot against the black, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain",
+      "motion": "Slow pull back as Earth shrinks to a point"
     }
   ],
   "notes": [
     "The published description repeats the false claim ('light can't even cross it'). Change it to: Nearly 10 billion light-years wide, and we're not sure it's real. Subscribe for more cosmic dread. #space #universe #cosmos #astronomy #galaxy #shorts #spacefacts",
-    "Shot 4 asked for 'a tiny labeled dot', which invites Flux to draw a text label. The replacement keeps the scale idea with no text."
+    "Shot 4 asked for 'a tiny labeled dot', which invites Flux to draw a text label. The replacement keeps the scale idea with no text.",
+    "Shots 1 and 3 swap: the galaxy web opens the video, and the small Earth moves to beat 4 for scale."
   ],
   "packaging": {
     "title": "The largest thing in the universe might not be real",
@@ -90,5 +100,18 @@
       "description": "The old description repeated the false 'light can't even cross it'.",
       "shot1": "Frame 1 was 'Earth as a small blue dot against the black': a small subject in empty black, which your checklist rejects. This is your existing Shot 3 moved to the front, so nothing new needs generating. The small Earth works better later, for scale."
     }
+  },
+  "original": {
+    "beats": [
+      "This is the largest thing in the entire universe.",
+      "The Hercules–Corona Borealis Great Wall — a chain of galaxies ten billion light-years across.",
+      "It's so vast that light, the fastest thing there is, can't cross it in the entire age of the cosmos.",
+      "Next to it, our whole galaxy is a single grain of sand.",
+      "And we still don't know how it formed."
+    ],
+    "title": "The largest thing in the universe is unimaginable",
+    "description": "10 billion light-years wide — light can't even cross it. Subscribe for more cosmic dread. #space #universe #cosmos #astronomy #galaxy #shorts #spacefacts",
+    "onscreen": "10 BILLION LIGHT-YEARS WIDE",
+    "shot1": "Earth as a small blue dot against the black, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain"
   }
 }

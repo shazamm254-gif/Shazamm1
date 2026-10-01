@@ -144,7 +144,10 @@ def predict_for_short(num, version="rewrite"):
         pack = om.packaging_for_short(num)
         used = "rewrite"
     else:
-        result = rs.score_script("", niche, rules, label=f"#{num} {s['title']}", beats=rs.doc_beats(s))
+        beats = rs.doc_beats(s)
+        if os.path.exists(prop_path):
+            beats = _read_json(prop_path).get("original", {}).get("beats") or beats
+        result = rs.score_script("", niche, rules, label=f"#{num} {s['title']}", beats=beats)
         pack = om.packaging_for_short(num, use_proposal=False)
     return result, pack, used
 

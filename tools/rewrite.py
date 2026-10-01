@@ -147,7 +147,9 @@ def run(prop, niche, rules):
         s = next((x for x in load_doc_shorts() if x["num"] == prop["short"]), None)
         if not s:
             raise SystemExit(f"No Short #{prop['short']} in the doc.")
-        orig_beats = doc_beats(s)
+        # Proposals freeze the script they were written against, so they stay
+        # valid after apply_rewrites.py writes the fixes into the doc.
+        orig_beats = prop.get("original", {}).get("beats") or doc_beats(s)
         label = label or f"#{s['num']} {s['title']}"
         source = s
     else:
@@ -224,7 +226,7 @@ def run(prop, niche, rules):
         shots.append({**sh, "checks": checks, "span_s": span,
                       "accepted": all(c["ok"] for c in checks)})
     existing = []
-    if source:
+    if source and "original" not in prop:
         for sh in doc_shots(source["num"]):
             if any(x.get("replaces") == sh["name"] for x in shots):
                 continue

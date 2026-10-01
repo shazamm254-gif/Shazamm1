@@ -288,7 +288,13 @@ Facts established while building it — don't re-derive:
   later), #6 inventing a threat ("fling Earth out of orbit … It would already
   be too late"), and #9 overstating a gamma-ray burst and ending on "One may
   already be on its way". All five have checked rewrites in `tools/rewrites/`
-  (#1 for retention). The doc itself is not yet updated with them.
+  (#1 for retention). **Applied 2026-10-01** to the doc and the production
+  deck (v3) with `tools/apply_rewrites.py`, which refuses to run if any fix
+  is rejected. Each proposal now carries an `original` block (the pre-fix
+  beats, title, description, on-screen text, Shot 1), so the checker and
+  scores stay valid after the doc changes. #9 is renamed "The Most Powerful
+  Explosion". To update the deck again, read it, then
+  `apply_rewrites.py --deck saved.html out.html` and republish to its URL.
 - **The YouTube Data API key is not reaching this environment.** A real call
   on 2026-10-01 returned 403 "unregistered callers": no key, no injected
   `X-Goog-Api-Key` header.

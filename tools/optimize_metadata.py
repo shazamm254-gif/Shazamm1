@@ -558,15 +558,26 @@ def packaging_for_short(num, image=None, doc=None, use_proposal=True):
 
     # A checked rewrite changes the script, may replace shot 1, and may fix the description.
     prop = None
-    for path in glob.glob(os.path.join(HERE, "rewrites", "*.json")) if use_proposal else []:
+    for path in glob.glob(os.path.join(HERE, "rewrites", "*.json")):
         p = _read_json(path)
         if p.get("short") == num:
             prop = p
+    if prop and not use_proposal:   # score the original: frozen fields, no fixes
+        if "original" in prop:
+            o = prop["original"]
+            title, desc, onscreen, shot1 = o["title"], o["description"], o["onscreen"], o["shot1"]
+            script = " ".join(o["beats"])
+        prop = None
     changed = []
     original = {"title": title, "description": desc, "onscreen": onscreen, "shot1": shot1}
+    if prop and "original" in prop:   # proposal froze the pre-fix fields
+        o = prop["original"]
+        original = {"title": o["title"], "description": o["description"], "onscreen": o["onscreen"],
+                    "shot1": o["shot1"]}
+        title, desc, onscreen, shot1 = (original[k] for k in ("title", "description", "onscreen", "shot1"))
     if prop:
         by = {r["beat"]: r for r in prop.get("rewrites", [])}
-        beats = rs.doc_beats(s)
+        beats = prop.get("original", {}).get("beats") or rs.doc_beats(s)
         # Phrases a rewrite retracted as false; metadata must not repeat them.
         changed = [p for r in by.values() for p in r.get("retracts", [])]
         script = " ".join(by[i + 1]["after"] if i + 1 in by else b for i, b in enumerate(beats))

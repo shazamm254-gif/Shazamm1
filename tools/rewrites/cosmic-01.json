@@ -50,5 +50,20 @@
     "why": {
       "onscreen": "'INTO THE BLACK' had no number and repeated the title's 'black'. The rewrite's 12.8-second payoff makes a second hook, and it's a text overlay, so nothing needs reshooting."
     }
+  },
+  "original": {
+    "beats": [
+      "This is what happens if you fall into a black hole.",
+      "To anyone watching, you slow down — and freeze at the edge, forever.",
+      "To you, gravity pulls your feet harder than your head, and stretches your body into a thread.",
+      "They call it spaghettification.",
+      "You never hit a surface.",
+      "You just become part of the dark.",
+      "…and from outside, you're still falling."
+    ],
+    "title": "What happens if you fall into a black hole",
+    "description": "Time freezes, gravity stretches you into a thread. This is spaghettification. Subscribe for more cosmic dread. #space #universe #cosmos #astronomy #blackhole #shorts #cosmichorror",
+    "onscreen": "INTO THE BLACK",
+    "shot1": "A slow drift toward a black hole's glowing orange accretion disk, light bending around it, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain"
   }
 }

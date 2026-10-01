@@ -67,13 +67,15 @@ its natural length.
 
 ## 1 — Falling Into a Black Hole · *Space Horror*
 
+*Revised 2026-10-01: checked against the channel's hard rules and the retention scorer. Reasons and sources: `tools/rewrites/cosmic-01.json`.*
+
 **Hook:** This is what happens if you fall into a black hole.
 
-**On-screen:** `INTO THE BLACK`
+**On-screen:** `12.8 SECONDS INSIDE`
 
 **Voiceover:**
 
-> This is what happens if you fall into a black hole. To anyone watching, you slow down — and freeze at the edge, forever. To you, gravity pulls your feet harder than your head, and stretches your body into a thread. They call it spaghettification. You never hit a surface. You just become part of the dark.
+> This is what happens if you fall into a black hole. To anyone watching, you slow down — and freeze at the edge, forever. But from inside, it's far worse. Gravity stretches your body into a thread. Astronomers call it spaghettification, and it isn't even the end. In NASA's simulation, a camera lasts just 12.8 seconds past the edge.
 
 **End line:** …and from outside, you're still falling." *(loops to the hook)
 
@@ -105,23 +107,25 @@ A vast dark sphere filling most of the frame with one thin brilliant crescent of
 
 ## 2 — The Largest Thing in the Universe · *Cosmic Giants*
 
-**Hook:** This is the largest thing in the entire universe.
+*Revised 2026-10-01: checked against the channel's hard rules and the retention scorer. Reasons and sources: `tools/rewrites/cosmic-02.json`.*
+
+**Hook:** This might be the largest thing in the entire universe.
 
 **On-screen:** `10 BILLION LIGHT-YEARS WIDE`
 
 **Voiceover:**
 
-> This is the largest thing in the entire universe. The Hercules–Corona Borealis Great Wall — a chain of galaxies ten billion light-years across. It's so vast that light, the fastest thing there is, can't cross it in the entire age of the cosmos. Next to it, our whole galaxy is a single grain of sand.
+> This might be the largest thing in the entire universe. The Hercules–Corona Borealis Great Wall, a wall of galaxies nearly ten billion light-years across. Light, the fastest thing there is, would need nearly ten billion years to cross it, most of the age of the cosmos. Next to it, our whole galaxy is a single grain of sand.
 
-**End line:** And we still don't know how it formed.
+**End line:** The largest thing in the universe, and we still aren't sure it's real.
 
-**Title:** The largest thing in the universe is unimaginable
+**Title:** The largest thing in the universe might not be real
 
-**Description:** 10 billion light-years wide — light can't even cross it. Subscribe for more cosmic dread. #space #universe #cosmos #astronomy #galaxy #shorts #spacefacts
+**Description:** Nearly 10 billion light-years wide, and astronomers still aren't sure it's real. Subscribe for more cosmic dread. #space #universe #cosmos #astronomy #galaxy #shorts #spacefacts
 
 **Shot 1**
 ```
-Earth as a small blue dot against the black, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain
+A vast glowing web of galaxies stretching across the entire frame, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain
 ```
 
 **Shot 2**
@@ -131,17 +135,19 @@ A slow zoom out from the solar system to the spiral of the Milky Way, cinematic 
 
 **Shot 3**
 ```
-A vast glowing web of galaxies stretching across the entire frame, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain
+Earth as a small blue dot against the black, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain
 ```
 
 **Shot 4**
 ```
-A tiny labeled dot in a vast cosmic web with everything else dwarfing it, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain
+A single tiny bright point of light lost deep inside a vast glowing web of galaxy filaments stretching to every edge of the frame, the point small but clearly visible, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain
 ```
 
 ---
 
 ## 3 — If the Sun Vanished · *What If*
+
+*Revised 2026-10-01: checked against the channel's hard rules and the retention scorer. Reasons and sources: `tools/rewrites/cosmic-03.json`.*
 
 **Hook:** What if the Sun vanished right now?
 
@@ -149,7 +155,7 @@ A tiny labeled dot in a vast cosmic web with everything else dwarfing it, cinema
 
 **Voiceover:**
 
-> What if the Sun vanished right now? For eight minutes, you'd notice nothing — the light reaching you already left it. Then darkness. Then the Earth, with nothing to hold it, flies off in a straight line into deep space. Within weeks, the oceans freeze. Within a year, the air itself.
+> What if the Sun vanished right now? For eight minutes, you'd notice nothing — the light reaching you already left it. Then darkness. Then the Earth, with nothing to hold it, flies off in a straight line into deep space. Within a week, the ground is colder than a freezer, and the seas begin to ice over. Within a year, it's a hundred degrees below zero. Eventually, the air itself falls as snow.
 
 **End line:** Look up. That light is already eight minutes old.
 
@@ -159,7 +165,7 @@ A tiny labeled dot in a vast cosmic web with everything else dwarfing it, cinema
 
 **Shot 1**
 ```
-The Sun blinking out, the frame falling into darkness, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain
+The blazing Sun filling most of the frame, its brilliant surface churning with fire, light beginning to collapse inward at its edges, a tiny dark Earth silhouetted in the foreground for scale, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain
 ```
 
 **Shot 2**
@@ -219,9 +225,11 @@ An almost featureless dark expanse with a barely perceptible deep indigo gradien
 
 ## 5 — When Black Holes Collide · *Cosmic Giants*
 
+*Revised 2026-10-01: checked against the channel's hard rules and the retention scorer. Reasons and sources: `tools/rewrites/cosmic-05.json`.*
+
 **Hook:** When two black holes collide, the whole universe shakes.
 
-**On-screen:** `THE UNIVERSE SHOOK`
+**On-screen:** `A BILLION YEARS LATER`
 
 **Voiceover:**
 
@@ -257,15 +265,17 @@ A faint wave washing over a tiny distant blue Earth, cinematic deep space photog
 
 ## 6 — Planets With No Sun · *Space Horror*
 
+*Revised 2026-10-01: checked against the channel's hard rules and the retention scorer. Reasons and sources: `tools/rewrites/cosmic-06.json`.*
+
 **Hook:** There are planets drifting in the dark with no sun at all.
 
-**On-screen:** `ROGUE PLANETS`
+**On-screen:** `BILLIONS, ALONE`
 
 **Voiceover:**
 
-> There are planets drifting in the dark with no sun at all. Rogue planets — flung out of their solar systems, wandering between the stars, frozen and alone. There may be billions of them, more than there are stars. One could drift through our system and fling Earth out of orbit. And we'd never see it coming.
+> There are planets drifting in the dark with no sun at all. Rogue planets — flung out of their solar systems, wandering between the stars, frozen and alone. There may be billions of them, more than there are stars. They give off almost no light. So how do we know they're there? Sometimes one drifts in front of a distant star, and its gravity bends that starlight for a few hours.
 
-**End line:** It would already be too late.
+**End line:** Countless worlds, drifting in the dark, with no sun at all.
 
 **Title:** There are planets with no sun, drifting in the dark
 
@@ -273,7 +283,7 @@ A faint wave washing over a tiny distant blue Earth, cinematic deep space photog
 
 **Shot 1**
 ```
-A dark frozen rogue planet drifting through starless black, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain
+A lone frozen planet lit only by a thin rim of cold blue starlight along one edge, drifting through starless black, its icy surface faintly visible, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain
 ```
 
 **Shot 2**
@@ -283,21 +293,23 @@ A rogue planet passing a distant sun, its surface still unlit, cinematic deep sp
 
 **Shot 3**
 ```
-A dark rogue planet nearing a small blue Earth, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain
+A distant brilliant white star in deep space briefly swelling brighter as a small dark planet silhouette passes in front of it, faint ring of bent starlight around the planet, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain
 ```
 
 **Shot 4**
 ```
-Earth nudged off its orbit, drifting into the dark, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain
+Countless small frozen worlds scattered through the dark between distant stars, each lit only by a faint rim of cold blue starlight, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain
 ```
 
 ---
 
 ## 7 — The Monster at the Center · *Cosmic Giants*
 
+*Revised 2026-10-01: checked against the channel's hard rules and the retention scorer. Reasons and sources: `tools/rewrites/cosmic-07.json`.*
+
 **Hook:** There's a monster at the center of our galaxy.
 
-**On-screen:** `SAGITTARIUS A`
+**On-screen:** `500,000 MPH. RIGHT NOW.`
 
 **Voiceover:**
 
@@ -333,9 +345,11 @@ A tiny dot, the Sun, tracing its slow orbit far out from the galactic center, ci
 
 ## 8 — The Loneliest Place · *Space Horror*
 
+*Revised 2026-10-01: checked against the channel's hard rules and the retention scorer. Reasons and sources: `tools/rewrites/cosmic-08.json`.*
+
 **Hook:** This is the loneliest place in the known universe.
 
-**On-screen:** `330 MILLION LIGHT-YEARS OF NOTHING`
+**On-screen:** `330M LIGHT-YEARS OF NOTHING`
 
 **Voiceover:**
 
@@ -343,13 +357,13 @@ A tiny dot, the Sun, tracing its slow orbit far out from the galactic center, ci
 
 **End line:** Imagine looking up and seeing nothing at all.
 
-**Title:** The loneliest place in the universe is empty
+**Title:** The loneliest place in the known universe
 
 **Description:** 330 million light-years of almost pure nothing. Subscribe for more cosmic dread. #space #universe #cosmos #astronomy #void #shorts #cosmichorror
 
 **Shot 1**
 ```
-A dense bright cluster of spiral galaxies glowing small in one corner of the frame, surrounded by an immense dark empty void, the galaxies luminous and detailed against the darkness, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain
+A single bright spiral galaxy glowing large in the centre of the frame, with nothing but black around it in every direction, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain
 ```
 
 **Shot 2**
@@ -369,30 +383,32 @@ A lone galaxy as a tiny smudge surrounded by total emptiness, cinematic deep spa
 
 ---
 
-## 9 — The Deadliest Event · *The End*
+## 9 — The Most Powerful Explosion · *The End*
 
-**Hook:** This is the deadliest event in the entire universe.
+*Revised 2026-10-01: checked against the channel's hard rules and the retention scorer. Reasons and sources: `tools/rewrites/cosmic-09.json`.*
 
-**On-screen:** `GAMMA-RAY BURST`
+**Hook:** This is the most powerful explosion in the entire universe.
+
+**On-screen:** `SECONDS. NO WARNING.`
 
 **Voiceover:**
 
-> This is the deadliest event in the entire universe. A gamma-ray burst — in just seconds, it releases more energy than the Sun will in its whole ten-billion-year life. If one fired at Earth from a few thousand light-years away, it would strip our atmosphere and end nearly all life on the planet. And we would get no warning at all.
+> This is the most powerful explosion in the entire universe. A gamma-ray burst — in just seconds, it releases more energy than the Sun will in its whole ten-billion-year life. From a few thousand light-years away, one could strip much of our ozone and leave Earth under harsh ultraviolet for up to a decade. Some scientists think one already did, 440 million years ago. And we would get no warning at all.
 
-**End line:** One may already be on its way.
+**End line:** Somewhere in the universe, one goes off about once a day.
 
-**Title:** The deadliest event in the universe gives no warning
+**Title:** This is the universe's most powerful explosion
 
 **Description:** More energy in seconds than the Sun makes in 10 billion years. Subscribe for more cosmic dread. #space #universe #cosmos #astronomy #shorts #cosmichorror #physics
 
 **Shot 1**
 ```
-A collapsing star, its core imploding in its final instant, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain
+Two blinding beams of white and violet light blasting out from the poles of a collapsing star, the beams brighter than everything around them, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain
 ```
 
 **Shot 2**
 ```
-Twin beams of intense light firing out from a star's poles, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain
+A collapsing star, its core blazing white as it implodes in its final instant, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain
 ```
 
 **Shot 3**
@@ -402,16 +418,18 @@ A beam of radiation sweeping across space toward a tiny blue Earth, cinematic de
 
 **Shot 4**
 ```
-Earth's atmosphere flaring and being stripped away by a radiation beam, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain
+Earth seen from orbit with a thin glowing atmosphere, a faint violet beam of radiation striking it from deep space, auroral light rippling across the night side, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain
 ```
 
 ---
 
 ## 10 — The Great Attractor · *Unexplained*
 
+*Revised 2026-10-01: checked against the channel's hard rules and the retention scorer. Reasons and sources: `tools/rewrites/cosmic-10.json`.*
+
 **Hook:** Something is pulling our galaxy toward it — and we can't see what.
 
-**On-screen:** `THE GREAT ATTRACTOR`
+**On-screen:** `1 MILLION MPH`
 
 **Voiceover:**
 

@@ -65,11 +65,22 @@
       ],
       "kind": "still",
       "prompt": "Earth seen from orbit with a thin glowing atmosphere, a faint violet beam of radiation striking it from deep space, auroral light rippling across the night side, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain",
-      "motion": "Slow push toward Earth as the violet light spreads across the atmosphere"
+      "motion": "Slow push toward Earth as the violet light spreads across the atmosphere",
+      "replaces": "Shot 4"
+    },
+    {
+      "for_beats": [
+        2
+      ],
+      "replaces": "Shot 2",
+      "kind": "still",
+      "prompt": "A collapsing star, its core blazing white as it implodes in its final instant, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain",
+      "motion": "Slow push into the blazing core"
     }
   ],
   "notes": [
-    "'And we would get no warning at all' is kept: a burst arrives at the speed of light, so no warning is possible. That's physics, not an invented threat."
+    "'And we would get no warning at all' is kept: a burst arrives at the speed of light, so no warning is possible. That's physics, not an invented threat.",
+    "The new Shot 1 is the twin beams, so Shot 2 becomes the collapsing star. Shot 4 showed the atmosphere 'being stripped away', the retracted claim; it now shows the ozone layer under radiation."
   ],
   "packaging": {
     "title": "This is the universe's most powerful explosion",
@@ -79,5 +90,18 @@
       "onscreen": "'GAMMA-RAY BURST' named the thing but carried no stakes. Both new words are in the script.",
       "shot1": "Frame 1 was 'A collapsing star, its core imploding', with no light named, for a Short about the most powerful explosion there is. The beams are what a gamma-ray burst is."
     }
+  },
+  "original": {
+    "beats": [
+      "This is the deadliest event in the entire universe.",
+      "A gamma-ray burst — in just seconds, it releases more energy than the Sun will in its whole ten-billion-year life.",
+      "If one fired at Earth from a few thousand light-years away, it would strip our atmosphere and end nearly all life on the planet.",
+      "And we would get no warning at all.",
+      "One may already be on its way."
+    ],
+    "title": "The deadliest event in the universe gives no warning",
+    "description": "More energy in seconds than the Sun makes in 10 billion years. Subscribe for more cosmic dread. #space #universe #cosmos #astronomy #shorts #cosmichorror #physics",
+    "onscreen": "GAMMA-RAY BURST",
+    "shot1": "A collapsing star, its core imploding in its final instant, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain"
   }
 }
