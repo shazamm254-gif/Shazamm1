@@ -236,6 +236,22 @@ To score and rewrite a draft the owner pastes in chat: save it as text, run
 `retention_score.py --file draft.txt --json out.json`, write a proposals file
 with `"text": ...`, run `rewrite.py proposals.json --html page.html`, publish.
 
+Component 3, the packaging scorer, extends `tools/optimize_metadata.py`
+(`--short N`, optional `--image frame.png`). It scores the first frame from
+Shot 1's Flux prompt against `docs/THUMBNAIL_CHECKLIST.md`, plus on-screen
+text, title and description. Each check names its signal and basis, and the
+old linter rules with no ranking signal are shown but not scored. Proposals may
+carry a `packaging` block (title, onscreen, description, why), a `Shot 1`
+replacement, and `retracts` phrases that the description must not repeat.
+There's no click-through estimate, by design: Shorts play without a click.
+Search demand reads `tools/keyword_demand.json`, which Claude fills from
+`vidiq_keyword_research`. It's empty until credits reset; it never guesses.
+`measure_frame` (Pillow) has only been tested on synthetic frames, because
+*.hf.space images can't be downloaded here.
+
+The tag rule was changed: YouTube Help says tags "play a minimal role" and
+excessive tags break spam policy, so the linter no longer asks for 10–15.
+
 The scorer reads wording, not truth: on #3, #6 and #9 the false lines scored
 higher than the corrected ones. Never let the score argue a rule fix away.
 

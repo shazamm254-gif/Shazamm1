@@ -5,3 +5,4 @@ requests>=2.31.0
 # tool-calling loop. Also powers the --use-claude flags on the other tools --
 # those fall back to built-in rule-based logic without it.
 anthropic>=1.0.0
+pillow>=10.0  # optional: optimize_metadata.py --image measures a first frame

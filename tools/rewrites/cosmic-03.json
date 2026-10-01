@@ -1,16 +1,54 @@
 {
   "short": 3,
   "rewrites": [
-    {"beat": 5, "reason": "rule", "rule": 1,
-     "after": "Within a week, the ground is colder than a freezer, and the seas begin to ice over.",
-     "why": "'Within weeks, the oceans freeze' overstates it: the deep ocean takes about a thousand years. Below 0°F in a week is sourced, and 'colder than a freezer' makes it concrete.",
-     "sources": [{"claim": "Caltech (David Stevenson): surface below 0°F within about a week; the deep ocean takes far longer to freeze", "url": "https://www.caltech.edu/about/news/caltech-question-month-if-sun-ceased-exist-right-now-how-long-would-mankind-survive-would"}]},
-    {"beat": 6, "reason": "rule", "rule": 1,
-     "after": "Within a year, it's a hundred degrees below zero. Eventually, the air itself falls as snow.",
-     "why": "The original said the air freezes within a year. Caltech puts the surface near -100°F at a year; the air freezes only much later, so 'eventually' replaces the false deadline.",
-     "sources": [{"claim": "About -100°F after one year; surface eventually cools to about 30 kelvin", "url": "https://www.caltech.edu/about/news/caltech-question-month-if-sun-ceased-exist-right-now-how-long-would-mankind-survive-would"},
-                 {"claim": "Nitrogen freezes at 63 K, so at ~30 K the air is solid (my inference from the two figures)", "url": "https://en.wikipedia.org/wiki/Nitrogen"}]}
+    {
+      "beat": 5,
+      "reason": "rule",
+      "rule": 1,
+      "after": "Within a week, the ground is colder than a freezer, and the seas begin to ice over.",
+      "why": "'Within weeks, the oceans freeze' overstates it: the deep ocean takes about a thousand years. Below 0°F in a week is sourced, and 'colder than a freezer' makes it concrete.",
+      "sources": [
+        {
+          "claim": "Caltech (David Stevenson): surface below 0°F within about a week; the deep ocean takes far longer to freeze",
+          "url": "https://www.caltech.edu/about/news/caltech-question-month-if-sun-ceased-exist-right-now-how-long-would-mankind-survive-would"
+        }
+      ]
+    },
+    {
+      "beat": 6,
+      "reason": "rule",
+      "rule": 1,
+      "after": "Within a year, it's a hundred degrees below zero. Eventually, the air itself falls as snow.",
+      "why": "The original said the air freezes within a year. Caltech puts the surface near -100°F at a year; the air freezes only much later, so 'eventually' replaces the false deadline.",
+      "sources": [
+        {
+          "claim": "About -100°F after one year; surface eventually cools to about 30 kelvin",
+          "url": "https://www.caltech.edu/about/news/caltech-question-month-if-sun-ceased-exist-right-now-how-long-would-mankind-survive-would"
+        },
+        {
+          "claim": "Nitrogen freezes at 63 K, so at ~30 K the air is solid (my inference from the two figures)",
+          "url": "https://en.wikipedia.org/wiki/Nitrogen"
+        }
+      ]
+    }
   ],
-  "shots": [],
-  "notes": ["Shots 3 and 4 (frozen oceans, frost-covered city) still fit the rewritten beats."]
+  "shots": [
+    {
+      "for_beats": [
+        1
+      ],
+      "replaces": "Shot 1",
+      "kind": "clip",
+      "prompt": "The blazing Sun filling most of the frame, its brilliant surface churning with fire, light beginning to collapse inward at its edges, a tiny dark Earth silhouetted in the foreground for scale, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain",
+      "motion": "The Sun's light shrinks inward and dims while the tiny Earth stays still"
+    }
+  ],
+  "notes": [
+    "Shots 3 and 4 (frozen oceans, frost-covered city) still fit the rewritten beats."
+  ],
+  "packaging": {
+    "why": {
+      "shot1": "Frame 1 was 'The Sun blinking out, the frame falling into darkness'. Flux reads darkness literally, and on this pipeline that has produced a black rectangle. A black first frame is the one thing guaranteed to be swiped. The new prompt leads with the blazing Sun and adds Earth for scale; the clip does the vanishing."
+    }
+  }
 }

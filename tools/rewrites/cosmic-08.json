@@ -1,0 +1,25 @@
+{
+  "short": 8,
+  "rewrites": [],
+  "shots": [
+    {
+      "for_beats": [
+        1
+      ],
+      "replaces": "Shot 1",
+      "kind": "clip",
+      "prompt": "A single bright spiral galaxy glowing large in the centre of the frame, with nothing but black around it in every direction, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain",
+      "motion": "Very slow pull back, the black widening around the galaxy"
+    }
+  ],
+  "notes": [],
+  "packaging": {
+    "title": "The loneliest place in the known universe",
+    "why": {
+      "title": "The script says 'a bubble of almost-nothing… barely a galaxy inside it', so 'is empty' promised more than the video delivers. The new title is the script's own hook line.",
+      "shot1": "Frame 1 was a cluster 'glowing small in one corner'. Small and off-centre is on your checklist's reject list. One galaxy, large and alone, says 'loneliest' at a glance; the pull back shows the void.",
+      "onscreen": "'330 MILLION LIGHT-YEARS OF NOTHING' is 5 words; this keeps the number and the stakes in 4."
+    },
+    "onscreen": "330M LIGHT-YEARS OF NOTHING"
+  }
+}

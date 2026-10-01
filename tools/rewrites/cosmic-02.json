@@ -1,30 +1,94 @@
 {
   "short": 2,
   "rewrites": [
-    {"beat": 1, "reason": "rule", "rule": 1,
-     "after": "This might be the largest thing in the entire universe.",
-     "why": "Its existence is disputed, so 'is the largest' states a contested claim as fact. 'Might be' keeps the superlative and opens a second question: why only might?",
-     "sources": [{"claim": "Other researchers doubt the structure exists", "url": "https://en.wikipedia.org/wiki/Hercules%E2%80%93Corona_Borealis_Great_Wall"}]},
-    {"beat": 2, "reason": "rule", "rule": 1,
-     "after": "The Hercules–Corona Borealis Great Wall, a wall of galaxies nearly ten billion light-years across.",
-     "why": "Its discoverers estimate 6.5–9.8 billion light-years. Hard rule 1 asks for the conservative figure, so 'nearly ten billion' instead of a flat ten.",
-     "sources": [{"claim": "Discoverers' estimate: 2,000–3,000 megaparsecs, about 6.5–9.8 billion light-years (Horváth, Hakkila & Bagoly, 2014)", "url": "https://en.wikipedia.org/wiki/Hercules%E2%80%93Corona_Borealis_Great_Wall"}]},
-    {"beat": 3, "reason": "rule", "rule": 1,
-     "after": "Light, the fastest thing there is, would need nearly ten billion years to cross it, most of the age of the cosmos.",
-     "why": "The original said light can't cross it in the age of the cosmos. That's false: the universe is 13.8 billion years old. The true version is still enormous, about 70% of all time so far.",
-     "sources": [{"claim": "Age of the universe: 13.8 billion years", "url": "https://en.wikipedia.org/wiki/Age_of_the_universe"}]},
-    {"beat": 5, "reason": "rule", "rule": 1,
-     "after": "The largest thing in the universe, and we still aren't sure it's real.",
-     "why": "'We don't know how it formed' assumed it exists. The real open question is whether it's real at all, and saying so echoes the hook for the loop.",
-     "sources": [{"claim": "Its existence is still debated", "url": "https://www.space.com/the-universe/gamma-ray-bursts-reveal-largest-structure-in-the-universe-is-bigger-and-closer-to-earth-than-we-knew-the-jury-is-still-out-on-what-it-all-means"}]}
+    {
+      "beat": 1,
+      "reason": "rule",
+      "rule": 1,
+      "after": "This might be the largest thing in the entire universe.",
+      "why": "Its existence is disputed, so 'is the largest' states a contested claim as fact. 'Might be' keeps the superlative and opens a second question: why only might?",
+      "sources": [
+        {
+          "claim": "Other researchers doubt the structure exists",
+          "url": "https://en.wikipedia.org/wiki/Hercules%E2%80%93Corona_Borealis_Great_Wall"
+        }
+      ]
+    },
+    {
+      "beat": 2,
+      "reason": "rule",
+      "rule": 1,
+      "after": "The Hercules–Corona Borealis Great Wall, a wall of galaxies nearly ten billion light-years across.",
+      "why": "Its discoverers estimate 6.5–9.8 billion light-years. Hard rule 1 asks for the conservative figure, so 'nearly ten billion' instead of a flat ten.",
+      "sources": [
+        {
+          "claim": "Discoverers' estimate: 2,000–3,000 megaparsecs, about 6.5–9.8 billion light-years (Horváth, Hakkila & Bagoly, 2014)",
+          "url": "https://en.wikipedia.org/wiki/Hercules%E2%80%93Corona_Borealis_Great_Wall"
+        }
+      ]
+    },
+    {
+      "beat": 3,
+      "reason": "rule",
+      "rule": 1,
+      "after": "Light, the fastest thing there is, would need nearly ten billion years to cross it, most of the age of the cosmos.",
+      "why": "The original said light can't cross it in the age of the cosmos. That's false: the universe is 13.8 billion years old. The true version is still enormous, about 70% of all time so far.",
+      "sources": [
+        {
+          "claim": "Age of the universe: 13.8 billion years",
+          "url": "https://en.wikipedia.org/wiki/Age_of_the_universe"
+        }
+      ],
+      "retracts": [
+        "can't cross it",
+        "can't even cross it"
+      ]
+    },
+    {
+      "beat": 5,
+      "reason": "rule",
+      "rule": 1,
+      "after": "The largest thing in the universe, and we still aren't sure it's real.",
+      "why": "'We don't know how it formed' assumed it exists. The real open question is whether it's real at all, and saying so echoes the hook for the loop.",
+      "sources": [
+        {
+          "claim": "Its existence is still debated",
+          "url": "https://www.space.com/the-universe/gamma-ray-bursts-reveal-largest-structure-in-the-universe-is-bigger-and-closer-to-earth-than-we-knew-the-jury-is-still-out-on-what-it-all-means"
+        }
+      ]
+    }
   ],
   "shots": [
-    {"for_beats": [4], "replaces": "Shot 4", "kind": "still",
-     "prompt": "A single tiny bright point of light lost deep inside a vast glowing web of galaxy filaments stretching to every edge of the frame, the point small but clearly visible, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain",
-     "motion": "Very slow pull back, the point shrinking as more filaments enter the frame"}
+    {
+      "for_beats": [
+        1
+      ],
+      "replaces": "Shot 1",
+      "kind": "still",
+      "prompt": "A vast glowing web of galaxies stretching across the entire frame, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain",
+      "motion": "Very slow push into the web of galaxies"
+    },
+    {
+      "for_beats": [
+        4
+      ],
+      "replaces": "Shot 4",
+      "kind": "still",
+      "prompt": "A single tiny bright point of light lost deep inside a vast glowing web of galaxy filaments stretching to every edge of the frame, the point small but clearly visible, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain",
+      "motion": "Very slow pull back, the point shrinking as more filaments enter the frame"
+    }
   ],
   "notes": [
     "The published description repeats the false claim ('light can't even cross it'). Change it to: Nearly 10 billion light-years wide, and we're not sure it's real. Subscribe for more cosmic dread. #space #universe #cosmos #astronomy #galaxy #shorts #spacefacts",
     "Shot 4 asked for 'a tiny labeled dot', which invites Flux to draw a text label. The replacement keeps the scale idea with no text."
-  ]
+  ],
+  "packaging": {
+    "title": "The largest thing in the universe might not be real",
+    "description": "Nearly 10 billion light-years wide, and astronomers still aren't sure it's real. Subscribe for more cosmic dread. #space #universe #cosmos #astronomy #galaxy #shorts #spacefacts",
+    "why": {
+      "title": "The script now says 'might be' and ends on 'we still aren't sure it's real'. The old title stated the disputed claim as fact; the new one promises exactly what the video delivers.",
+      "description": "The old description repeated the false 'light can't even cross it'.",
+      "shot1": "Frame 1 was 'Earth as a small blue dot against the black': a small subject in empty black, which your checklist rejects. This is your existing Shot 3 moved to the front, so nothing new needs generating. The small Earth works better later, for scale."
+    }
+  }
 }

@@ -39,6 +39,15 @@
   "shots": [
     {
       "for_beats": [
+        1
+      ],
+      "replaces": "Shot 1",
+      "kind": "clip",
+      "prompt": "A lone frozen planet lit only by a thin rim of cold blue starlight along one edge, drifting through starless black, its icy surface faintly visible, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain",
+      "motion": "Slow drift past the planet as the rim of light slides along its edge"
+    },
+    {
+      "for_beats": [
         5
       ],
       "kind": "still",
@@ -48,5 +57,12 @@
   ],
   "notes": [
     "Beat 3's 'billions of them, more than there are stars' is kept: Osaka/NASA research estimates about 20 rogue planets per star, so 'billions' is an undercount, not an overclaim."
-  ]
+  ],
+  "packaging": {
+    "onscreen": "BILLIONS, ALONE",
+    "why": {
+      "onscreen": "'ROGUE PLANETS' had no number or stakes and half its words repeat the title. 'Billions' and 'alone' both come from the script.",
+      "shot1": "Frame 1 opened on 'A dark frozen rogue planet', and Flux turns a darkness-led prompt into a black frame. Leading with the lit rim keeps the planet dark but visible."
+    }
+  }
 }

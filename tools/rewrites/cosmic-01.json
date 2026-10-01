@@ -44,5 +44,11 @@
   "notes": [
     "No new shots. The four existing shots still cover the beats in order: disk (hook, beat 2), stretching silhouette (beats 3–4), full ring (beat 5), crescent (ending).",
     "Runtime stays inside 30 seconds: the rewrite trades the feet-and-head explanation for the 12.8-second payoff. Shot 2 already shows the stretching, so the picture carries what the words dropped."
-  ]
+  ],
+  "packaging": {
+    "onscreen": "12.8 SECONDS INSIDE",
+    "why": {
+      "onscreen": "'INTO THE BLACK' had no number and repeated the title's 'black'. The rewrite's 12.8-second payoff makes a second hook, and it's a text overlay, so nothing needs reshooting."
+    }
+  }
 }

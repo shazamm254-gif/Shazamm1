@@ -147,6 +147,26 @@ section { display: flex; flex-direction: column; gap: 12px; min-width: 0 }
   white-space: pre-wrap; word-break: break-word }
 .tagrw { color: var(--accent) }
 
+/* packaging */
+.pk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px }
+.pk-tile { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px;
+  display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: var(--muted) }
+.pk-tile b { font: 600 20px var(--f-data) }
+.pk-final { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px;
+  display: flex; flex-direction: column; gap: 12px }
+.pk-field { display: flex; flex-direction: column; gap: 4px; min-width: 0 }
+.pk-field .lbl { font: 600 10.5px var(--f-data); letter-spacing: .08em; text-transform: uppercase; color: var(--muted) }
+.pk-field .val { margin: 0; overflow-wrap: anywhere }
+.pk-field .val.ost { font: 600 15px var(--f-data); letter-spacing: .04em }
+.pk-field .was { margin: 0; font-size: 13px; color: var(--muted); text-decoration: line-through;
+  text-decoration-color: color-mix(in srgb, var(--bad) 55%, transparent); overflow-wrap: anywhere }
+.pk-field .why { color: var(--muted); font-size: 13px }
+.pk-group { display: flex; flex-direction: column; gap: 6px }
+.pk-group h3 { margin: 0; font-size: 14px }
+.fixline { font-size: 13px; margin: 2px 0 0 24px; color: var(--fg) }
+.fixline::before { content: "Fix  "; font: 600 11px var(--f-data); letter-spacing: .08em; color: var(--accent) }
+.basis { font: 11px var(--f-data); color: var(--muted); margin-left: 24px }
+
 details { border-top: 1px solid var(--line); padding-top: 12px }
 summary { cursor: pointer; font-weight: 600; min-height: 32px }
 .how { display: flex; flex-direction: column; gap: 12px; font-size: 14px; padding-top: 8px }
@@ -161,7 +181,7 @@ summary { cursor: pointer; font-weight: 600; min-height: 32px }
 
 <div class="wrap">
   <header class="head">
-    <span class="eyebrow">Algorithm Killer · Score &amp; rewrite</span>
+    <span class="eyebrow">Algorithm Killer · Score, rewrite, package</span>
     <nav class="picker" id="picker" aria-label="Choose a script"></nav>
     <h1 id="title"></h1>
     <div class="scoreline">
@@ -175,6 +195,11 @@ summary { cursor: pointer; font-weight: 600; min-height: 32px }
   <section aria-labelledby="h-rw" id="rwsec" hidden>
     <h2 id="h-rw">Rewrites</h2>
     <div id="rw"></div>
+  </section>
+
+  <section aria-labelledby="h-pk" id="pksec" hidden>
+    <h2 id="h-pk">Packaging</h2>
+    <div id="pk"></div>
   </section>
 
   <section aria-labelledby="h-time">
@@ -205,7 +230,7 @@ summary { cursor: pointer; font-weight: 600; min-height: 32px }
     <summary>How the score works</summary>
     <div class="how" id="how"></div>
   </details>
-  <p class="foot">To score and rewrite a new draft, paste it into the chat with Claude. You'll get this page back with your script in it. Scripts marked ✎ have checked rewrites.</p>
+  <p class="foot">To score and rewrite a new draft, paste it into the chat with Claude. You'll get this page back with your script in it. Scripts marked ✎ have checked fixes.</p>
 </div>
 
 <script>
@@ -246,9 +271,10 @@ function checksHtml(list) {
 
 function renderRewrite(r) {
   const w = r.rewrite;
-  $("rwsec").hidden = !w; $("scriptnote").hidden = !w;
-  $("h-script").textContent = w ? "Rewritten script" : "Script as scored";
-  if (!w) return;
+  const hasRw = w && (w.rewrites.length || w.shots.length);
+  $("rwsec").hidden = !hasRw; $("scriptnote").hidden = !(w && w.rewrites.length);
+  $("h-script").textContent = w && w.rewrites.length ? "Rewritten script" : "Script as scored";
+  if (!hasRw) return;
   const failed = w.rewrites.filter(x => !x.accepted).length + w.shots.filter(x => !x.accepted).length;
   const cost = r.overall - w.before_overall;
   let html = `<div class="status ${w.all_accepted ? "pass" : "fail"}">
@@ -292,17 +318,58 @@ function renderRewrite(r) {
   $("rw").querySelectorAll("[data-copy]").forEach(b => b.onclick = () => copyText(b, b.dataset.copy));
 }
 
+const PK_LABEL = {first_frame: "First frame", onscreen_text: "On-screen text", title: "Title",
+  description: "Description", search: "Search demand"};
+const FIELD_LABEL = {title: "Title", description: "Description", onscreen: "On-screen text", shot1: "First frame (Shot 1 prompt)"};
+
+function renderPackaging(r) {
+  const p = r.packaging;
+  $("pksec").hidden = !p;
+  if (!p) return;
+  const why = (r.rewrite && r.rewrite.packaging_why) || {};
+  const changed = p.before ? p.before.fields : {};
+  let html = `<div class="pk-grid">${Object.entries(p.sections).map(([k, v]) =>
+      `<div class="pk-tile">${PK_LABEL[k]} ×${p.weights[k]}<b class="t-${band(v)}">${v}</b></div>`).join("")}
+      ${p.search.checked ? "" : `<div class="pk-tile">Search demand<b style="color:var(--muted)">–</b></div>`}</div>`;
+  html += `<p class="verdict" style="font-size:15px">Packaging <b class="num t-${band(p.overall)}">${p.overall}</b>/100${p.before ?
+      ` (was ${p.before.overall} before the fixes below)` : ""}. ${esc(p.search.detail)}</p>`;
+  const fields = [["title", p.title, "Copy title"], ["onscreen", p.onscreen, "Copy text"],
+                  ["description", p.description, "Copy description"], ["shot1", p.shot1, "Copy prompt"]];
+  html += `<div class="pk-final">${fields.map(([k, v, btn]) => `<div class="pk-field">
+      <span class="lbl">${FIELD_LABEL[k]}${k in changed ? ' · <span class="tagrw">CHANGED</span>' : ""}</span>
+      <p class="val${k === "onscreen" ? " ost" : ""}${k === "shot1" ? " prompt" : ""}">${esc(v)}</p>
+      ${k in changed ? `<p class="was">${esc(changed[k])}</p>${why[k] ? `<span class="why">${esc(why[k])}</span>` : ""}` : ""}
+      <div class="row"><button class="copy" type="button" data-copy="${esc(v)}">${btn}</button></div></div>`).join("")}</div>`;
+  html += Object.entries(p.checks).map(([k, list]) => {
+    const fails = list.filter(c => !c.ok).length;
+    return `<div class="pk-group"><h3>${PK_LABEL[k]} <span class="num t-${band(p.sections[k])}">${p.sections[k]}</span>
+      <span style="font-weight:400;color:var(--muted);font-size:12px">${fails ? fails + " to fix" : "all pass"}</span></h3>
+      <ul class="checks">${list.map(c => `<li><span class="mk ${c.ok ? "t-good" : "t-bad"}">${c.ok ? "✓" : "✗"}</span>
+        <span><b>${esc(c.name)}</b> <span class="d">${esc(c.detail)}</span></span></li>
+        ${c.ok ? "" : `<li style="display:block"><p class="fixline">${esc(c.fix)}</p></li>`}
+        <li style="display:block"><span class="basis">${esc(SIG[c.signal] || c.signal)} · ${esc(c.basis)}</span></li>`).join("")}</ul></div>`;
+  }).join("");
+  if (p.unscored.length)
+    html += `<p class="foot">Shown but not scored, because they serve no ranking signal: ${esc(p.unscored.join(" "))}</p>`;
+  html += `<p class="foot">No click-through estimate. In the Shorts feed the video plays without a click, so the first
+    frame is judged by viewed-vs-swiped-away, which the first-frame checks and the retention score target.
+    Checklist source: ${esc(p.checklist_source)}. These checks read the prompt before the image exists; once a frame is generated it can be measured too.</p>`;
+  $("pk").innerHTML = html;
+  $("pk").querySelectorAll("[data-copy]").forEach(b => b.onclick = () => copyText(b, b.dataset.copy));
+}
+
 function show(idx) {
   const r = DATA[idx];
   document.querySelectorAll("#picker button").forEach((b, i) => b.setAttribute("aria-pressed", i === idx));
   try { localStorage.setItem("ak-pick", idx); } catch (e) {}
-  $("title").textContent = r.label + (r.rewrite ? " · rewritten" : "");
+  $("title").textContent = r.label + (r.rewrite && r.rewrite.rewrites.length ? " · rewritten" : "");
   $("overall").innerHTML = `<span class="t-${band(r.overall)}">${r.overall}</span><small>/100</small>`;
   $("parts").innerHTML = [["Hook", r.sections.hook, RULES.section_weights.hook], ["Body", r.sections.body, RULES.section_weights.body],
     ["Ending", r.sections.ending, RULES.section_weights.ending]].map(([n, v, w]) =>
     `<div>${n} ×${w}<b class="t-${band(v)}">${v}</b></div>`).join("")
     + (r.penalty ? `<div>Killers<b class="t-bad">−${r.penalty}</b></div>` : "")
-    + (r.rewrite ? `<div>Before<b class="t-${band(r.rewrite.before_overall)}">${r.rewrite.before_overall}</b></div>` : "");
+    + (r.rewrite ? `<div>Before<b class="t-${band(r.rewrite.before_overall)}">${r.rewrite.before_overall}</b></div>` : "")
+    + (r.packaging ? `<div>Packaging<b class="t-${band(r.packaging.overall)}">${r.packaging.overall}</b></div>` : "");
   $("verdict").textContent = verdict(r);
   $("calib").textContent = r.calibrated_on_videos
     ? `Weights calibrated on ${r.calibrated_on_videos} of your published Shorts.`
@@ -345,6 +412,7 @@ function show(idx) {
     btn.onclick = () => copyText(btn, btn.previousElementSibling.textContent));
 
   renderRewrite(r);
+  renderPackaging(r);
 
   const script = r.beats.map(b => b.text).join(" ");
   $("scripttext").textContent = script;
@@ -361,7 +429,7 @@ $("how").innerHTML = `<p>Each beat is one spoken sentence, timed at your measure
      the feedback loop checks every rule against your own retention numbers and keeps the ones your channel supports.</p>`;
 
 $("picker").innerHTML = DATA.map((r, i) =>
-  `<button type="button" aria-pressed="false"><span class="num t-${band(r.overall)}">${r.overall}</span>${esc(r.label)}${r.rewrite ? ' <span class="tagrw">✎</span>' : ""}</button>`).join("");
+  `<button type="button" aria-pressed="false"><span class="num t-${band(r.overall)}">${r.overall}</span>${esc(r.label)}${r.rewrite && (r.rewrite.rewrites.length || r.rewrite.shots.length || r.packaging && r.packaging.before) ? ' <span class="tagrw">✎</span>' : ""}</button>`).join("");
 $("picker").querySelectorAll("button").forEach((b, i) => b.onclick = () => show(i));
 if (DATA.length < 2) $("picker").hidden = true;
 let start = 0;
@@ -398,6 +466,11 @@ def build_deck(extra=()):
         else:
             out.append(rs.score_script("", niche, rules, label=f"#{s['num']} {s['title']}",
                                        beats=rs.doc_beats(s)))
+    import optimize_metadata as om
+    for s, r in zip(rs.load_doc_shorts(), out):
+        r["packaging"] = om.packaging_for_short(s["num"])
+        if r.get("rewrite") is not None:
+            r["rewrite"]["packaging_why"] = props.get(s["num"], {}).get("packaging", {}).get("why", {})
     out.extend(extra)
     return render(out, niche, rules)
 

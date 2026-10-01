@@ -29,6 +29,10 @@
           "claim": "Hypothesis that a gamma-ray burst helped trigger the Late Ordovician mass extinction ~440 million years ago (Melott et al. 2004)",
           "url": "https://arxiv.org/pdf/astro-ph/0309415"
         }
+      ],
+      "retracts": [
+        "strip our atmosphere",
+        "end nearly all life"
       ]
     },
     {
@@ -48,6 +52,15 @@
   "shots": [
     {
       "for_beats": [
+        1
+      ],
+      "replaces": "Shot 1",
+      "kind": "clip",
+      "prompt": "Two blinding beams of white and violet light blasting out from the poles of a collapsing star, the beams brighter than everything around them, cinematic deep space photography, photorealistic, ultra detailed, volumetric light, luminous highlights against rich black, awe-inducing scale, ominous, fine film grain",
+      "motion": "The beams flare outward and brighten as the star's core collapses"
+    },
+    {
+      "for_beats": [
         3
       ],
       "kind": "still",
@@ -57,5 +70,14 @@
   ],
   "notes": [
     "'And we would get no warning at all' is kept: a burst arrives at the speed of light, so no warning is possible. That's physics, not an invented threat."
-  ]
+  ],
+  "packaging": {
+    "title": "This is the universe's most powerful explosion",
+    "onscreen": "SECONDS. NO WARNING.",
+    "why": {
+      "title": "The rewritten hook says 'most powerful explosion', not 'deadliest event', which can't be sourced. The title now matches, and 'universe' sits inside the first 40 characters.",
+      "onscreen": "'GAMMA-RAY BURST' named the thing but carried no stakes. Both new words are in the script.",
+      "shot1": "Frame 1 was 'A collapsing star, its core imploding', with no light named, for a Short about the most powerful explosion there is. The beams are what a gamma-ray burst is."
+    }
+  }
 }
