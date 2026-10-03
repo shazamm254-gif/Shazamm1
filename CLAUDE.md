@@ -232,6 +232,12 @@ hard-rule fix is accepted even when it costs points; a score-only rewrite
 may never lower the script's score. Rebuild the whole deck page with
 `python tools/algorithm_killer_page.py --deck page.html`.
 
+Drafts the owner pastes in chat are saved as proposals in `tools/drafts/`
+(first: "Night of the Saber-Tooth", 2026-10-03, prehistoric, off-niche) and
+appear on the same page via `--deck`. The scorer reads short staccato
+fragments as weak beats, so action-montage writing scores low on "body"; say
+so rather than rewriting style the owner chose.
+
 To score and rewrite a draft the owner pastes in chat: save it as text, run
 `retention_score.py --file draft.txt --json out.json`, write a proposals file
 with `"text": ...`, run `rewrite.py proposals.json --html page.html`, publish.

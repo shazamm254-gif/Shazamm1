@@ -1,0 +1,200 @@
+{
+  "label": "Night of the Saber-Tooth",
+  "text": "Something is circling this camp. And nobody by the fire knows it yet. Twelve thousand years ago, the dark belonged to something else. A twig snaps. Then another. The children go quiet. The old hunter stops chewing. He's heard this silence before. Then it hits. Five hundred pounds. Seven-inch fangs. Torches fly. Everyone screams. Everyone runs. The fire scatters, and now it's dark. But running is how you die. One hunter stops. Plants his spear. Then another. Then all of them. Shoulder to shoulder, fire in one hand, stone in the other. The cat circles. It has never seen prey turn around. It lunges. Nobody moves. That's the night the hunted became the hunters.",
+  "rewrites": [
+    {
+      "beat": 2,
+      "reason": "score",
+      "after": "",
+      "why": "Cut. The on-screen text NOBODY SEES IT says this while the first line plays, so the voiceover doesn't have to.",
+      "sources": []
+    },
+    {
+      "beat": 3,
+      "reason": "rule",
+      "rule": 1,
+      "after": "Fourteen thousand years ago, the dark belonged to something else.",
+      "why": "The latest dated North American Smilodon is about 13,000 years old, so 'twelve thousand' is slightly too late. Fourteen thousand sits inside the overlap with humans. Your 'something else' stays: it's what pulls.",
+      "sources": [
+        {
+          "claim": "Latest North American Smilodon fatalis specimen dated about 13,000 years ago; humans and Smilodon overlapped in the Americas",
+          "url": "https://en.wikipedia.org/wiki/Smilodon"
+        }
+      ]
+    },
+    {
+      "beat": 5,
+      "reason": "score",
+      "after": "",
+      "why": "Cut for time. Your draft runs about 47s of voiceover; shorter Shorts keep a larger share of viewers to the end.",
+      "sources": []
+    },
+    {
+      "beat": 6,
+      "reason": "score",
+      "after": "",
+      "why": "Cut for time. Your draft runs about 47s of voiceover; shorter Shorts keep a larger share of viewers to the end.",
+      "sources": []
+    },
+    {
+      "beat": 9,
+      "reason": "score",
+      "after": "Then it hits: five hundred pounds, seven-inch fangs.",
+      "why": "Three fragments become one line that lands the payoff all at once.",
+      "sources": [
+        {
+          "claim": "Smilodon fatalis weighed roughly 350–620 lb; upper canines up to about 11 inches",
+          "url": "https://en.wikipedia.org/wiki/Smilodon"
+        }
+      ]
+    },
+    {
+      "beat": 10,
+      "reason": "score",
+      "after": "",
+      "why": "Cut for time. Your draft runs about 47s of voiceover; shorter Shorts keep a larger share of viewers to the end.",
+      "sources": []
+    },
+    {
+      "beat": 11,
+      "reason": "score",
+      "after": "",
+      "why": "Cut for time. Your draft runs about 47s of voiceover; shorter Shorts keep a larger share of viewers to the end.",
+      "sources": []
+    },
+    {
+      "beat": 12,
+      "reason": "score",
+      "after": "",
+      "sources": [],
+      "why": "Cut from the voiceover for time; the torches-falling shot shows it, so the picture says it instead."
+    },
+    {
+      "beat": 13,
+      "reason": "score",
+      "after": "",
+      "why": "Cut for time. Your draft runs about 47s of voiceover; shorter Shorts keep a larger share of viewers to the end.",
+      "sources": []
+    },
+    {
+      "beat": 17,
+      "reason": "score",
+      "after": "One hunter stops and plants his spear.",
+      "why": "Two fragments into one action.",
+      "sources": []
+    },
+    {
+      "beat": 18,
+      "reason": "score",
+      "after": "",
+      "why": "Cut for time. Your draft runs about 47s of voiceover; shorter Shorts keep a larger share of viewers to the end.",
+      "sources": []
+    },
+    {
+      "beat": 19,
+      "reason": "score",
+      "after": "",
+      "why": "Cut for time. Your draft runs about 47s of voiceover; shorter Shorts keep a larger share of viewers to the end.",
+      "sources": []
+    },
+    {
+      "beat": 21,
+      "reason": "score",
+      "after": "",
+      "why": "Cut for time. Your draft runs about 47s of voiceover; shorter Shorts keep a larger share of viewers to the end.",
+      "sources": []
+    },
+    {
+      "beat": 23,
+      "reason": "rule",
+      "rule": 1,
+      "after": "Prey is supposed to run. Not this time.",
+      "why": "'It has never seen prey turn around' claims to know this animal's experience. 'Prey is supposed to run' is true of predators in general, and 'Not this time' keeps the turn.",
+      "sources": []
+    },
+    {
+      "beat": 26,
+      "reason": "rule",
+      "rule": 2,
+      "after": "And now the whole camp is circling it.",
+      "why": "'That's the night the hunted became the hunters' presents a made-up night as the moment history turned, and humans were hunting long before. The new last line reverses the first one ('circling this camp'), so the cut back to the start reads as one continuous story.",
+      "sources": []
+    }
+  ],
+  "shots": [
+    {
+      "for_beats": [
+        1
+      ],
+      "kind": "still",
+      "prompt": "A small campfire glowing in a prehistoric forest clearing at night, warm orange light on a wall of black trees, two pale amber points of eyeshine between the trunks, cinematic, photorealistic, ultra detailed, volumetric firelight, deep black night, ominous, fine film grain",
+      "motion": "Slow push toward the treeline as the eyeshine blinks out"
+    },
+    {
+      "for_beats": [
+        3,
+        4,
+        7,
+        8
+      ],
+      "kind": "still",
+      "prompt": "The faint outline of a huge cat sliding between dark tree trunks at the edge of firelight, only its shoulder and a glint of eyeshine visible, cinematic, photorealistic, ultra detailed, volumetric firelight, deep black night, ominous, fine film grain",
+      "motion": "Slow drift sideways, following the shape"
+    },
+    {
+      "for_beats": [
+        9
+      ],
+      "kind": "clip",
+      "prompt": "A saber-toothed cat leaping out of the dark into orange firelight, long curved fangs catching the glow, sparks and embers flying, cinematic, photorealistic, ultra detailed, volumetric firelight, deep black night, ominous, fine film grain",
+      "motion": "The cat lunges toward camera, embers burst"
+    },
+    {
+      "for_beats": [
+        12,
+        14,
+        15
+      ],
+      "kind": "clip",
+      "prompt": "Burning torches tumbling through the air in a dark prehistoric forest, the campfire scattered into glowing embers, streaks of sparks, cinematic, photorealistic, ultra detailed, volumetric firelight, deep black night, ominous, fine film grain",
+      "motion": "Torches fall and the light collapses into scattered embers"
+    },
+    {
+      "for_beats": [
+        16,
+        17,
+        20
+      ],
+      "kind": "still",
+      "prompt": "Silhouettes of hunters seen from behind standing shoulder to shoulder in a line, spears planted, torches raised against the black forest, cinematic, photorealistic, ultra detailed, volumetric firelight, deep black night, ominous, fine film grain",
+      "motion": "Slow push toward the line of torches"
+    },
+    {
+      "for_beats": [
+        22,
+        23
+      ],
+      "kind": "clip",
+      "prompt": "A saber-toothed cat pacing in a half circle at the edge of the firelight, its gaze fixed on a wall of torches, cinematic, photorealistic, ultra detailed, volumetric firelight, deep black night, ominous, fine film grain",
+      "motion": "The cat paces left to right, tail low"
+    },
+    {
+      "for_beats": [
+        24,
+        25,
+        26
+      ],
+      "kind": "still",
+      "prompt": "Glowing embers of a scattered campfire fading in the dark, a line of torches standing firm in the background, cinematic, photorealistic, ultra detailed, volumetric firelight, deep black night, ominous, fine film grain",
+      "motion": "Slow push into the embers, ending on their glow so the loop returns to the campfire"
+    }
+  ],
+  "notes": [
+    "Drop the 4-second title card at the end. It's dead time at the moment the loop should restart, and a black text card is what people swipe on. Put NIGHT OF THE SABER-TOOTH in the YouTube title instead.",
+    "Opening on-screen text: NOBODY SEES IT (3 words, replaces THEY DON'T KNOW IT'S THERE at 5). It also stands in for the cut second line.",
+    "The montage of sub-second cuts in 0:15–0:26 would need 11+ images, more than one day's free image quota (~7). Seven shots cover the whole script: one day of generation.",
+    "Every person is a silhouette seen from behind: the pipeline can't hold faces, so 'faces turning from the fire' becomes the hunters' backs.",
+    "Sound design (heartbeat, drums, roar) has no free source in the current pipeline. vidIQ music costs 25 credits; sound effects aren't available.",
+    "This isn't a Cosmic Dread topic. It was checked against the Cosmic hard rules as the closest set, since there's no config for a prehistoric niche."
+  ]
+}

@@ -577,5 +577,13 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--deck", required=True, help="Write the deck page here")
     a = ap.parse_args()
+    # Drafts the owner pasted in chat (tools/drafts/*.json) ride along on the same page.
+    import rewrite
+    import retention_score as rs
+    niche, rules = rs.load_niche(), rs.load_rules()
+    drafts = []
+    for path in sorted(glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "drafts", "*.json"))):
+        with open(path, encoding="utf-8") as fh:
+            drafts.append(rewrite.run(json.load(fh), niche, rules))
     with open(a.deck, "w", encoding="utf-8") as f:
-        f.write(build_deck())
+        f.write(build_deck(drafts))
