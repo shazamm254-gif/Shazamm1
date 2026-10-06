@@ -48,6 +48,14 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 FONT = '/usr/share/fonts/Archivo-var.ttf'
 SS = 4                      # supersample before the squeeze
 PAD = 7                     # paper either side, for the erase to draw on
+REACH = 22                  # how far out the erase may look for clean paper
+
+# What counts as ink, and what counts as the surface it sits on. The
+# defaults suit dark text on white paper. They are per-plane because a
+# yellow evidence tag photographs at a luminance of about 74 -- darker
+# than the threshold that would call it paper, and barely above the
+# level that would call the whole tag ink.
+INK, SURFACE = 110, 150
 
 
 def sharpness(gray):
@@ -58,14 +66,14 @@ def sharpness(gray):
     return float(((sliding_window_view(gray, (3, 3)) * k).sum(axis=(2, 3))).var())
 
 
-def measure(gray, x0, x1, y0, y1):
+def measure(gray, x0, x1, y0, y1, ink_thresh=INK):
     """Cap height, baseline, extent and ink tone of a token, from pixels.
 
     Per-column extremes, not the box's outer bounds: a comma or a slash
     dips below the baseline, and letting it set the baseline would push
     the whole replacement up by its own descender."""
     sub = gray[y0:y1 + 1, x0:x1 + 1]
-    ink = sub < 110
+    ink = sub < ink_thresh
     tops, bots = [], []
     for c in range(ink.shape[1]):
         rs = np.where(ink[:, c])[0]
@@ -81,7 +89,8 @@ def measure(gray, x0, x1, y0, y1):
                 ink=int(round(sub[ink].mean())))
 
 
-def limits(gray, x0, x1, y0, y1, reach=60):
+def limits(gray, x0, x1, y0, y1, reach=60, ink_thresh=INK,
+           surface_thresh=SURFACE):
     """How far either side of a token the erase may go.
 
     Two things stop it. The neighbouring word: rubbing out three pixels
@@ -97,31 +106,45 @@ def limits(gray, x0, x1, y0, y1, reach=60):
             if not 0 <= x < gray.shape[1]:
                 break
             col = gray[y0:y1 + 1, x]
-            if col.min() < 110 or np.median(col) < 150:
+            if col.min() < ink_thresh or np.median(col) < surface_thresh:
                 break
             lim = x
         return lim - 2 if step > 0 else lim + 2
     return scan(-1), scan(1)
 
 
-def _font(cap_px, axes):
+def _axes(font, axes):
+    """Apply as many axes as the font actually has.
+
+    Static fonts have none and raise rather than no-op, and a
+    single-axis face like Caveat rejects the (weight, width) pair that
+    suits Archivo, so fall back to just the weight before giving up."""
+    for a in (list(axes), list(axes)[:1]):
+        try:
+            font.set_variation_by_axes(a)
+            return
+        except (OSError, ValueError):
+            continue
+
+
+def _font(cap_px, axes, path=FONT):
     fs = 8
     while fs < 600:
-        f = ImageFont.truetype(FONT, fs + 1)
-        f.set_variation_by_axes(list(axes))
+        f = ImageFont.truetype(path, fs + 1)
+        _axes(f, axes)
         bb = f.getbbox('0')
         if bb[3] - bb[1] > cap_px:
             break
         fs += 1
-    f = ImageFont.truetype(FONT, fs)
-    f.set_variation_by_axes(list(axes))
+    f = ImageFont.truetype(path, fs)
+    _axes(f, axes)
     return f
 
 
-def ink_box(text, shear, axes, size=140):
+def ink_box(text, shear, axes, size=140, path=FONT):
     """The text sheared and cropped to its own ink, at a generous size."""
-    f = ImageFont.truetype(FONT, size)
-    f.set_variation_by_axes(list(axes))
+    f = ImageFont.truetype(path, size)
+    _axes(f, axes)
     bb = f.getbbox(text)
     W, H = int(bb[2] - bb[0]) + 600, size * 4
     im = Image.new('L', (W, H), 0)
@@ -137,12 +160,12 @@ def ink_box(text, shear, axes, size=140):
     return im.crop((xs.min(), ys.min(), xs.max() + 1, ys.max() + 1))
 
 
-def layer(text, cap, shear, squeeze, axes):
+def layer(text, cap, shear, squeeze, axes, path=FONT):
     """An alpha layer of `text`: cap height `cap`, sheared, then squeezed.
 
     Also returns where the ink starts and where the baseline sits inside
     it, so the caller can land it exactly on the line it joins."""
-    f = _font(cap * SS, axes)
+    f = _font(cap * SS, axes, path)
     bb = f.getbbox(text)
     pad = int(80 * SS + abs(shear) * cap * SS * 2)
     W = int(bb[2] - bb[0]) + pad * 2
@@ -165,7 +188,8 @@ def layer(text, cap, shear, squeeze, axes):
     return out, (xs.max() - xs.min() + 1) / SS, xs.min() * sx, base_y / SS
 
 
-def edit_plane(img, ang, centre, shear, mode, axes, edits):
+def edit_plane(img, ang, centre, shear, mode, axes, edits,
+               font=FONT, ink_thresh=INK, surface_thresh=SURFACE):
     """Straighten one plane, rewrite its lines, and put it back."""
     D = img.rotate(ang, resample=Image.BICUBIC, center=centre)
     arr = np.asarray(D).astype(np.int16).copy()
@@ -174,14 +198,23 @@ def edit_plane(img, ang, centre, shear, mode, axes, edits):
     plan = []
     for x0, x1, by0, by1, old, new, *rest in edits:
         opt = rest[0] if rest else {}
-        m = measure(gray, x0, x1, by0, by1)
+        m = measure(gray, x0, x1, by0, by1, ink_thresh)
+        # The ink's actual colour, not just how dark it is. Aged paper
+        # photographs warm, and type composited on it in neutral grey
+        # reads distinctly blue next to the letters it is joining.
+        _b = arr[by0:by1 + 1, x0:x1 + 1]
+        _k = _b.mean(axis=2) < ink_thresh
+        m['rgb'] = (tuple(float(v) for v in _b[_k].mean(axis=0)) if _k.any()
+                    else (float(m['ink']),) * 3)
         m['cap'] = max(4, round(m['cap'] * opt.get('cap_scale', 1.0)))
         m['lo'], m['hi'] = limits(gray, m['left'],
-                                  m['left'] + m['width'] - 1, by0, by1)
+                                  m['left'] + m['width'] - 1, by0, by1,
+                                  ink_thresh=ink_thresh,
+                                  surface_thresh=surface_thresh)
         if mode == 'bbox':
             # Fit the new ink box onto the old one exactly.
             sq = 1.0
-            box = ink_box(new, shear, axes)
+            box = ink_box(new, shear, axes, path=font)
             lay = box.resize((m['width'], m['ink_h']), Image.LANCZOS)
             ink_dx, base_dy, w_new = 0, m['ink_h'] - 1, m['width']
         else:
@@ -191,12 +224,15 @@ def edit_plane(img, ang, centre, shear, mode, axes, edits):
             # inheriting the old factor would just overflow: there,
             # squeeze so the NEW string fills the space instead.
             ref = new if opt.get('fit_width') else old
-            _, nat_ref, _, _ = layer(ref, m['cap'], shear, 1.0, axes)
+            _, nat_ref, _, _ = layer(ref, m['cap'], shear, 1.0, axes, font)
             sq = m['width'] / nat_ref
             lay, nat_new, ink_dx, base_dy = layer(new, m['cap'], shear,
-                                                  sq, axes)
+                                                  sq, axes, font)
             w_new = round(nat_new * sq)
-        room = m['hi'] - m['lo'] + 1
+        # A replacement no wider than what it replaced always fits where
+        # the original fitted, however close its neighbours are. Only a
+        # replacement that has GROWN has to answer to the gap.
+        room = max(m['hi'] - m['lo'] + 1, m['width'])
         if w_new > room:
             raise SystemExit(f'{new!r} needs {w_new}px, only {room}px free')
         plan.append(dict(m, by0=by0, by1=by1, new=new, lay=lay,
@@ -210,13 +246,34 @@ def edit_plane(img, ang, centre, shear, mode, axes, edits):
     # that follows it.
     boxes = []
     for p in plan:
-        ex0 = max(p['left'] - PAD, p['lo'])
-        ex1 = min(p['left'] + max(p['width'], p['w_new']) + PAD, p['hi'])
+        # The clamp keeps the erase off the neighbours, but it must
+        # never cut into the glyphs being replaced: stopping two pixels
+        # short of a hyphen also stops two pixels short of the digit
+        # beside it, and those columns keep the old number's edge as a
+        # ghost stroke beside the new one.
+        own0, own1 = p['left'] - 1, p['left'] + p['width']
+        ex0 = max(0, min(own0, max(p['left'] - PAD, p['lo'])))
+        ex1 = min(arr.shape[1] - 1,
+                  max(own1, min(p['left'] + max(p['width'], p['w_new']) + PAD,
+                                p['hi'])))
         ey0, ey1 = p['by0'] - 2, p['by1'] + 2
         boxes.append((ex0, ey0, ex1, ey1))
-        sub = arr[ey0:ey1 + 1, ex0:ex1 + 1]
+
+        # Read wider than we write. Rebuilding a glyph row means
+        # interpolating across it from the clean paper either side, and
+        # a box clamped hard against its neighbours -- "10" with a
+        # hyphen two pixels away on each side -- has no clean paper in
+        # it at all. Every row through the middle of a digit then finds
+        # nothing to interpolate from and is left exactly as it was, so
+        # the old number survives under the new one. Looking further out
+        # finds real paper; the neighbour's own ink is excluded from the
+        # endpoints along with the glyphs, and nothing outside the write
+        # box is put back.
+        rx0 = max(0, p['left'] - REACH)
+        rx1 = min(arr.shape[1] - 1, p['left'] + max(p['width'], p['w_new']) + REACH)
+        sub = arr[ey0:ey1 + 1, rx0:rx1 + 1].copy()
         L = sub.mean(axis=2)
-        mask = L < np.percentile(L, 85) * 0.72
+        mask = L < max(np.percentile(L, 85) * 0.72, ink_thresh * 0.45)
         for _ in range(2):                      # take the anti-aliased rim
             g = mask.copy()
             g[1:, :] |= mask[:-1, :]; g[:-1, :] |= mask[1:, :]
@@ -232,7 +289,7 @@ def edit_plane(img, ang, centre, shear, mode, axes, edits):
             bad = np.where(row)[0]
             for ch in range(3):
                 sub[r, bad, ch] = np.interp(bad, clean, sub[r, clean, ch])
-        arr[ey0:ey1 + 1, ex0:ex1 + 1] = sub
+        arr[ey0:ey1 + 1, ex0:ex1 + 1] = sub[:, ex0 - rx0:ex1 - rx0 + 1]
 
     D = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8))
 
@@ -243,8 +300,8 @@ def edit_plane(img, ang, centre, shear, mode, axes, edits):
         # however well it is blurred -- fill and blur have to be chosen
         # together, against all three numbers at once.
         o = gray[p['by0']:p['by1'] + 1, p['left']:p['left'] + p['width']]
-        tgt_n = max(1, int((o < 110).sum()))
-        tgt_m = float(o[o < 110].mean())
+        tgt_n = max(1, int((o < ink_thresh).sum()))
+        tgt_m = float(o[o < ink_thresh].mean())
         tgt_s = sharpness(o.copy())
 
         x_ink = min(p['left'], p['hi'] - p['w_new'] + 1)
@@ -260,15 +317,18 @@ def edit_plane(img, ang, centre, shear, mode, axes, edits):
         alpha0.paste(p['lay'], (px - wx0, py - wy0))
         sx, sy = p['left'] - wx0, p['by0'] - wy0
 
+        hue = np.array(p['rgb'], float)
+        lum = max(float(hue @ (0.299, 0.587, 0.114)), 1e-6)
         best = None
         for fill in range(0, 53, 4):
-            colour = Image.new('RGB', win.size, (fill, fill, fill))
+            tone = np.clip(hue * (fill / lum), 0, 255).astype(int)
+            colour = Image.new('RGB', win.size, tuple(int(v) for v in tone))
             for blur in [round(0.1 * i, 1) for i in range(1, 14)]:
                 cand = Image.composite(
                     colour, win, alpha0.filter(ImageFilter.GaussianBlur(blur)))
                 a = np.asarray(cand.convert('L')).astype(float)[
                     sy:sy + (p['by1'] - p['by0'] + 1), sx:sx + p['w_new']]
-                ink = a < 110
+                ink = a < ink_thresh
                 if not ink.any():
                     continue
                 err = (abs(ink.sum() / tgt_n - 1)
@@ -302,7 +362,10 @@ def repaint(src, out, groups, quality=96):
               f"{math.degrees(math.atan(g.get('shear', 0.0))):.0f} deg")
         img = edit_plane(img, g['ang'], g['centre'], g.get('shear', 0.0),
                          g.get('mode', 'baseline'),
-                         (g.get('wght', 760), g.get('wdth', 62)), g['edits'])
+                         (g.get('wght', 760), g.get('wdth', 62)), g['edits'],
+                         font=g.get('font', FONT),
+                         ink_thresh=g.get('ink', INK),
+                         surface_thresh=g.get('surface', SURFACE))
     img.save(out, quality=quality, subsampling=0)
 
     changed = (np.abs(np.asarray(img).astype(int)
