@@ -38,8 +38,8 @@ import tempfile
 
 from pipeline.assemble import (SHORTS_SAFE, concat_segments, ffprobe_duration,
                                fit_image_to_canvas, ken_burns_segment,
-                               mux_audio, overlay_caption, peak_zoom,
-                               render_caption_png)
+                               measure_loudness, mux_audio, overlay_caption,
+                               peak_zoom, render_caption_png)
 from pipeline.config import Config
 
 IMAGE_EXTS = ("jpg", "jpeg", "png", "webp", "bmp", "tif", "tiff",
@@ -519,7 +519,12 @@ def main():
     final_dur = ffprobe_duration(args.out)
     print(f"\nDone: {args.out}  ({final_dur:.1f}s)")
     if args.loudness is not None:
-        print(f"  audio normalised to {args.loudness} LUFS")
+        # mux_audio leaves audio that already measures on target alone and
+        # says so, so don't claim here that it was normalised.
+        i, tp = measure_loudness(args.out)
+        if i is not None:
+            print(f"  audio {i:.1f} LUFS, true peak {tp:.1f} dBTP "
+                  f"(target {args.loudness})")
 
     if args.keep_build:
         print(f"Intermediates kept in: {build_dir}")

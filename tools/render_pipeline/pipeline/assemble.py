@@ -1,4 +1,5 @@
 import os
+import re
 import shutil
 import subprocess
 import textwrap
@@ -357,7 +358,23 @@ def concat_segments(segment_paths, out_path, list_file):
     return out_path
 
 
-def mux_audio(video_path, audio_path, out_path, target_lufs=-14.0):
+def measure_loudness(audio_path):
+    """Integrated loudness and true peak of a file, via ebur128."""
+    out = subprocess.run(
+        ["ffmpeg", "-nostdin", "-hide_banner", "-i", audio_path,
+         "-af", "ebur128=peak=true", "-f", "null", "-"],
+        capture_output=True, text=True).stderr
+    # ebur128 prints running values as it goes and the summary last, so
+    # take the final match, not the first.
+    i = re.findall(r"I:\s+(-?[\d.]+) LUFS", out)
+    tp = re.findall(r"Peak:\s+(-?[\d.]+) dBFS", out)
+    if not i or not tp:
+        return None, None
+    return float(i[-1]), float(tp[-1])
+
+
+def mux_audio(video_path, audio_path, out_path, target_lufs=-14.0,
+              tolerance=0.5, ceiling=-1.0):
     """
     Attach the audio track, normalised to `target_lufs`.
 
@@ -366,12 +383,29 @@ def mux_audio(video_path, audio_path, out_path, target_lufs=-14.0):
     therefore plays quieter than everything around it in the feed for the
     life of the video, which costs retention in the first second. Pass
     target_lufs=None to mux the audio untouched.
+
+    Audio that already measures on target is muxed as-is. This matters:
+    loudnorm in single-pass mode rides the level dynamically, which pulls
+    the loudness range in hard, so running it over an already-mastered
+    track degrades it to no purpose.
+
+    The output is pinned to 48 kHz. loudnorm runs its filter chain at
+    192 kHz internally, and if nothing says otherwise the AAC encoder
+    inherits that and settles on the nearest rate it supports -- 96 kHz,
+    which is twice what any delivery spec wants and silently doubles the
+    audio bitrate of every render.
     """
     args = ["ffmpeg", "-y", "-i", video_path, "-i", audio_path,
             "-map", "0:v:0", "-map", "1:a:0", "-c:v", "copy"]
     if target_lufs is not None:
-        args += ["-af", f"loudnorm=I={target_lufs}:TP=-1.5:LRA=11"]
-    args += ["-c:a", "aac", "-b:a", "160k", "-shortest", out_path]
+        i, tp = measure_loudness(audio_path)
+        if i is not None and abs(i - target_lufs) <= tolerance and tp <= ceiling:
+            print(f"  audio already at {i:.1f} LUFS / {tp:.1f} dBTP, left alone")
+        else:
+            args += ["-af", f"loudnorm=I={target_lufs}:TP={ceiling}:LRA=11,"
+                            f"aresample=48000"]
+    args += ["-c:a", "aac", "-b:a", "160k", "-ar", "48000",
+             "-shortest", out_path]
     subprocess.run(args, check=True, capture_output=True)
     return out_path
 
