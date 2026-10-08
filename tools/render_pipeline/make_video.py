@@ -172,8 +172,61 @@ def overlay_timed_captions(video_path, entries, out_path, build_dir, config,
 
 
 
-def mix_music(voice_path, music_path, out_path, volume=0.18, duck=True, fade=1.5,
-              target_lufs=-14.0):
+def music_gain_for(voice_path, music_path, under_db):
+    """The gain that puts a bed `under_db` below the narration.
+
+    A raw volume multiplier only works if you already know how loud the
+    track is. Measuring both and solving for the gap means any bed --
+    one from make_music.py, or something the user found -- lands in the
+    same place, and the number in the command line is the thing you
+    actually care about."""
+    vi, _ = measure_loudness(voice_path)
+    mi, _ = measure_loudness(music_path)
+    if vi is None or mi is None:
+        return 0.5
+    return float(10 ** (((vi - under_db) - mi) / 20.0))
+
+
+def _bed_under_speech(voice_path, bed_path):
+    """How far the ducked bed sits below the narration while it speaks.
+
+    Measured against the bed rendered ON ITS OWN through the same
+    sidechain, not against the finished mix. Trying to read it off the
+    mix means reading it in the gaps, where the voice's own room tone
+    and breaths are most of what is left -- that over-reports the bed by
+    5 dB or so, and 5 dB is the difference between a bed you feel and
+    one you cannot hear on a phone speaker."""
+    import numpy as np
+
+    def pcm(p):
+        raw = subprocess.run(
+            ["ffmpeg", "-nostdin", "-v", "error", "-i", p,
+             "-f", "s16le", "-ac", "1", "-ar", "48000", "-"],
+            capture_output=True).stdout
+        return np.frombuffer(raw, "<i2").astype(np.float64) / 32768
+
+    v, b = pcm(voice_path), pcm(bed_path)
+    if v.size == 0 or b.size == 0:
+        return None
+    hop, win = 480, 1440
+    n = min((v.size - win) // hop, (b.size - win) // hop)
+    if n < 10:
+        return None
+
+    def env(x):
+        return np.array([np.sqrt((x[j:j + win] ** 2).mean() + 1e-12)
+                         for j in range(0, n * hop, hop)])
+
+    vdb, bdb = 20 * np.log10(env(v)), 20 * np.log10(env(b))
+    speech = vdb > vdb.max() - 30
+    if not speech.any():
+        return None
+    return float(vdb[speech].mean() - bdb[speech].mean())
+
+
+def mix_music(voice_path, music_path, out_path, volume=None, duck=True, fade=1.5,
+              target_lufs=-14.0, under_db=20.0,
+              threshold=0.12, ratio=5, attack=20, release=400):
     """
     Mix a music bed under narration.
 
@@ -184,8 +237,26 @@ def mix_music(voice_path, music_path, out_path, volume=0.18, duck=True, fade=1.5
 
     The music is also looped if it is shorter than the narration, trimmed if
     longer, and faded at both ends so it never starts or stops abruptly.
+
+    The sidechain used to run threshold=0.02 ratio=12, which is close to
+    limiting and triggered on almost any speech. Measured against a real
+    read, that buried the bed 44 dB under the voice -- not a bed, just
+    an absence -- and ducked it by 18 dB every time a word started, so
+    what little was audible pumped. Softer settings put it 20 dB down
+    with an 8 dB duck, which is where a bed belongs: felt during the
+    speech, present in the gaps, never competing.
+
+    The result is written as PCM at 48 kHz. It used to be written as AAC
+    -- into a file named .wav -- which cost a lossy generation here and
+    another at the mux, and inherited loudnorm's 192 kHz internal rate so
+    the encoder settled on 96 kHz. Both are silent problems: nothing
+    fails, the audio is just quietly worse and twice the size it needs
+    to be.
     """
     voice_dur = ffprobe_duration(voice_path)
+    auto = volume is None
+    if auto:
+        volume = music_gain_for(voice_path, music_path, under_db)
 
     if duck:
         # Split the voice: one copy drives the compressor's sidechain, the
@@ -195,10 +266,12 @@ def mix_music(voice_path, music_path, out_path, volume=0.18, duck=True, fade=1.5
             f"afade=t=out:st={max(voice_dur - fade, 0):.2f}:d={fade}[music];"
             f"[0:a]asplit=2[v1][v2];"
             f"[music][v1]sidechaincompress="
-            f"threshold=0.02:ratio=12:attack=15:release=380:makeup=1[ducked];"
+            f"threshold={threshold}:ratio={ratio}:attack={attack}:"
+            f"release={release}:makeup=1[ducked];"
             f"[v2][ducked]amix=inputs=2:normalize=0:duration=first:dropout_transition=0,"
             f"alimiter=limit=0.95,"
-            f"loudnorm=I={target_lufs}:TP=-1.5:LRA=11[a]"
+            f"loudnorm=I={target_lufs}:TP=-1.5:LRA=11,"
+            f"aresample=48000[a]"
         )
     else:
         filt = (
@@ -206,17 +279,52 @@ def mix_music(voice_path, music_path, out_path, volume=0.18, duck=True, fade=1.5
             f"afade=t=out:st={max(voice_dur - fade, 0):.2f}:d={fade}[music];"
             f"[0:a][music]amix=inputs=2:normalize=0:duration=first:dropout_transition=0,"
             f"alimiter=limit=0.95,"
-            f"loudnorm=I={target_lufs}:TP=-1.5:LRA=11[a]"
+            f"loudnorm=I={target_lufs}:TP=-1.5:LRA=11,"
+            f"aresample=48000[a]"
         )
 
-    subprocess.run(
-        ["ffmpeg", "-y", "-i", voice_path,
-         "-stream_loop", "-1", "-i", music_path,      # loop music to cover the read
-         "-filter_complex", filt, "-map", "[a]",
-         "-t", f"{voice_dur:.3f}",
-         "-c:a", "aac", "-b:a", "192k", out_path],
-        check=True, capture_output=True,
-    )
+    def render(vol):
+        f = filt.replace(f"volume={volume},", f"volume={vol},", 1)
+        subprocess.run(
+            ["ffmpeg", "-y", "-i", voice_path,
+             "-stream_loop", "-1", "-i", music_path,  # loop music to cover the read
+             "-filter_complex", f, "-map", "[a]",
+             "-t", f"{voice_dur:.3f}",
+             "-c:a", "pcm_s16le", "-ar", "48000", "-ac", "1", out_path],
+            check=True, capture_output=True,
+        )
+
+    if auto and duck:
+        # Solving from loudness alone sets the bed `under_db` down BEFORE
+        # the compressor, which then pulls it ~8 dB further and leaves it
+        # inaudible. Render the ducked bed alone, measure where it really
+        # landed, and correct. Two cheap passes beat modelling the duck.
+        probe = out_path + ".bed.wav"
+        sc = (f"[1:a]volume=%s[m];[m][0:a]sidechaincompress="
+              f"threshold={threshold}:ratio={ratio}:attack={attack}:"
+              f"release={release}:makeup=1[d]")
+        for _ in range(3):
+            subprocess.run(
+                ["ffmpeg", "-y", "-v", "error", "-i", voice_path,
+                 "-stream_loop", "-1", "-i", music_path,
+                 "-filter_complex", sc % volume, "-map", "[d]",
+                 "-t", f"{voice_dur:.3f}",
+                 "-c:a", "pcm_s16le", "-ar", "48000", "-ac", "1", probe],
+                check=True, capture_output=True)
+            got = _bed_under_speech(voice_path, probe)
+            if got is None or abs(got - under_db) <= 0.5:
+                break
+            volume *= float(10 ** ((got - under_db) / 20.0))
+        os.remove(probe)
+        print(f"  bed gain {volume:.3f}"
+              + (f" -> {got:.1f} dB under the narration while it speaks"
+                 if got is not None else ""))
+    elif auto:
+        print(f"  bed gain {volume:.3f}")
+    else:
+        print(f"  bed gain {volume:.3f} (given)")
+
+    render(volume)
     return out_path
 
 
@@ -308,7 +416,13 @@ def main():
                         "viewer is meant to read -- every other option, "
                         "static_drift included, resamples the type each frame.")
     p.add_argument("--music", default=None, help="Optional background music file, mixed low")
-    p.add_argument("--music-volume", type=float, default=0.18,
+    p.add_argument("--music-under", type=float, default=22.0, metavar="DB",
+                   help="How far below the narration the bed sits WHILE IT IS "
+                        "SPEAKING, in dB (default 22). The gain is measured "
+                        "rather than guessed, so any track lands in the same "
+                        "place. Lower numbers are louder; below about 18 the "
+                        "bed starts competing with the words.")
+    p.add_argument("--music-volume", type=float, default=None,
                    help="Music level relative to narration (default 0.18)")
     p.add_argument("--no-duck", action="store_true",
                    help="Disable sidechain ducking. By default the music dips automatically "
@@ -511,11 +625,12 @@ def main():
         if not os.path.isfile(args.music):
             print(f"Music file not found: {args.music}")
             sys.exit(1)
-        mixed = os.path.join(build_dir, "mixed.m4a")
+        mixed = os.path.join(build_dir, "mixed.wav")
         # Normalised inside the mix, so don't normalise again on the way out.
         mix_music(args.voiceover, args.music, mixed,
                   volume=args.music_volume, duck=not args.no_duck,
-                  fade=args.music_fade, target_lufs=args.loudness)
+                  fade=args.music_fade, target_lufs=args.loudness,
+                  under_db=args.music_under)
         mux_audio(concat, mixed, args.out, target_lufs=None)
     else:
         mux_audio(concat, args.voiceover, args.out, target_lufs=args.loudness)
