@@ -300,9 +300,13 @@ def main():
                         "cycling blindly. Requires --srt. Consecutive repeats merge "
                         "into one continuous shot.")
     p.add_argument("--motions", default=None,
-                   help="Comma-separated camera moves, one per image. Options: push_in, "
+                   help="Comma-separated camera moves, one per shot (after "
+                        "--shot-map merging, if used). Options: push_in, "
                         "pull_out, pan_left_right, pan_right_left, static_drift, "
-                        "hard_zoom_then_push_in. Default cycles a varied pattern.")
+                        "hold, hard_zoom_then_push_in. Default cycles a varied "
+                        "pattern. Use 'hold' for any shot carrying text the "
+                        "viewer is meant to read -- every other option, "
+                        "static_drift included, resamples the type each frame.")
     p.add_argument("--music", default=None, help="Optional background music file, mixed low")
     p.add_argument("--music-volume", type=float, default=0.18,
                    help="Music level relative to narration (default 0.18)")

@@ -307,6 +307,22 @@ def _static_drift(image_path, duration, out_path, config):
     return _push_in(image_path, duration, out_path, config, start_zoom=1.0, end_zoom=1.04, step=0.0006)
 
 
+def _hold(image_path, duration, out_path, config):
+    """No motion at all, for a shot whose text the viewer has to read.
+
+    "static_drift" is still a drift: it creeps from 1.00 to 1.04 zoom,
+    which resamples every glyph on every frame and makes small type
+    shimmer and crawl. On generated signage -- a reward poster, a
+    ticket, an evidence tag -- that is the frame most likely to be
+    paused on, and the one that least survives being moved. This holds
+    it dead still. Routed through the same zoompan path as every other
+    motion so the segment's encoder settings match and the concat can
+    still stream-copy.
+    """
+    return _run_zoompan(image_path, duration, out_path, config, "1.0",
+                        _CENTERED_X, _CENTERED_Y)
+
+
 def ken_burns_segment(image_path, duration, out_path, config, motion="push_in", build_dir=None, tag=""):
     if motion == "push_in":
         return _push_in(image_path, duration, out_path, config)
@@ -318,6 +334,8 @@ def ken_burns_segment(image_path, duration, out_path, config, motion="push_in", 
         return _pan(image_path, duration, out_path, config, "right_left")
     if motion == "static_drift":
         return _static_drift(image_path, duration, out_path, config)
+    if motion in ("hold", "none", "static"):
+        return _hold(image_path, duration, out_path, config)
     if motion == "hard_zoom_then_push_in":
         # Two-phase move on the same still: a quick punch-in, then a slow
         # continued push-in for the rest of the shot. Rendered as two clips
