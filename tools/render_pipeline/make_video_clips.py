@@ -157,7 +157,11 @@ def main():
                    help="Seconds further into a clip each time it is reused "
                         "(default 2.0). Stops a repeated clip looking repeated.")
     p.add_argument("--music", default=None)
-    p.add_argument("--music-volume", type=float, default=0.16)
+    p.add_argument("--music-under", type=float, default=22.0, metavar="DB",
+                   help="How far below the narration the bed sits while it is "
+                        "speaking, in dB (default 22). Measured, not guessed.")
+    p.add_argument("--music-volume", type=float, default=None,
+                   help="Explicit linear gain, overriding --music-under.")
     p.add_argument("--no-duck", action="store_true")
     p.add_argument("--music-fade", type=float, default=1.5)
     p.add_argument("--still-motion", default="static_drift",
@@ -263,8 +267,9 @@ def main():
         if not os.path.isfile(args.music):
             print(f"Music not found: {args.music}")
             sys.exit(1)
-        mixed = os.path.join(build, "mixed.m4a")
+        mixed = os.path.join(build, "mixed.wav")
         mix_music(args.voiceover, args.music, mixed, volume=args.music_volume,
+                  under_db=args.music_under,
                   duck=not args.no_duck, fade=args.music_fade,
                   target_lufs=args.loudness)
         mux_audio(concat, mixed, args.out, target_lufs=None)
