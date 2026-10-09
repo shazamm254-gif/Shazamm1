@@ -1,3 +1,4 @@
+import json
 import os
 import re
 import shutil
@@ -374,6 +375,40 @@ def concat_segments(segment_paths, out_path, list_file):
         check=True, capture_output=True,
     )
     return out_path
+
+
+def write_shot_list(path, sources, segment_paths, kinds=None):
+    """Where every cut lands in the finished video, and what is either side.
+
+    Measured off the built segments, not off the durations they were asked
+    for. concat joins what was actually encoded, and a shot asked for 2.40s
+    comes back 2.417s because a segment is a whole number of frames. Over
+    thirty shots that rounding is most of a second, and a transition placed
+    on the arithmetic rather than on the files lands in the middle of a
+    shot instead of on its edge.
+
+    Written next to the output so the transition pass has something to read
+    that does not involve re-deriving the edit.
+    """
+    shots, t = [], 0.0
+    for i, (src, seg) in enumerate(zip(sources, segment_paths)):
+        d = ffprobe_duration(seg)
+        shots.append({
+            "i": i,
+            "src": os.path.basename(src),
+            "kind": (kinds[i] if kinds else "still"),
+            "start": round(t, 4),
+            "duration": round(d, 4),
+        })
+        t += d
+    data = {
+        "duration": round(t, 4),
+        "cuts": [s["start"] for s in shots[1:]],
+        "shots": shots,
+    }
+    with open(path, "w") as f:
+        json.dump(data, f, indent=1)
+    return data
 
 
 def measure_loudness(audio_path):

@@ -39,7 +39,8 @@ import tempfile
 from make_video import (enforce_min_duration, mix_music, parse_srt,
                         shots_from_srt)
 from pipeline.assemble import (concat_segments, ffprobe_duration,
-                               fit_image_to_canvas, ken_burns_segment, mux_audio)
+                               fit_image_to_canvas, ken_burns_segment,
+                               mux_audio, write_shot_list)
 from pipeline.config import Config
 
 CLIP_EXTS = ("mp4", "mov", "webm", "m4v", "MP4", "MOV", "WEBM")
@@ -262,6 +263,14 @@ def main():
 
     concat = os.path.join(build, "concat.mp4")
     concat_segments(segments, concat, os.path.join(build, "filelist.txt"))
+
+    # What the transition pass needs: where the cuts are, and which side of
+    # each one is generated footage rather than a still.
+    shot_list = os.path.splitext(args.out)[0] + ".shots.json"
+    sl = write_shot_list(shot_list, [c for c, _d in order], segments,
+                         kinds=["still" if is_still(c) else "clip"
+                                for c, _d in order])
+    print(f"  shot list: {len(sl['cuts'])} cuts -> {shot_list}")
 
     if args.music:
         if not os.path.isfile(args.music):

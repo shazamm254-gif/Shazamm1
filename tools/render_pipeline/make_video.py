@@ -39,7 +39,7 @@ import tempfile
 from pipeline.assemble import (SHORTS_SAFE, concat_segments, ffprobe_duration,
                                fit_image_to_canvas, ken_burns_segment,
                                measure_loudness, mux_audio, overlay_caption,
-                               peak_zoom, render_caption_png)
+                               peak_zoom, render_caption_png, write_shot_list)
 from pipeline.config import Config
 
 IMAGE_EXTS = ("jpg", "jpeg", "png", "webp", "bmp", "tif", "tiff",
@@ -609,6 +609,12 @@ def main():
 
     concat = os.path.join(build_dir, "concat.mp4")
     concat_segments(segments, concat, os.path.join(build_dir, "filelist.txt"))
+
+    # Where the cuts landed, for the transition pass. Every shot here is a
+    # still, so nothing in this edit is generated footage.
+    shot_list = os.path.splitext(args.out)[0] + ".shots.json"
+    sl = write_shot_list(shot_list, images, segments)
+    print(f"  shot list: {len(sl['cuts'])} cuts -> {shot_list}")
 
     if burn_srt:
         print(f"  burning {len(srt_entries)} timed caption(s) from {os.path.basename(args.srt)}")
