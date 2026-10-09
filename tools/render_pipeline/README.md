@@ -121,6 +121,12 @@ The builders write `<out>.shots.json` next to the video: where every cut
 landed, measured off the built segments, and whether each shot is a
 generated clip or a still.
 
+The verdict beat is the silence in front of the script's closing
+sentence, not whichever pause happens to come last — on a read that trails
+off, those are different pauses, and the flash belongs on the first one.
+It outranks the other rules, including the clip one, and wins its
+neighbour outright in the never-two-in-a-row filter.
+
 Act breaks are read off the voiceover, not chosen. A Short cuts twenty or
 thirty times a minute and almost all of those cuts are just the picture
 keeping up with the narration — dressing them up makes the viewer watch the
@@ -136,7 +142,7 @@ The library, and nothing else:
 | `whip-pan` | Directional smear and slide, ≤ 8 frames. |
 | `zoom-punch` | 110–118% on the incoming shot, settling, ≤ 6 frames. |
 | `flash` | 2–3 frames toward white. For verdict reveals. |
-| `masked-wipe` | Hard-edged directional wipe. The only transition allowed between two generated clips. |
+| `masked-wipe` | Hard-edged directional wipe. |
 
 Intensity is `off`, `subtle` (default) or `standard`.
 
@@ -149,10 +155,23 @@ frames out, and `verify_transitions.py` counts them.
 
 **No cross-dissolve exists here at all.** Hold two generated frames on top
 of each other at 50% and the hands and the fur stop being able to decide
-where they are. Between two clips the only options are a hard cut and the
-wipe, and the verifier proves it per pixel: every pixel of every frame in
-the window has to match the held outgoing frame or the incoming one, whole.
-A dissolve fails that on most of the frame.
+where they are.
+
+Between two generated clips, the choices are a hard cut, the wipe and the
+flash. The whip and the punch are out: neither blends frames either, but
+both resample the picture, and a smear or a scale on generated footage
+drags the eye straight to the part of the frame the model was least sure
+about. The flash does neither — it lifts one frame toward white and back —
+so it is allowed, and the verdict beat is worth more than the consistency.
+
+The verifier proves both per pixel rather than reading the type name back.
+For a wipe: every pixel of every frame in the window has to match the held
+outgoing frame or the incoming one, whole, which a dissolve fails on most
+of the frame. For a flash: solve `got = src + (255 - src) * a` at every
+pixel and look at the spread, because one source lifted uniformly gives
+the same `a` everywhere and a mixture of two frames does not. It also
+checks the lift actually happened, since a flash that never rendered has a
+very even spread too.
 
 Also enforced: never two transitions on consecutive cuts, and at most one
 per act break.

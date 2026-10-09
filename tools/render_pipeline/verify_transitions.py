@@ -42,10 +42,13 @@ from transitions import (AI_SAFE, LIBRARY, MIN_GAP, TOLERANCE, act_breaks,
 MATCH_TOL = 24          # levels of re-encode noise to forgive per channel
 MATCH_MIN = 0.98        # fraction of pixels that must come from one source
 ALIGN_MIN = 0.80        # below this the two decodes are a frame apart, not noisy
+RAMP_MAX  = 0.15        # how unevenly a flash may lift the frame before it is a mix
+FLASH_MIN = 0.30        # a lift smaller than this is a flash that did not render
 RUNTIME_BUDGET = 0.5    # the spec's ceiling; the design target is 0.0
 
 
-PAD = 3                 # frames either side of a window, to prove alignment
+PAD = 3                 # control frames, compared to prove the decodes line up
+PRE = 5                 # how far before a cut a transition may reach (whip-pan 4)
 
 
 def frames_at(video, n0, count, w, h, fps):
@@ -89,6 +92,33 @@ def rows_of(mask):
     """The top and bottom of the mismatch, for saying what it was."""
     ys = np.nonzero(mask.any(axis=1))[0]
     return (int(ys.min()), int(ys.max())) if ys.size else (0, 0)
+
+
+def ramp_spread(got, src, band=None):
+    """How far `got` is from being `src` ramped uniformly toward white.
+
+    A flash is allowed between generated clips because it does not mix two
+    pictures -- it takes one and lifts it. Proving that is not the
+    single-source test, which a brightened frame fails by construction, so
+    it gets its own: solve got = src + (255 - src) * a for a at every
+    pixel, and look at the spread. One source uniformly lifted gives the
+    same a everywhere. A mixture of two frames does not, because the
+    second frame is darker here and brighter there.
+
+    Pixels where the source is already near white are dropped: the
+    denominator goes to nothing and a becomes noise over noise."""
+    g = got.astype(np.float32)
+    s = src.astype(np.float32)
+    if band:
+        g = np.delete(g, np.s_[band[0]:band[1]], axis=0)
+        s = np.delete(s, np.s_[band[0]:band[1]], axis=0)
+    room = 255.0 - s
+    ok = room > 40
+    if ok.sum() < 1000:
+        return 0.0, 0.0
+    al = ((g - s)[ok] / room[ok])
+    lo, hi = np.percentile(al, [5, 95])
+    return float(np.median(al)), float(hi - lo)
 
 
 def main():
@@ -162,24 +192,26 @@ def main():
 
     # 5. no frame blending where it is banned
     checked = 0
+    clip_pairs = sum(1 for c in live if c['between'] == ['clip', 'clip'])
     for c in live:
         if c['between'] != ['clip', 'clip']:
             continue
         n = int(round(c['time'] * fps))
         k = 8
-        n0 = n - PAD
-        src = frames_at(a.before, n0, k + 2 * PAD, w0, h0, fps)
-        got = frames_at(a.after, n0, k + 2 * PAD, w0, h0, fps)
+        n0 = n - PAD - PRE
+        src = frames_at(a.before, n0, PAD + PRE + k, w0, h0, fps)
+        got = frames_at(a.after, n0, PAD + PRE + k, w0, h0, fps)
         m = min(len(src), len(got))
-        if m <= PAD:
+        first = PAD + PRE              # index of the frame at the cut
+        if m <= first:
             fails.append(f"could not read frames at {c['time']:.2f}s")
             continue
-        # The frames before the cut are the control: the transition pass
-        # did not touch them, so whatever they disagree about is the cost
-        # of everything else between the two files. Re-encode noise, and
-        # burned-in captions if this is run after the caption pass rather
-        # than before it -- caption pixels match neither source, which
-        # without a control reads as a couple of percent of blending.
+        # The control: frames far enough ahead of the cut that no
+        # transition reaches them, so whatever they disagree about is the
+        # cost of everything else between the two files. Re-encode noise,
+        # and burned-in captions if this is run after the caption pass
+        # rather than before it -- caption pixels match neither source,
+        # which without a control reads as a couple of percent of blending.
         lead = min(from_one_source(got[i], src[i], src[i], band=band)
                    for i in range(PAD))
         if lead < ALIGN_MIN:
@@ -187,13 +219,38 @@ def main():
                          f"{(1 - lead) * 100:.1f}% -- the two decodes are "
                          f"not aligned, so the blend check means nothing")
             continue
-        held = src[PAD - 1]
+        if c['type'] == 'flash':
+            # Not a mixture of two frames, so not the single-source test.
+            checked += 1
+            worst_s, worst_i, peak = 0.0, 0, 0.0
+            for i in range(PAD, m):
+                amt, spread = ramp_spread(got[i], src[i], band=band)
+                peak = max(peak, amt)
+                if spread > worst_s:
+                    worst_s, worst_i = spread, i - first
+            print(f"blend:     flash at {c['time']:.2f}s (clip/clip) -- each "
+                  f"frame is its own source lifted toward white, peak lift "
+                  f"{peak * 100:.0f}% [floor {FLASH_MIN * 100:.0f}%], worst "
+                  f"spread {worst_s:.3f} [ceiling {RAMP_MAX:.2f}]")
+            if worst_s > RAMP_MAX:
+                fails.append(f"frame {n + worst_i} at {c['time']:.2f}s is not "
+                             f"a uniform lift of one frame (spread "
+                             f"{worst_s:.3f}) -- two pictures are mixed in it")
+            # A spread of nearly nothing is also what you get when the flash
+            # never rendered, so the lift has to be there as well.
+            if peak < FLASH_MIN:
+                fails.append(f"the flash at {c['time']:.2f}s lifts the frame "
+                             f"by {peak * 100:.0f}% at its peak -- it did not "
+                             f"render")
+            continue
+
+        held = src[first - 1]
         worst_f, worst_i, worst_m = 1.0, 0, None
-        for i in range(PAD, m):
+        for i in range(first, m):
             bad = mismatch_mask(got[i], held, src[i], band=band)
             f = 1.0 - float(bad.mean())
             if f < worst_f:
-                worst_f, worst_i, worst_m = f, i - PAD, bad
+                worst_f, worst_i, worst_m = f, i - first, bad
         checked += 1
         excess = max(0.0, lead - worst_f)      # blending above the control
         print(f"blend:     {c['type']} at {c['time']:.2f}s "
@@ -213,8 +270,11 @@ def main():
             fails.append(f"frame {n + worst_i} at {c['time']:.2f}s is "
                          f"{excess * 100:.1f}% mixed pixels above the "
                          f"untouched frames before it, over {where}{hint}")
-    if not checked:
+    if not clip_pairs:
         print('blend:     no clip-to-clip transitions in this edit')
+    elif not checked:
+        print(f'blend:     {clip_pairs} clip-to-clip transition(s) could not '
+              f'be checked')
 
     print()
     for f in fails:

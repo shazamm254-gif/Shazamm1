@@ -44,11 +44,17 @@ import numpy as np
 
 LIBRARY = ('hard-cut', 'whip-pan', 'zoom-punch', 'flash', 'masked-wipe')
 
-# Between two generated clips, only these. Not because the other three
-# blend frames -- none of the five does -- but because a smear or a punch
-# on generated footage draws the eye straight to the part of the frame the
-# model was least sure about.
-AI_SAFE = ('hard-cut', 'masked-wipe')
+# What may join two generated clips.
+#
+# The whip and the punch are out. Neither blends frames, but both resample
+# the picture, and a smear or a scale on generated footage drags the eye
+# straight to the part of the frame the model was least sure about.
+#
+# The flash is in, by Rodney's call. It does not resample anything and it
+# does not mix two pictures -- it ramps one frame toward white and back --
+# so the reason the other two are excluded does not apply to it, and the
+# verdict beat is worth more than the consistency.
+AI_SAFE = ('hard-cut', 'masked-wipe', 'flash')
 
 MIN_GAP = 0.6          # what counts as an act break, in seconds of silence
 TOLERANCE = 0.5        # how far a cut may be from the pause and still count
@@ -75,26 +81,41 @@ def act_breaks(words, min_gap=MIN_GAP):
     A gap of a fifth of a second is a comma and a gap of six tenths is a
     decision. Only the second kind gets a transition."""
     out = []
-    for a, b in zip(words, words[1:]):
+    for i, (a, b) in enumerate(zip(words, words[1:])):
         gap = b['start'] - a['end']
         if gap >= min_gap:
             out.append(dict(gap=round(gap, 3),
                             mid=round((a['end'] + b['start']) / 2, 3),
+                            word=i + 1,          # the word the pause leads into
                             before=a['text'], after=b['text']))
     return out
 
 
-def suggest(kind_out, kind_in, gap, is_last):
+def verdict_word(words):
+    """Index of the first word of the script's closing sentence.
+
+    The verdict beat is the silence in front of that word -- not whichever
+    pause happens to come last. On a read that trails off into a long tail,
+    those are different pauses, and the flash belongs on the first one."""
+    for i in range(len(words) - 1, 0, -1):
+        if words[i - 1]['text'].rstrip('"\'').endswith(('.', '!', '?', ':')):
+            return i
+    return 0
+
+
+def suggest(kind_out, kind_in, gap, is_verdict):
     """One transition per break, and a reason for it.
 
     The verdict gets the flash, because that is the one beat the viewer is
-    meant to feel rather than follow. A long pause gets the whip, a shorter
-    one the punch -- the transition should be about as big as the silence it
-    is filling. Two generated clips get the wipe whatever the pause was."""
+    meant to feel rather than follow, and it outranks the clip rule: a
+    flash resamples nothing and mixes nothing, so it is safe on generated
+    footage. Otherwise two generated clips get the wipe whatever the pause
+    was. A long pause gets the whip and a shorter one the punch -- the
+    transition should be about as big as the silence it is filling."""
+    if is_verdict:
+        return 'flash', 'the verdict'
     if kind_out == 'clip' and kind_in == 'clip':
         return 'masked-wipe', 'both sides are generated footage'
-    if is_last:
-        return 'flash', 'the verdict'
     if gap >= 1.0:
         return 'whip-pan', f'{gap:.1f}s pause'
     return 'zoom-punch', f'{gap:.1f}s pause'
@@ -103,6 +124,7 @@ def suggest(kind_out, kind_in, gap, is_last):
 def plan(words, shots, cuts, intensity='subtle',
          min_gap=MIN_GAP, tolerance=TOLERANCE):
     breaks = act_breaks(words, min_gap)
+    vw = verdict_word(words)
     chosen, notes = [], []
     for bi, b in enumerate(breaks):
         if not cuts:
@@ -112,12 +134,12 @@ def plan(words, shots, cuts, intensity='subtle',
         off = cuts[ci] - b['mid']
         if abs(off) > tolerance:
             notes.append(f"{b['mid']:6.2f}s  {b['gap']:.2f}s pause  "
-                         f"-- no cut within {tolerance:.1f}s, left alone")
+                         f"-- no cut within {tolerance:.1f}s, left alone"
+                         + ('  <- the verdict beat' if b['word'] == vw else ''))
             continue
         kind_out = shots[ci]['kind']
         kind_in = shots[ci + 1]['kind']
-        is_last = bi == len(breaks) - 1
-        t, why = suggest(kind_out, kind_in, b['gap'], is_last)
+        t, why = suggest(kind_out, kind_in, b['gap'], b['word'] == vw)
         chosen.append(dict(cut=ci + 1, time=cuts[ci], type=t,
                            direction='left' if len(chosen) % 2 == 0 else 'right',
                            gap=b['gap'], offset=round(off, 3),
@@ -129,7 +151,9 @@ def plan(words, shots, cuts, intensity='subtle',
     keep = []
     for c in chosen:
         if keep and c['cut'] - keep[-1]['cut'] == 1:
-            if c['gap'] > keep[-1]['gap']:
+            # The verdict wins its neighbour outright, long pause or not.
+            verdict = (c['type'] == 'flash') - (keep[-1]['type'] == 'flash')
+            if verdict > 0 or (verdict == 0 and c['gap'] > keep[-1]['gap']):
                 notes.append(f"  dropped {keep[-1]['type']} at cut "
                              f"{keep[-1]['cut']} (adjacent to cut {c['cut']})")
                 keep[-1] = c
