@@ -127,6 +127,14 @@ off, those are different pauses, and the flash belongs on the first one.
 It outranks the other rules, including the clip one, and wins its
 neighbour outright in the never-two-in-a-row filter.
 
+**The verdict flash does not need a cut under it.** Four of the five join
+two shots, so without a cut there is nothing for them to do. The flash is
+a lighting event rather than a join and reads perfectly well in the middle
+of a held shot, so when no cut lands on the verdict it goes on the word
+instead, where the voice comes back in. This is the common case: a script
+usually ends on the shot it has been holding. `--no-verdict-flash` turns
+it off.
+
 Act breaks are read off the voiceover, not chosen. A Short cuts twenty or
 thirty times a minute and almost all of those cuts are just the picture
 keeping up with the narration — dressing them up makes the viewer watch the

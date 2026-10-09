@@ -121,45 +121,84 @@ def suggest(kind_out, kind_in, gap, is_verdict):
     return 'zoom-punch', f'{gap:.1f}s pause'
 
 
+CROWD = 1.0            # seconds: two transitions closer than this are one too many
+
+
+def _crowds(a, b):
+    """Whether b sits too close on top of a to be separate punctuation."""
+    if a['cut'] is not None and b['cut'] is not None:
+        return b['cut'] - a['cut'] == 1
+    return abs(b['time'] - a['time']) < CROWD
+
+
+def _where(c):
+    return f"cut {c['cut']}" if c.get('cut') else f"{c['time']:.2f}s"
+
+
+def shot_at(shots, t):
+    """Which shot is on screen at time t."""
+    for s in shots:
+        if s['start'] <= t < s['start'] + s['duration']:
+            return s
+    return shots[-1]
+
+
 def plan(words, shots, cuts, intensity='subtle',
-         min_gap=MIN_GAP, tolerance=TOLERANCE):
+         min_gap=MIN_GAP, tolerance=TOLERANCE, verdict_flash=True):
     breaks = act_breaks(words, min_gap)
     vw = verdict_word(words)
     chosen, notes = [], []
     for bi, b in enumerate(breaks):
-        if not cuts:
-            break
-        # nearest cut to the pause
-        ci = min(range(len(cuts)), key=lambda i: abs(cuts[i] - b['mid']))
-        off = cuts[ci] - b['mid']
-        if abs(off) > tolerance:
-            notes.append(f"{b['mid']:6.2f}s  {b['gap']:.2f}s pause  "
-                         f"-- no cut within {tolerance:.1f}s, left alone"
-                         + ('  <- the verdict beat' if b['word'] == vw else ''))
+        is_verdict = b['word'] == vw
+        ci, off = None, None
+        if cuts:
+            ci = min(range(len(cuts)), key=lambda i: abs(cuts[i] - b['mid']))
+            off = cuts[ci] - b['mid']
+        if ci is None or abs(off) > tolerance:
+            # Four of the five join two shots, so without a cut there is
+            # nothing for them to do. The flash is the exception: it is a
+            # lighting event, not a join, and it reads perfectly well in
+            # the middle of a held shot. So the verdict still gets one --
+            # on the word, where the voice comes back in.
+            if not (is_verdict and verdict_flash):
+                notes.append(f"{b['mid']:6.2f}s  {b['gap']:.2f}s pause  "
+                             f"-- no cut within {tolerance:.1f}s, left alone")
+                continue
+            t0 = words[vw]['start']
+            k = shot_at(shots, t0)['kind']
+            chosen.append(dict(cut=None, time=round(t0, 3), type='flash',
+                               direction='left', gap=b['gap'], offset=None,
+                               between=[k, k], before=b['before'],
+                               after=b['after'],
+                               why='the verdict (no cut here; a flash does '
+                                   'not need one)'))
             continue
         kind_out = shots[ci]['kind']
         kind_in = shots[ci + 1]['kind']
-        t, why = suggest(kind_out, kind_in, b['gap'], b['word'] == vw)
+        t, why = suggest(kind_out, kind_in, b['gap'], is_verdict)
         chosen.append(dict(cut=ci + 1, time=cuts[ci], type=t,
                            direction='left' if len(chosen) % 2 == 0 else 'right',
                            gap=b['gap'], offset=round(off, 3),
                            between=[kind_out, kind_in],
                            before=b['before'], after=b['after'], why=why))
 
-    # Never on consecutive cuts: two in a row stops reading as punctuation
-    # and starts reading as a style. The longer pause keeps its transition.
+    # Never two in a row: that stops reading as punctuation and starts
+    # reading as a style. Adjacent cuts, or anything landing within a
+    # second of the cut-less verdict flash. The longer pause keeps its
+    # transition, except against the verdict, which wins outright.
     keep = []
     for c in chosen:
-        if keep and c['cut'] - keep[-1]['cut'] == 1:
-            # The verdict wins its neighbour outright, long pause or not.
+        if keep and _crowds(keep[-1], c):
             verdict = (c['type'] == 'flash') - (keep[-1]['type'] == 'flash')
             if verdict > 0 or (verdict == 0 and c['gap'] > keep[-1]['gap']):
-                notes.append(f"  dropped {keep[-1]['type']} at cut "
-                             f"{keep[-1]['cut']} (adjacent to cut {c['cut']})")
+                notes.append(f"  dropped {keep[-1]['type']} at "
+                             f"{keep[-1]['time']:.2f}s (too close to the "
+                             f"{c['type']} at {c['time']:.2f}s)")
                 keep[-1] = c
             else:
-                notes.append(f"  dropped {c['type']} at cut {c['cut']} "
-                             f"(adjacent to cut {keep[-1]['cut']})")
+                notes.append(f"  dropped {c['type']} at {c['time']:.2f}s "
+                             f"(too close to the {keep[-1]['type']} at "
+                             f"{keep[-1]['time']:.2f}s)")
             continue
         keep.append(c)
 
@@ -375,11 +414,13 @@ def cmd_plan(a):
     words = json.load(open(a.words))['words']
     sl = json.load(open(a.shots))
     pl = plan(words, sl['shots'], sl['cuts'], intensity=a.intensity,
-              min_gap=a.min_gap, tolerance=a.tolerance)
+              min_gap=a.min_gap, tolerance=a.tolerance,
+              verdict_flash=not a.no_verdict_flash)
     print(f"{pl['breaks']} act break(s) at pauses >= {a.min_gap}s, "
           f"{len(sl['cuts'])} cuts in the edit")
     for c in pl['transitions']:
-        print(f"  cut {c['cut']:>3} @ {c['time']:7.2f}s  {c['type']:<12} "
+        where = f"cut {c['cut']:>3}" if c['cut'] else 'mid-shot'
+        print(f"  {where:>8} @ {c['time']:7.2f}s  {c['type']:<12} "
               f"{c['direction']:<5} {'/'.join(c['between']):<11} "
               f"{c['why']:<28} ...{c['before']} | {c['after']}...")
     for nt in pl['notes']:
@@ -403,20 +444,21 @@ def cmd_apply(a):
             raise SystemExit(f"{c['type']!r} is not in the library: {LIBRARY}")
         if c['between'] == ['clip', 'clip'] and c['type'] not in AI_SAFE:
             raise SystemExit(
-                f"cut {c['cut']} is between two generated clips, so "
+                f"{_where(c)} is between two generated clips, so "
                 f"{c['type']!r} is not allowed there -- only {AI_SAFE}")
-    cuts = sorted(c['cut'] for c in pl['transitions'] if c['type'] != 'hard-cut')
-    for x, y in zip(cuts, cuts[1:]):
-        if y - x == 1:
-            raise SystemExit(f'transitions on consecutive cuts {x} and {y}')
+    live = [c for c in pl['transitions'] if c['type'] != 'hard-cut']
+    for x, y in zip(live, live[1:]):
+        if _crowds(x, y):
+            raise SystemExit(f'{x["type"]} at {x["time"]:.2f}s and '
+                             f'{y["type"]} at {y["time"]:.2f}s are too close '
+                             f'together')
 
     frames, touched, dur_in = render(a.video, pl, a.out, crf=a.crf)
     w, h, fps, dur_out = probe(a.out)
-    print(f"{len(cuts)} transition(s), {touched} of {frames} frames touched")
-    for c in pl['transitions']:
-        if c['type'] != 'hard-cut':
-            print(f"  {c['time']:7.2f}s  {c['type']:<12} {c['direction']:<5} "
-                  f"{c['why']}")
+    print(f"{len(live)} transition(s), {touched} of {frames} frames touched")
+    for c in live:
+        print(f"  {c['time']:7.2f}s  {c['type']:<12} {c['direction']:<5} "
+              f"{c['why']}")
     print(f"runtime {dur_in:.3f}s -> {dur_out:.3f}s "
           f"(added {dur_out - dur_in:+.3f}s)")
     print(f"-> {a.out}")
@@ -438,6 +480,11 @@ def main():
     q.add_argument('--tolerance', type=float, default=TOLERANCE,
                    help='how far a cut may sit from the pause and still '
                         'count as the same beat')
+    q.add_argument('--no-verdict-flash', action='store_true',
+                   help='Do not flash the verdict when no cut lands on it. '
+                        'By default it gets one anyway -- a flash is a '
+                        'lighting event, not a join, so it does not need a '
+                        'cut underneath it.')
     q.set_defaults(fn=cmd_plan)
 
     r = sub.add_parser('apply', help='render the plan onto the assembled video')

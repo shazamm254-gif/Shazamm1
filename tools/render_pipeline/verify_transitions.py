@@ -36,8 +36,8 @@ import sys
 
 import numpy as np
 
-from transitions import (AI_SAFE, LIBRARY, MIN_GAP, TOLERANCE, act_breaks,
-                         count_frames, probe)
+from transitions import (AI_SAFE, LIBRARY, MIN_GAP, TOLERANCE, _crowds,
+                         act_breaks, count_frames, probe)
 
 MATCH_TOL = 24          # levels of re-encode noise to forgive per channel
 MATCH_MIN = 0.98        # fraction of pixels that must come from one source
@@ -149,9 +149,20 @@ def main():
     w1, h1, fps1, d1 = probe(a.after)
 
     # 1. placement
+    #
+    # Measured against the silence itself, not its midpoint. A cut lands in
+    # the middle of a pause but a flash lands on the word the pause leads
+    # into, and on a second and a half of silence those are three quarters
+    # of a second apart -- both of them squarely on the beat.
+    def off_beat(t):
+        if not breaks:
+            return 1e9
+        return min(max(0.0, b['mid'] - b['gap'] / 2 - t,
+                       t - b['mid'] - b['gap'] / 2) for b in breaks)
+
     worst = 0.0
     for c in live:
-        off = min(abs(c['time'] - b['mid']) for b in breaks) if breaks else 1e9
+        off = off_beat(c['time'])
         worst = max(worst, off)
         if off > a.tolerance:
             fails.append(f"{c['type']} at {c['time']:.2f}s is {off:.2f}s from "
@@ -164,10 +175,11 @@ def main():
           f'break(s)')
     if len(live) > len(breaks):
         fails.append(f'{len(live)} transitions for {len(breaks)} act breaks')
-    cuts = sorted(c['cut'] for c in live)
-    for x, y in zip(cuts, cuts[1:]):
-        if y - x == 1:
-            fails.append(f'transitions on consecutive cuts {x} and {y}')
+    ordered = sorted(live, key=lambda c: c['time'])
+    for x, y in zip(ordered, ordered[1:]):
+        if _crowds(x, y):
+            fails.append(f'{x["type"]} at {x["time"]:.2f}s and {y["type"]} '
+                         f'at {y["time"]:.2f}s are too close together')
 
     # 3. library
     kinds = sorted({c['type'] for c in live})
@@ -176,8 +188,9 @@ def main():
         if c['type'] not in LIBRARY:
             fails.append(f"{c['type']!r} is not in the library")
         if c['between'] == ['clip', 'clip'] and c['type'] not in AI_SAFE:
-            fails.append(f"cut {c['cut']} joins two generated clips with "
-                         f"{c['type']!r}; only {AI_SAFE} allowed there")
+            fails.append(f"the {c['type']} at {c['time']:.2f}s joins two "
+                         f"generated clips, which allows only "
+                         f"{AI_SAFE}")
 
     # 4. runtime
     n0, n1 = count_frames(a.before), count_frames(a.after)
@@ -191,11 +204,12 @@ def main():
         fails.append(f'frame size changed {w0}x{h0} -> {w1}x{h1}')
 
     # 5. no frame blending where it is banned
+    # Every flash, wherever it is -- the ramp test is also what proves the
+    # flash rendered at all -- plus anything joining two generated clips.
     checked = 0
-    clip_pairs = sum(1 for c in live if c['between'] == ['clip', 'clip'])
-    for c in live:
-        if c['between'] != ['clip', 'clip']:
-            continue
+    want = [c for c in live
+            if c['type'] == 'flash' or c['between'] == ['clip', 'clip']]
+    for c in want:
         n = int(round(c['time'] * fps))
         k = 8
         n0 = n - PAD - PRE
@@ -228,7 +242,8 @@ def main():
                 peak = max(peak, amt)
                 if spread > worst_s:
                     worst_s, worst_i = spread, i - first
-            print(f"blend:     flash at {c['time']:.2f}s (clip/clip) -- each "
+            print(f"blend:     flash at {c['time']:.2f}s "
+                  f"({'/'.join(c['between'])}) -- each "
                   f"frame is its own source lifted toward white, peak lift "
                   f"{peak * 100:.0f}% [floor {FLASH_MIN * 100:.0f}%], worst "
                   f"spread {worst_s:.3f} [ceiling {RAMP_MAX:.2f}]")
@@ -270,11 +285,11 @@ def main():
             fails.append(f"frame {n + worst_i} at {c['time']:.2f}s is "
                          f"{excess * 100:.1f}% mixed pixels above the "
                          f"untouched frames before it, over {where}{hint}")
-    if not clip_pairs:
-        print('blend:     no clip-to-clip transitions in this edit')
-    elif not checked:
-        print(f'blend:     {clip_pairs} clip-to-clip transition(s) could not '
-              f'be checked')
+    if not want:
+        print('blend:     no flashes and no clip-to-clip transitions here')
+    elif checked < len(want):
+        print(f'blend:     {len(want) - checked} of {len(want)} could not be '
+              f'checked')
 
     print()
     for f in fails:
