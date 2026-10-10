@@ -21,20 +21,58 @@ rarely white, and white noise at the right level still sounds wrong.
 """
 
 import argparse
+import json
+import os
+import re
+import subprocess
 import wave
 
 import numpy as np
 
 
 def read_wav(path):
-    with wave.open(path) as w:
-        assert w.getsampwidth() == 2 and w.getnchannels() == 1, 'want 16-bit mono'
-        sr = w.getframerate()
-        xi = np.frombuffer(w.readframes(w.getnframes()), '<i2')
-    return xi.astype(np.float64) / 32768.0, sr
+    """16-bit or 32-bit float mono.
+
+    Float matters because of where this sits in the chain. declip_vo.py
+    runs first and deliberately hands on peaks above full scale, for the
+    master pass to bring down; an integer file cannot carry those, so
+    insisting on 16-bit here would quietly clip the repair that tool just
+    made. The return is float either way, and the writer keeps whichever
+    format came in."""
+    try:
+        with wave.open(path) as w:
+            assert w.getnchannels() == 1, 'want mono'
+            sr, n = w.getframerate(), w.getnframes()
+            raw = w.readframes(n)
+            if w.getsampwidth() != 2:
+                raise wave.Error(f'{w.getsampwidth() * 8}-bit')
+        return np.frombuffer(raw, '<i2').astype(np.float64) / 32768.0, sr, 2
+    except wave.Error:
+        # Python's wave module refuses float WAVs outright, so those go
+        # through ffmpeg, which is already a dependency of the pipeline.
+        sr = _rate(path)
+        raw = subprocess.run(
+            ['ffmpeg', '-nostdin', '-v', 'error', '-i', path,
+             '-f', 'f32le', '-ac', '1', '-ar', str(sr), '-'],
+            capture_output=True, check=True).stdout
+        return np.frombuffer(raw, np.float32).astype(np.float64), sr, 4
 
 
-def write_wav(path, x, sr):
+def _rate(path):
+    err = subprocess.run(['ffmpeg', '-nostdin', '-hide_banner', '-i', path],
+                         capture_output=True, text=True).stderr
+    m = re.search(r'(\d+) Hz', err)
+    return int(m.group(1)) if m else 44100
+
+
+def write_wav(path, x, sr, width=2):
+    if width == 4:
+        subprocess.run(
+            ['ffmpeg', '-nostdin', '-y', '-v', 'error',
+             '-f', 'f32le', '-ac', '1', '-ar', str(sr), '-i', '-',
+             '-c:a', 'pcm_f32le', path],
+            input=x.astype(np.float32).tobytes(), check=True)
+        return
     xi = np.clip(np.rint(x * 32768.0), -32768, 32767).astype('<i2')
     with wave.open(path, 'wb') as w:
         w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr)
@@ -179,16 +217,37 @@ def main():
     p.add_argument('--tail-ms', type=float, default=250)
     a = p.parse_args()
 
-    x, sr = read_wav(a.src)
+    x, sr, width = read_wav(a.src)
     y, rep = fill(x, sr)
     print(f'{len(rep)} dead-air block(s) filled with matched room tone:')
     for t, ms, b4, af in rep:
         print(f'  {t:6.2f}s  {ms:6.0f}ms   floor {b4:6.1f} dB -> {af:6.1f} dB')
     y, had_head, had_tail = trim(y, sr, a.head_ms, a.tail_ms)
+    cut = max(0.0, had_head - a.head_ms / 1000)   # seconds taken off the front
     print(f'lead-in {had_head:.3f}s -> {a.head_ms/1000:.3f}s, '
           f'tail {had_tail:.3f}s -> {a.tail_ms/1000:.3f}s')
-    write_wav(a.out, y, sr)
+    write_wav(a.out, y, sr, width)
     print(f'-> {a.out}  {len(y)/sr:.2f}s')
+
+    # Where the splices were, in the OUTPUT's own timeline.
+    #
+    # These are the one thing in the read that is known rather than
+    # inferred. A generated voiceover is rendered a paragraph at a time
+    # and spliced, so every block of exact digital zero is a paragraph
+    # break -- and once the room tone is in, that evidence is gone. The
+    # aligner wants it (it turns one 225-word timing problem into thirteen
+    # small ones with known ends) and so does the transition planner. The
+    # alternative is picking the longest pauses out of the finished file,
+    # which does not work: a reader's dramatic pause is longer than some
+    # of the real breaks.
+    splices = [{'start': round(t - cut, 3), 'duration_ms': round(ms, 1)}
+               for t, ms, _b, _a2 in rep if 0 <= t - cut <= len(y) / sr]
+    path = os.path.splitext(a.out)[0] + '.splices.json'
+    with open(path, 'w') as f:
+        json.dump({'source': os.path.basename(a.out),
+                   'duration': round(len(y) / sr, 3),
+                   'splices': splices}, f, indent=1)
+    print(f'   {len(splices)} splice(s) -> {path}')
 
 
 if __name__ == '__main__':

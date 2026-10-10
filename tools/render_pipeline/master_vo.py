@@ -33,6 +33,7 @@ track down.
 
 import argparse
 import json
+import os
 import re
 import subprocess
 
@@ -73,6 +74,14 @@ def main():
 
     limit = 10 ** (a.ceiling / 20.0)
     gain = 0.0
+    # The resample is its own pass rather than the tail of the chain.
+    # loudnorm runs internally at 192kHz and hands that rate on, so
+    # something has to bring it back to 48 -- but ffmpeg 7.0.2 aborts on
+    # the combined graph (best_input assertion, ffmpeg_filter.c) once the
+    # read is longer than about 87 seconds. Same filters, same order, two
+    # invocations; the intermediate stays float so nothing is quantised
+    # twice.
+    stage1 = os.path.splitext(a.out)[0] + '.stage1.wav'
     for _ in range(4):
         chain = (pre
                  + f"loudnorm=I={a.lufs}:TP={a.ceiling}:LRA=11"
@@ -81,10 +90,13 @@ def main():
                    f":measured_thresh={m['input_thresh']}"
                    f":offset={m['target_offset']}:linear=true,"
                  + (f'volume={gain:.2f}dB,' if gain else '')
-                 + f'alimiter=limit={limit:.4f}:level=disabled,'
-                 + f'aresample={a.rate}:resampler=soxr:precision=28')
+                 + f'alimiter=limit={limit:.4f}:level=disabled')
         subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-y', '-i', a.src,
-                        '-af', chain, '-ar', str(a.rate), '-ac', '1',
+                        '-af', chain, '-ac', '1',
+                        '-c:a', 'pcm_f32le', stage1], check=True)
+        subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-y', '-i', stage1,
+                        '-af', f'aresample={a.rate}:resampler=soxr:precision=28',
+                        '-ar', str(a.rate), '-ac', '1',
                         '-c:a', 'pcm_s16le', a.out], check=True)
         got, glra, gtp = measure(a.out)
         if abs(got - a.lufs) <= a.tol and gtp <= a.ceiling + 0.05:

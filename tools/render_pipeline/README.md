@@ -39,8 +39,9 @@ breaks.
 |---|---|---|
 | `make_video.py` | Builds a Short from stills and a voiceover. Ken Burns per shot, shot map from the SRT, music bed, loudness. | Money Autopsy 001, Gardner heist |
 | `make_video_clips.py` | The same, from generated clips instead of stills. Cuts clips to the beat, holds the last frame rather than stretching, offsets repeat uses. Mixes stills in. | Lion vs Tiger |
-| `master_vo.py` | Lands any read on 48 kHz / −14 LUFS / ≤ −1 dBTP, with the shortfall handed to the limiter over up to four measured passes. | Lion vs Tiger |
-| `fill_dead_air.py` | Repairs the digital-silence splices a chunk-assembled TTS read has between segments, with room tone taken from the read itself. | Gardner heist |
+| `master_vo.py` | Lands any read on 48 kHz / −14 LUFS / ≤ −1 dBTP, with the shortfall handed to the limiter over up to four measured passes. | Lion vs Tiger, Samurai vs Knight |
+| `declip_vo.py` | Rebuilds peaks a read had flattened against full scale, by cubic interpolation across each run of pinned samples. | Samurai vs Knight |
+| `fill_dead_air.py` | Repairs the digital-silence splices a chunk-assembled TTS read has between segments, with room tone taken from the read itself, and records where they were. | Gardner heist, Samurai vs Knight |
 | `make_music.py` | Generates an ambient, pulse or minimal bed in a given key, standard library only. | Gardner heist, Lion vs Tiger |
 | `burn_captions.py` | Phrase-chunk captions through libass, break points solved by DP rather than counted, one accent colour on the power words, contrast measured against the frames behind them. | Gardner heist, Lion vs Tiger |
 | `verify_captions.py` | Checks a caption pass: timing against the read, words per card, and where the glyphs actually landed. | Lion vs Tiger |
@@ -63,7 +64,25 @@ breaks.
 | `render_one.py` | Render a single row of that xlsx by rank. |
 
 Word timings come from `../shortscaptioner_bridge/` — see its own README for
-which of those are trustworthy on which voices.
+which of those are trustworthy on which voices. With no transcriber
+available at all, `align_from_splices.py` there works off the splice map
+`fill_dead_air.py` writes.
+
+## Repairing a read
+
+The order matters, and each stage hands the next something it needs.
+
+```bash
+python3 declip_vo.py      vo.wav vo-declipped.wav   # before anything measures peaks
+python3 fill_dead_air.py  vo-declipped.wav vo-filled.wav   # also writes vo-filled.splices.json
+python3 master_vo.py      vo-filled.wav vo-master.wav      # 48kHz, -14 LUFS, <= -1 dBTP
+```
+
+Declip first: a flat top reads to a limiter as a peak that arrived early
+and stayed, so it pulls down a whole syllable to control a four-sample
+artefact. Fill second, while the splices are still visible as exact
+digital zero — once room tone is in, that evidence is gone, which is why
+that stage writes the positions out. Master last.
 
 ## Captions
 
