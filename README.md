@@ -29,6 +29,13 @@ analyze what's working and help you package and ideate faster.
 | [`product/faceless-ai-shorts-starter-kit/`](product/faceless-ai-shorts-starter-kit/) | A **sellable digital product** — packages the system into a faceless-channel starter kit, with paste-ready sales copy and pricing. |
 | [`product/cosmic-ai-prompt-pack/`](product/cosmic-ai-prompt-pack/) | **300+ cosmic AI image/video prompts** with a cohesive style system + shot lists for the 10 scripts. A standalone product, the Pro-tier upsell, and your own production shortcut. |
 
+### POD Type Studio (print-on-demand)
+
+A phone-first web app for typographic tee designs that pushes each design
+straight into Printify as a draft product, then publishes it on a confirmed tap.
+See [`pod-type-studio/README.md`](pod-type-studio/README.md) to run it from an
+Android phone.
+
 ### Money Decoded (personal-finance niche)
 
 A second, ready-to-go niche — pass `--niche-file niche-money.json` to

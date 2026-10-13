@@ -1,0 +1,4 @@
+# Server-side secrets and state: token, passcode hash, sessions, history, caches.
+data/
+node_modules/
+test-output/

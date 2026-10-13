@@ -1,0 +1,13 @@
+{
+  "name": "pod-type-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Phone-first typographic design studio that pushes designs straight into Printify as draft products.",
+  "type": "module",
+  "engines": { "node": ">=18.17" },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/unit.test.js test/server.test.js",
+    "test:e2e": "node test/e2e.mjs"
+  }
+}
