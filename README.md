@@ -12,6 +12,24 @@ This repo can't post to YouTube for you, but it gives you the two things that
 actually move a small channel: a **concrete growth plan** and **scripts** that
 analyze what's working and help you package and ideate faster.
 
+## Also here: AUTO SHORTS — the editor
+
+[`auto-shorts/`](auto-shorts/) is a working **AI-powered short-form video
+editor**. The rest of this repo helps you decide what to make; AUTO SHORTS cuts
+it. Drop in footage or a narration plus a folder of images, press **AUTO EDIT**,
+and it removes the silence, writes and animates the captions, picks the words
+worth emphasising, adds punch-ins, finds B-roll moments, places sound design and
+ducks the music — then exports a 1080×1920 H.264 MP4.
+
+It runs entirely on your machine (Node + FFmpeg, no account, no per-video cost).
+
+```bash
+cd auto-shorts && npm run setup && npm start   # then open http://localhost:5174
+```
+
+See [`auto-shorts/README.md`](auto-shorts/README.md) for the full picture,
+including its known limitations.
+
 ## What's here
 
 | Path | What it does |

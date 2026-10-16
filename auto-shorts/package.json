@@ -1,0 +1,24 @@
+{
+  "name": "auto-shorts",
+  "version": "1.0.0",
+  "description": "AUTO SHORTS — automation-first AI short-form video editor. Local-first, FFmpeg-powered.",
+  "type": "commonjs",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node backend/server.js",
+    "build": "npm --prefix frontend run build",
+    "setup": "npm install && npm --prefix frontend install && npm run build",
+    "frontend": "npm --prefix frontend run dev",
+    "selftest": "node scripts/selftest.js",
+    "make-sfx": "node scripts/make-sfx.js"
+  },
+  "keywords": ["video", "shorts", "ffmpeg", "captions", "automation", "editor"],
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.1.0",
+    "ffmpeg-static": "^5.3.0",
+    "ffprobe-static": "^3.1.0",
+    "multer": "^2.0.2"
+  }
+}

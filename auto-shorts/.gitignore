@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+
+# Built UI (rebuild with: npm run build)
+frontend/dist/
+
+# Projects, uploads, exports, temp files, generated test media
+data/
+
+# Synthesized sound effects — regenerated on first boot
+assets/sfx/*.wav
+
+# Local environment
+.env
+*.local
+
+# OS / editor cruft
+.DS_Store
+.idea/
+.vscode/
+*.log
