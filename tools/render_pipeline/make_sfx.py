@@ -12,12 +12,7 @@ synthetic in real film sound too. Nobody records a sub drop; somebody
 makes one. These are built the way the real ones are, which is why they
 sound like them rather than like an approximation of them.
 
-What is NOT here, deliberately: footsteps, cloth, door latches, rain. Those
-are recordings of real objects and synthesising them lands in the uncanny
-middle where it is obviously neither. Source those, or leave them out --
-a tense wide shot carries fine on a drone and a sub.
-
-The elements:
+The design elements:
 
   sub-drop    one low hit that falls away. The cut-to-something punctuation.
   impact      transient plus a short low body. Harder and drier than a drop.
@@ -27,6 +22,27 @@ The elements:
   drone       a low bed that moves just enough not to be a sine wave.
   room-tone   filtered noise at a level you cannot name but can hear leave.
   whoosh      a passing band of filtered noise. For a camera move or a cut.
+
+And the foley, which is modal synthesis:
+
+  rain-glass  a wash plus individual drops, close on a window.
+  footsteps   a few footfalls on a wooden floor. Not a walk cycle.
+  cloth       a jacket moving. Low, brief, almost subliminal.
+  door-latch  the mechanism. A click and a short metal ring.
+  door-creak  stick-slip on a hinge, which is what a creak physically is.
+
+A struck object rings at a handful of sharply tuned frequencies that
+decay at different rates, and that is nearly all there is to a footstep,
+a latch or a drop of water. Summing decaying sinusoids at those
+frequencies -- modal synthesis -- is how games and film have made these
+sounds for twenty years, so they are no more "fake" than the sub drop is.
+The hard part is not the physics, it is the variation: real footsteps
+differ from each other, and the surest way to sound synthetic is to
+repeat one of them. Every mode here is jittered per event.
+
+Everything is written as mono 48kHz float WAV, peaking where you ask
+(default -6 dBFS), on the assumption that place_sfx.py does the final
+level against the dialogue.
 
 Everything is written as mono 48kHz float WAV, peaking where you ask
 (default -6 dBFS), on the assumption that place_sfx.py does the final
@@ -212,7 +228,144 @@ def whoosh(dur=1.0, seed=7):
     return band * _env(n, int(dur * 0.45 * SR), int(dur * 0.5 * SR), 1.8)
 
 
+# --- foley, by modal synthesis ---------------------------------------
+#
+# An object that gets hit rings at a few sharply tuned frequencies, each
+# decaying at its own rate. Wood is low and dies fast; metal is high and
+# rings on. Reproduce those modes and you have the sound, which is why
+# this works and why a filtered noise burst never does.
+
+
+def _modal(n, modes, rng, jitter=0.03):
+    """Sum of decaying sinusoids. modes = [(hz, amp, decay_seconds), ...]
+
+    Frequencies and decays are jittered per call, because the one thing
+    that gives synthetic foley away is two identical events."""
+    t = np.arange(n) / SR
+    out = np.zeros(n)
+    for f, a, d in modes:
+        f = f * (1.0 + rng.normal(0, jitter))
+        d = d * (1.0 + rng.normal(0, jitter * 2))
+        out += a * np.sin(2 * np.pi * f * t + rng.uniform(0, 2 * np.pi)) \
+            * np.exp(-t / max(d, 1e-4))
+    return out
+
+
+def rain_glass(dur=10.0, seed=11, drops_per_s=38.0):
+    """A wash plus individual drops, close on a window."""
+    n = int(dur * SR)
+    rng = np.random.default_rng(seed)
+    # Heard from inside a car, rain is mostly body: a low roar with
+    # ticks on top. Built tick-first it comes out 77% above 3kHz, which
+    # is a hiss on a window, not weather.
+    # Balance solved against a target spread rather than guessed: the
+    # first pass was 77% above 3kHz (a hiss), the correction for it was
+    # 69% below 200Hz (a rumble), and neither is rain.
+    wash = _lp(rng.standard_normal(n), 1500, poles=2) * 0.8
+    wash += _lp(rng.standard_normal(n), 220, poles=3) * 1.4
+    out = wash
+    # Each drop is a tiny bright tick with a glassy ring over it. Poisson
+    # arrivals, not a grid -- evenly spaced drops read as a machine.
+    k = rng.poisson(drops_per_s * dur)
+    ln = int(0.03 * SR)
+    for s in rng.integers(0, max(1, n - ln), size=k):
+        a = rng.uniform(0.2, 1.0) ** 2
+        tick = _lp(rng.standard_normal(ln), 6000, poles=1)
+        tick *= _env(ln, 1, int(0.008 * SR), 3.0)
+        ring = _modal(ln, [(rng.uniform(1400, 3400), 0.5, 0.007),
+                           (rng.uniform(3400, 6000), 0.2, 0.004)], rng)
+        out[s:s + ln] += a * 0.6 * (tick * 0.6 + ring)
+    return out
+
+
+def footsteps(dur=4.0, count=4, interval=0.78, seed=12):
+    """A few footfalls on a wooden floor. Not a walk cycle."""
+    n = int(dur * SR)
+    rng = np.random.default_rng(seed)
+    out = np.zeros(n)
+    ln = int(0.32 * SR)
+    t = 0.25
+    for i in range(count):
+        s = int(t * SR)
+        if s + ln >= n:
+            break
+        # Wooden floor modes: low, close together, gone in a fifth of a
+        # second. Plus the heel transient and a little sole scuff.
+        # A board knocks as well as thuds. Weighted to the low modes
+        # alone it came out 95% below 200Hz, which is a footstep heard
+        # through a floor rather than one on it.
+        body = _modal(ln, [(72, 1.0, 0.085), (118, 0.75, 0.06),
+                           (196, 0.6, 0.045), (340, 0.5, 0.03),
+                           (520, 0.38, 0.022), (810, 0.28, 0.016),
+                           (1240, 0.16, 0.011)], rng, jitter=0.06)
+        body *= _env(ln, int(0.0015 * SR), int(0.28 * SR), 2.5)
+        thud = _lp(rng.standard_normal(ln), 260, poles=2)
+        thud *= _env(ln, 1, int(0.035 * SR), 3.0)
+        scuff = _lp(rng.standard_normal(ln), 3800, poles=1)
+        scuff *= _env(ln, int(0.004 * SR), int(0.05 * SR), 2.0)
+        amp = rng.uniform(0.72, 1.0)
+        out[s:s + ln] += amp * (body * 0.8 + thud * 0.32 + scuff * 0.3)
+        t += interval * rng.uniform(0.88, 1.12)     # nobody walks to a click
+    return out
+
+
+def cloth(dur=1.2, seed=13):
+    """A jacket moving. Low, brief, almost subliminal."""
+    n = int(dur * SR)
+    rng = np.random.default_rng(seed)
+    out = np.zeros(n)
+    for _ in range(rng.integers(3, 6)):
+        ln = int(rng.uniform(0.06, 0.18) * SR)
+        s = rng.integers(0, max(1, n - ln))
+        b = _lp(rng.standard_normal(ln), rng.uniform(2000, 4500), poles=2)
+        b -= _lp(b, 600, poles=2)
+        out[s:s + ln] += b * _env(ln, int(ln * 0.3), int(ln * 0.6), 1.6) \
+            * rng.uniform(0.4, 1.0)
+    return out
+
+
+def door_latch(dur=0.6, seed=14):
+    """The mechanism. A click and a short metal ring."""
+    n = int(dur * SR)
+    rng = np.random.default_rng(seed)
+    click = rng.standard_normal(int(0.004 * SR))
+    ring = _modal(n, [(1180, 1.0, 0.045), (1930, 0.6, 0.035),
+                      (3260, 0.4, 0.022), (4700, 0.22, 0.014),
+                      (640, 0.3, 0.06)], rng, jitter=0.02)
+    out = ring * _env(n, int(0.0008 * SR), int(0.2 * SR), 2.5)
+    out[:len(click)] += click * 0.8
+    return out
+
+
+def door_creak(dur=2.2, seed=15):
+    """Stick-slip on a hinge, which is what a creak physically is."""
+    n = int(dur * SR)
+    rng = np.random.default_rng(seed)
+    out = np.zeros(n)
+    # A creak is not a tone, it is hundreds of tiny slips. Rate and pitch
+    # wander; that wander is the whole character of the sound.
+    t = 0.0
+    while t < dur:
+        s = int(t * SR)
+        ln = int(0.05 * SR)
+        if s + ln >= n:
+            break
+        f = rng.uniform(380, 1250)
+        out[s:s + ln] += _modal(ln, [(f, 1.0, 0.012),
+                                     (f * 2.4, 0.35, 0.008)], rng) \
+            * rng.uniform(0.3, 1.0)
+        t += rng.uniform(0.004, 0.028)
+    out *= _env(n, int(0.2 * SR), int(0.8 * SR), 1.4)
+    return out + _lp(rng.standard_normal(n), 140, poles=3) * 0.25 * \
+        _env(n, int(0.3 * SR), int(0.9 * SR), 1.4)
+
+
 ELEMENTS = {
+    'rain-glass': rain_glass,
+    'footsteps': footsteps,
+    'cloth': cloth,
+    'door-latch': door_latch,
+    'door-creak': door_creak,
     'sub-drop': sub_drop,
     'impact': impact,
     'riser': riser,
@@ -244,6 +397,8 @@ def main():
     p.add_argument('--out')
     p.add_argument('--duration', type=float, default=None)
     p.add_argument('--bpm', type=float, default=52.0, help='heartbeat only')
+    p.add_argument('--count', type=int, default=4, help='footsteps only')
+    p.add_argument('--interval', type=float, default=0.78, help='footsteps only')
     p.add_argument('--root', type=float, default=48.0, help='drone only, Hz')
     p.add_argument('--peak', type=float, default=-6.0, help='dBFS')
     p.add_argument('--seed', type=int, default=None)
@@ -265,6 +420,9 @@ def main():
         kw['bpm'] = a.bpm
     if a.element == 'drone':
         kw['root'] = a.root
+    if a.element == 'footsteps':
+        kw['count'] = a.count
+        kw['interval'] = a.interval
     if a.seed is not None:
         kw['seed'] = a.seed
 
