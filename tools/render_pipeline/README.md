@@ -64,6 +64,7 @@ breaks.
 | `render_one.py` | Render a single row of that xlsx by rank. |
 | `make_sfx.py` | Synthesises cinematic sound-design elements from scratch — sub drops, impacts, risers, heartbeats, drones, room tone, whooshes. Measured against what each claims to be, but no finished episode has used one. |
 | `place_sfx.py` | Lays those cues under dialogue from a cue sheet: one-shots at a timecode, beds across a span, beds ducked and one-shots not. |
+| `title_cards.py` | Burns a handful of deliberate on-screen cards — a hook, two stat lines, a call to action — on a cut that may have no narration at all. One line per card, `\|` breaks a line, `*stars*` accent a word. |
 
 Word timings come from `../shortscaptioner_bridge/` — see its own README for
 which of those are trustworthy on which voices. With no transcriber
