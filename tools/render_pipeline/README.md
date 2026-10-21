@@ -62,6 +62,8 @@ breaks.
 | `overlay_cards.py` | Burn small source/context cards onto a finished video. |
 | `render_all.py` | Render every unrendered row of a content-system xlsx in rank order. |
 | `render_one.py` | Render a single row of that xlsx by rank. |
+| `make_sfx.py` | Synthesises cinematic sound-design elements from scratch — sub drops, impacts, risers, heartbeats, drones, room tone, whooshes. Measured against what each claims to be, but no finished episode has used one. |
+| `place_sfx.py` | Lays those cues under dialogue from a cue sheet: one-shots at a timecode, beds across a span, beds ducked and one-shots not. |
 
 Word timings come from `../shortscaptioner_bridge/` — see its own README for
 which of those are trustworthy on which voices. With no transcriber
@@ -125,6 +127,42 @@ Hard rules the code enforces: four words a card maximum, and captions clear
 the Shorts interface — 320px at the bottom, 90px at the top, and 150px at
 the right for the like/share rail, which sits *above* the bottom strip and
 is the one people forget.
+
+## Sound effects
+
+```bash
+python3 make_sfx.py sub-drop --out sfx/sub-drop.wav
+python3 place_sfx.py --voice vo.wav --cues cues.txt --sfx-dir sfx --out mixed.wav
+```
+
+For drama rather than explainer. The music path mixes one bed across a
+whole episode; a scene wants a dozen separate sounds at particular
+moments. The cue sheet has two kinds of line:
+
+```
+AT   24.60    sub-drop.wav   -12
+BED  9.0-23.5 drone.wav      auto
+```
+
+**Beds duck under speech; one-shots do not.** A drone competing with a
+voice is mud and has to move out of the way, but a door latch or a sub
+drop is punctuation — ducking it is the same mistake as fading down a
+cut.
+
+**Write `auto` for a bed's level, not a number.** The level is then
+measured so the bed sits `--bed-under` dB beneath the voice while the
+voice speaks. The same written dB gives a drone and a heartbeat
+completely different loudness, because their crest factors are nothing
+alike — on the first real cue sheet, three beds written at about the same
+number needed −14.5, −16.3 and −15.0 dB of correction to match. This
+pipeline already learned that lesson once with the music bed.
+
+`make_sfx.py` synthesises; it does not sample. That is no loss for sub
+drops, risers and impacts, which are synthetic in real film sound too.
+It deliberately does **not** attempt footsteps, cloth, door latches or
+rain — those are recordings of real objects, and synthesising them lands
+in the uncanny middle where it is obviously neither. Source those or
+leave them out.
 
 ## Transitions
 
