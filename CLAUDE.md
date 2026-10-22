@@ -56,6 +56,26 @@ that is the real reason nothing has shipped, not laziness and not the scripts.
 captions — none of it. If a deliverable needs editing, either you do it or the
 plan is wrong.
 
+### Termux — the assembly step, solved (2026-10-22)
+
+The owner is setting up **Termux** (Android terminal, installed from F-Droid —
+the Play Store build is unmaintained). This removes the blocker that has stalled
+this project from the start: with `ffmpeg` on the phone, assembly stops being a
+manual edit.
+
+`tools/makeshort.sh` takes a folder holding a voiceover and numbered clips and
+produces a finished 1080x1920 h264/aac Short in the gallery. It scales and crops
+every clip, joins them, then **stretches or trims the picture to match the
+narration automatically** — the 16s-of-clips against 25.5s-of-voiceover problem
+solves itself, with no speed change for the user to apply.
+
+Tested end to end in the sandbox on 2026-10-22: 4 clips + a 25.5s track produced
+a correct 25.5s 1080x1920 file. Not yet run on a real device.
+
+Termux also means the phone can `curl` the Flux and Wan URLs directly — no
+egress proxy there — so expiring links stop being a problem, and
+`tools/agent.py` becomes runnable after `pkg install python`.
+
 ### Apps they actually have
 
 Gemini, ChatGPT, Qwen (all on the phone), and CapCut (disliked). All three AI
