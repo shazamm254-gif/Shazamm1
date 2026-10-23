@@ -167,49 +167,104 @@ def lay_words(words, spans):
     return out
 
 
-def by_sentence_pauses(a, paras, db, hop):
-    """Align when the read has a pause at every sentence and no splices.
+def stable_runs(db, hop, lo=0.20, hi=0.95, step=0.05):
+    """The run count that holds over the widest range of thresholds.
 
-    A read delivered as MP3 has no splice map: the format has no exact
-    digital zero in it, so the paragraph boundaries that fill_dead_air
-    records are simply gone. But a reader who stops between every
-    sentence has left a better anchor than paragraphs ever were, because
-    there is one boundary per sentence rather than one per block of them.
-
-    The threshold is found rather than set. Scan the plausible range for
-    the one that splits the read into exactly as many runs as the script
-    has sentences, and if no threshold does that, say so and stop --
-    guessing which run is which sentence is how an alignment ends up
-    seconds out while still looking plausible."""
-    sents = [s for p in paras for s in split_sentences(p)]
-    best = None
-    for thr in np.arange(0.18, 0.72, 0.01):
+    A count that appears at one threshold and nowhere else is a
+    coincidence of where the scan happened to land. The real structure of
+    a read is the one that survives moving the threshold around, and on
+    episode 2 that was twenty runs across every value from 0.20 to 0.65 --
+    while eighteen, the number that happened to match the sentence count,
+    appeared at exactly one."""
+    seen = {}
+    for thr in np.arange(lo, hi, step):
         runs = speech_runs(db, hop, float(thr))
-        if len(runs) == len(sents):
-            best = (float(thr), runs)
-            break
-    if best is None:
-        counts = {len(speech_runs(db, hop, float(t)))
-                  for t in np.arange(0.18, 0.72, 0.02)}
+        seen.setdefault(len(runs), []).append((float(thr), runs))
+    best = max(seen.items(), key=lambda kv: (len(kv[1]), -kv[0]))
+    mid = best[1][len(best[1]) // 2]
+    return best[0], mid[0], mid[1], {k: len(v) for k, v in seen.items()}
+
+
+def pace_report(sents, spans):
+    """Seconds per syllable for each sentence, and whether it is possible.
+
+    This is the check that separates a correct assignment from one that
+    merely has the right number of pieces. A sentence given a fifth of a
+    second for four words did not happen, however neat the count looked."""
+    out = []
+    for s, sp in zip(sents, spans):
+        syl = sum(syllables(w) for w in s.split())
+        dur = sum(b - a for a, b in sp)
+        out.append(dur / max(syl, 1))
+    return out
+
+
+PACE_LO, PACE_HI = 0.10, 0.45
+
+
+def by_sentence_pauses(a, paras, db, hop):
+    """Align when the read has no splice map, off its pauses alone.
+
+    A read delivered as MP3 has no exact digital zero in it, so the
+    splice map fill_dead_air records is gone and the aligner's usual
+    anchor with it. The pauses are still there, though, and a reader who
+    stops between sentences has left one boundary per sentence rather
+    than one per paragraph.
+
+    The count is not taken on trust. The threshold is chosen for
+    stability rather than for matching, sentences are fitted to runs by
+    the same dynamic program the paragraph path uses when there are more
+    runs than sentences, and every sentence's pace is checked afterwards.
+    An alignment that is seconds out still looks plausible in a JSON
+    file; it only shows up on screen."""
+    sents = [s for p in paras for s in split_sentences(p)]
+    n, thr, runs, hist = stable_runs(db, hop)
+    print(f'{len(sents)} sentences; {n} speech runs hold across the widest '
+          f'band of thresholds (using {thr:.2f}s)')
+    if n != len(sents):
+        print(f'   run counts seen: '
+              + ', '.join(f'{k}x{v}' for k, v in sorted(hist.items())))
+
+    if n == len(sents):
+        plan = [(i, i + 1) for i in range(n)]
+    elif n > len(sents):
+        plan = assign(sents, runs)
+        if plan is None:
+            raise SystemExit('could not fit the sentences to the runs')
+        print(f'   {n - len(sents)} sentence(s) span more than one run -- '
+              f'the reader paused mid-sentence')
+    else:
         raise SystemExit(
-            f'{len(sents)} sentences, but no pause threshold between 0.18s '
-            f'and 0.72s splits the read into that many runs (got '
-            f'{sorted(counts)}). The reader did not stop at every sentence; '
-            f'use --splices, or re-cut the script to match the read.')
-    thr, runs = best
-    print(f'{len(sents)} sentences, {len(runs)} speech runs at a '
-          f'{thr:.2f}s pause threshold -- one each')
+            f'only {n} speech runs for {len(sents)} sentences: the reader ran '
+            f'sentences together, so the pauses cannot say where they '
+            f'divide. Use --splices, or re-cut the script to the read.')
+
+    spans = [runs[i:j] for i, j in plan]
+    pace = pace_report(sents, spans)
     rows = []
-    for s, r in zip(sents, runs):
-        rows.append((s, lay_words(s.split(), [r])))
-        print(f'  {r[0]:6.2f}-{r[1]:6.2f}s  {s[:52]}')
+    bad = []
+    for s, sp, pc in zip(sents, spans, pace):
+        rows.append((s, lay_words(s.split(), sp)))
+        flag = '' if PACE_LO <= pc <= PACE_HI else '   <-- IMPOSSIBLE'
+        if flag:
+            bad.append((s, pc))
+        print(f'  {sp[0][0]:6.2f}-{sp[-1][1]:6.2f}s  {pc:.3f} s/syl  '
+              f'{s[:44]}{flag}')
+    if bad:
+        raise SystemExit(
+            f'{len(bad)} sentence(s) landed at an impossible speaking rate '
+            f'(outside {PACE_LO}-{PACE_HI} s/syllable), so the runs are not '
+            f'lined up with the sentences. Fix the script to match what was '
+            f'actually read, or supply --splices.')
+
     flat = [w for _s, ws in rows for w in ws]
     json.dump({'version': 'sentence-pauses', 'words': flat}, open(a.out, 'w'))
-    print(f'{len(flat)} words -> {a.out}')
+    print(f'{len(flat)} words, pace {min(pace):.3f}-{max(pace):.3f} '
+          f's/syllable -> {a.out}')
     if a.beats:
         lines = []
-        for n, (s, ws) in enumerate(rows, 1):
-            lines.append(f'{n}\n{srt_time(ws[0]["start"])} --> '
+        for k, (s, ws) in enumerate(rows, 1):
+            lines.append(f'{k}\n{srt_time(ws[0]["start"])} --> '
                          f'{srt_time(ws[-1]["end"])}\n{s}\n')
         open(a.beats, 'w').write('\n'.join(lines))
         print(f'{len(rows)} sentence(s) -> {a.beats}')
