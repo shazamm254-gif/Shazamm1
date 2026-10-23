@@ -14,6 +14,7 @@ One line per card:
     START  END  POSITION  STYLE  TEXT
 
     0.2  3.6  center       hook     TWO KINGS. | ONE SWAMP.
+    39.3 42.0 center       hook+flicker  DREADLINE
     4.1  7.0  lower-third  stat     T. REX | *8 TONS* - STRONGEST BITE
     16.6 20.1 center       verdict  YOUR PICK? | 👇
 
@@ -58,6 +59,26 @@ POSITIONS = {
 
 FADE_MS = 150
 
+# How a card arrives. `fade` is the default and right for most things.
+#
+# `flicker` is a failing light: the card stutters on, drops out, catches,
+# drops again and settles. The pattern is irregular on purpose -- an even
+# on-off-on reads as a blinking cursor, and a real lamp struggling to
+# strike never repeats itself. Each entry is (on, off, alpha) in seconds
+# from the start of the card, and the last one runs to the end. The alpha
+# varies too, because a failing tube is not only intermittent, it is dim
+# on the strikes that nearly fail.
+FLICKER = [
+    (0.00, 0.05, 0x00),
+    (0.13, 0.17, 0x70),
+    (0.29, 0.38, 0x00),
+    (0.44, 0.48, 0x90),
+    (0.55, 0.62, 0x20),
+    (0.71, None, 0x00),
+]
+
+EFFECTS = ('fade', 'flicker', 'hard')
+
 
 def parse(path):
     cards = []
@@ -69,16 +90,21 @@ def parse(path):
         if not m:
             raise SystemExit(f'{path}:{n}: cannot read "{line.strip()}"')
         start, end, pos, style, text = m.groups()
+        style, _, effect = style.partition('+')
+        effect = effect or 'fade'
         if pos not in POSITIONS:
             raise SystemExit(f'{path}:{n}: position must be one of '
                              f'{sorted(POSITIONS)}')
         if style not in STYLES:
             raise SystemExit(f'{path}:{n}: style must be one of '
                              f'{sorted(STYLES)}')
+        if effect not in EFFECTS:
+            raise SystemExit(f'{path}:{n}: effect must be one of '
+                             f'{sorted(EFFECTS)}')
         if float(end) <= float(start):
             raise SystemExit(f'{path}:{n}: ends before it starts')
         cards.append(dict(start=float(start), end=float(end), pos=pos,
-                          style=style, text=text.strip()))
+                          style=style, effect=effect, text=text.strip()))
     cards.sort(key=lambda c: c['start'])
     for x, y in zip(cards, cards[1:]):
         if y['start'] < x['end'] - 1e-6 and y['pos'] == x['pos']:
@@ -105,6 +131,26 @@ def markup(text, accent):
     return ''.join(out).replace('|', r'\N')
 
 
+def flicker_events(c, style, body):
+    """One dialogue line per strike, hard on and hard off.
+
+    Animating alpha with \\t would interpolate, and a smooth ramp up and
+    down is a pulse, not a lamp failing to light. The stutter has to be
+    discontinuous, so it is cut into separate events."""
+    out = []
+    for on, off, alpha in FLICKER:
+        s = c['start'] + on
+        e = c['end'] if off is None else min(c['start'] + off, c['end'])
+        if s >= c['end'] - 1e-6 or e <= s:
+            continue
+        tag = r'{\alpha&H%02X&}' % alpha
+        if off is None:
+            tag += r'{\fad(0,%d)}' % FADE_MS      # settle, then fade at the end
+        out.append(f"Dialogue: 0,{ass_time(s)},{ass_time(e)},{style},,"
+                   f"0,0,0,,{tag}{body}")
+    return out
+
+
 def build_ass(cards, width, height, accent):
     acc = hex_to_ass(accent)
     styles, events = [], []
@@ -116,10 +162,16 @@ def build_ass(cards, width, height, accent):
                 f"{s['spacing']},0,1,{s['outline']},{s['shadow']},{align},"
                 f"{UI_RIGHT},{UI_RIGHT},{margin},1")
     for c in cards:
-        fade = r'{\fad(%d,%d)}' % (FADE_MS, FADE_MS)
+        body = markup(c['text'], acc)
+        style = f"{c['style']}_{c['pos']}"
+        if c['effect'] == 'flicker':
+            events += flicker_events(c, style, body)
+            continue
+        pre = ('' if c['effect'] == 'hard'
+               else r'{\fad(%d,%d)}' % (FADE_MS, FADE_MS))
         events.append(
             f"Dialogue: 0,{ass_time(c['start'])},{ass_time(c['end'])},"
-            f"{c['style']}_{c['pos']},,0,0,0,,{fade}{markup(c['text'], acc)}")
+            f"{style},,0,0,0,,{pre}{body}")
     head = f"""[Script Info]
 ScriptType: v4.00+
 PlayResX: {width}
@@ -158,7 +210,7 @@ def main():
     print(f'{len(cards)} card(s), {w}x{h}, accent {a.accent}')
     for c in cards:
         print(f"  {c['start']:5.2f}-{c['end']:5.2f}s  {c['style']:<8} "
-              f"{c['pos']:<12} {c['text']}")
+              f"{c['effect']:<8} {c['pos']:<12} {c['text']}")
     if a.ass_only:
         print(f'-> {ass_path}')
         return
