@@ -167,6 +167,54 @@ def lay_words(words, spans):
     return out
 
 
+def by_sentence_pauses(a, paras, db, hop):
+    """Align when the read has a pause at every sentence and no splices.
+
+    A read delivered as MP3 has no splice map: the format has no exact
+    digital zero in it, so the paragraph boundaries that fill_dead_air
+    records are simply gone. But a reader who stops between every
+    sentence has left a better anchor than paragraphs ever were, because
+    there is one boundary per sentence rather than one per block of them.
+
+    The threshold is found rather than set. Scan the plausible range for
+    the one that splits the read into exactly as many runs as the script
+    has sentences, and if no threshold does that, say so and stop --
+    guessing which run is which sentence is how an alignment ends up
+    seconds out while still looking plausible."""
+    sents = [s for p in paras for s in split_sentences(p)]
+    best = None
+    for thr in np.arange(0.18, 0.72, 0.01):
+        runs = speech_runs(db, hop, float(thr))
+        if len(runs) == len(sents):
+            best = (float(thr), runs)
+            break
+    if best is None:
+        counts = {len(speech_runs(db, hop, float(t)))
+                  for t in np.arange(0.18, 0.72, 0.02)}
+        raise SystemExit(
+            f'{len(sents)} sentences, but no pause threshold between 0.18s '
+            f'and 0.72s splits the read into that many runs (got '
+            f'{sorted(counts)}). The reader did not stop at every sentence; '
+            f'use --splices, or re-cut the script to match the read.')
+    thr, runs = best
+    print(f'{len(sents)} sentences, {len(runs)} speech runs at a '
+          f'{thr:.2f}s pause threshold -- one each')
+    rows = []
+    for s, r in zip(sents, runs):
+        rows.append((s, lay_words(s.split(), [r])))
+        print(f'  {r[0]:6.2f}-{r[1]:6.2f}s  {s[:52]}')
+    flat = [w for _s, ws in rows for w in ws]
+    json.dump({'version': 'sentence-pauses', 'words': flat}, open(a.out, 'w'))
+    print(f'{len(flat)} words -> {a.out}')
+    if a.beats:
+        lines = []
+        for n, (s, ws) in enumerate(rows, 1):
+            lines.append(f'{n}\n{srt_time(ws[0]["start"])} --> '
+                         f'{srt_time(ws[-1]["end"])}\n{s}\n')
+        open(a.beats, 'w').write('\n'.join(lines))
+        print(f'{len(rows)} sentence(s) -> {a.beats}')
+
+
 def srt_time(t):
     h = int(t // 3600); m = int(t % 3600 // 60); s = t % 60
     return f'{h:02d}:{m:02d}:{s:06.3f}'.replace('.', ',')
@@ -176,8 +224,11 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument('--audio', required=True)
     p.add_argument('--script', required=True)
-    p.add_argument('--splices', required=True,
+    p.add_argument('--splices', default=None,
                    help='the .splices.json fill_dead_air.py wrote')
+    p.add_argument('--sentence-pauses', action='store_true',
+                   help='no splice file: the reader paused at every '
+                        'sentence, so use the measured pauses directly')
     p.add_argument('--out', required=True)
     p.add_argument('--beats', default=None, help='also write a sentence SRT')
     p.add_argument('--min-pause', type=float, default=0.12)
@@ -185,6 +236,12 @@ def main():
 
     paras = [q.strip() for q in open(a.script).read().split('\n\n') if q.strip()]
     db, hop, dur = envelope(a.audio)
+
+    if a.sentence_pauses:
+        return by_sentence_pauses(a, paras, db, hop)
+
+    if not a.splices:
+        raise SystemExit('need --splices or --sentence-pauses')
     runs = speech_runs(db, hop, a.min_pause)
     rec = [s['start'] for s in json.load(open(a.splices))['splices']]
 

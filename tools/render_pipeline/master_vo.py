@@ -51,6 +51,29 @@ def measure(path):
             g(r'Peak:\s+(-?[\d.]+) dBFS'))
 
 
+def rolloff(path, frac=0.995):
+    """The frequency below which almost all the energy sits.
+
+    Reads do not always arrive at the same quality. A 44.1kHz WAV carries
+    useful articulation to 10kHz or more; a 64kbps 24kHz MP3 is empty
+    above 8 by construction, and sounds like a phone call. Worth knowing
+    before mastering, because the fix is different: level and dynamics
+    are repairable, bandwidth is gone and can only be compensated for."""
+    import numpy as np
+    raw = subprocess.run(
+        ['ffmpeg', '-nostdin', '-v', 'error', '-i', path,
+         '-f', 'f32le', '-ac', '1', '-ar', '48000', '-'],
+        capture_output=True, check=True).stdout
+    x = np.frombuffer(raw, np.float32).astype(np.float64)
+    if x.size < 4096:
+        return 0.0
+    n = min(len(x), 48000 * 20)
+    sp = np.abs(np.fft.rfft(x[:n])) ** 2
+    f = np.fft.rfftfreq(n, 1 / 48000)
+    c = np.cumsum(sp) / max(sp.sum(), 1e-20)
+    return float(f[np.searchsorted(c, frac)])
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('src'); p.add_argument('out')
@@ -60,13 +83,26 @@ def main():
     p.add_argument('--threshold', default='-20dB')
     p.add_argument('--ratio', type=float, default=3.0)
     p.add_argument('--tol', type=float, default=0.3)
+    p.add_argument('--presence', type=float, default=0.0,
+                   help='dB of lift around 3.5kHz, for a read that arrived '
+                        'bandwidth-limited. It cannot put back what is not '
+                        'there; it raises the articulation that is.')
     a = p.parse_args()
 
     i, lra, tp = measure(a.src)
-    print(f'  source  {i:6.1f} LUFS   LRA {lra:4.1f} LU   TP {tp:5.1f} dBTP')
+    ro = rolloff(a.src)
+    print(f'  source  {i:6.1f} LUFS   LRA {lra:4.1f} LU   TP {tp:5.1f} dBTP'
+          f'   rolloff {ro/1000:.1f} kHz')
+    if ro < 9000 and not a.presence:
+        print(f'  !! almost nothing above {ro/1000:.1f} kHz -- this read is '
+              f'bandwidth-limited. --presence 3 lifts what articulation '
+              f'there is.')
 
-    pre = (f'acompressor=threshold={a.threshold}:ratio={a.ratio}'
-           f':attack=5:release=120:makeup=1,')
+    pre = ''
+    if a.presence:
+        pre += f'equalizer=f=3500:width_type=o:width=1.6:g={a.presence},'
+    pre += (f'acompressor=threshold={a.threshold}:ratio={a.ratio}'
+            f':attack=5:release=120:makeup=1,')
     err = run(['ffmpeg', '-nostdin', '-hide_banner', '-i', a.src, '-af',
                pre + f'loudnorm=I={a.lufs}:TP={a.ceiling}:LRA=11'
                      f':print_format=json', '-f', 'null', '-'])
