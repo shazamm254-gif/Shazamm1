@@ -41,6 +41,7 @@ drifted six seconds by the middle.
 
 import argparse
 import json
+import math
 import re
 import subprocess
 
@@ -109,32 +110,80 @@ def split_sentences(text):
             if s.strip()]
 
 
-def assign(sents, runs):
+# The range of speaking rates a person can actually produce. Below the
+# floor the words do not fit in the time; above the ceiling nobody is
+# still reading a sentence, they have stopped.
+PACE_LO, PACE_HI = 0.10, 0.45
+
+# How much the silences count against the speech when deciding where a
+# sentence ends. Anywhere from 0.15 to 1.0 gives the same answer on every
+# read here, which is the point: the gaps either separate the candidates
+# or they do not, and the exact number is not load-bearing.
+GAP_WEIGHT = 0.3
+
+
+def assign(sents, runs, band=True):
     """Which consecutive runs belong to which sentence, by least error.
 
     Every sentence gets at least one run and every run is used, so the
-    only freedom is where the joins go. Cost is how far each sentence's
-    share of the speech is from what its syllable count predicts."""
+    only freedom is where the joins go.
+
+    Cost is each sentence's rate against the reader's own average rate,
+    as a ratio -- not the gap in seconds between the share it got and the
+    share its syllables predict. The difference decides the answer. A
+    surplus second on a two-syllable fragment trebles its length, while
+    the same second inside an eighteen-syllable sentence stretches it by
+    a fifth; measured in seconds those two errors are identical, so the
+    cheapest place to put a run the search cannot otherwise account for
+    is always the shortest sentence -- which is precisely where it is
+    least likely to belong. That is not hypothetical: scored in seconds
+    this gave "A child's drawing." 2.9 seconds and "Nothing." 1.6, rather
+    than admit the reader had drawn breath twice inside the long sentence
+    before them.
+
+    With `band`, a partition that puts any sentence outside PACE_LO..HI
+    is not scored at all. That is the same band pace_report checks
+    afterwards, so the search looks for an answer the check will accept
+    instead of finding one by a different measure and being refused. The
+    check still runs: it is cheap, and a constraint and its verification
+    should not be the same line of code. Pass band=False for the best fit
+    regardless -- worth having when nothing fits, because a readable
+    table of what went wrong beats a bare refusal.
+
+    The silences are evidence too, and scoring speech alone threw them
+    away. Which pause is a full stop is the entire question here, and a
+    sentence that swallows a pause longer than the ones on either side of
+    it is reading the waveform backwards. So every gap a sentence absorbs
+    is charged against it, measured against the median gap in the read.
+    The number of absorbed gaps is fixed before the search starts -- it
+    is the surplus of runs over sentences -- so this cannot push the
+    answer toward more or fewer joins. It only decides which gaps get
+    swallowed, which is exactly the ambiguity it is there to settle."""
     ns, nr = len(sents), len(runs)
     if ns > nr:                       # more sentences than pauses to put
         return None                   # them in: fall back to a flat spread
-    syl = [sum(syllables(w) for w in s.split()) for s in sents]
-    total_syl = sum(syl)
+    syl = [max(sum(syllables(w) for w in s.split()), 1) for s in sents]
     dur = [b - a for a, b in runs]
-    total_dur = sum(dur)
+    gaps = [runs[i + 1][0] - runs[i][1] for i in range(nr - 1)]
+    ref = sum(dur) / sum(syl)              # the reader's own average rate
+    ref_gap = float(np.median(gaps)) if gaps else 1.0
+    pen = np.concatenate(([0.0], np.cumsum([(g / max(ref_gap, 1e-6)) ** 2
+                                            for g in gaps])))
     cum = np.concatenate(([0.0], np.cumsum(dur)))
     INF = float('inf')
     best = np.full((ns + 1, nr + 1), INF)
     back = np.zeros((ns + 1, nr + 1), int)
     best[0][0] = 0.0
     for i in range(1, ns + 1):
-        want = total_dur * syl[i - 1] / total_syl
         for j in range(i, nr - (ns - i) + 1):
             for k in range(i - 1, j):
                 if best[i - 1][k] == INF:
                     continue
-                got = cum[j] - cum[k]
-                c = best[i - 1][k] + (got - want) ** 2
+                pace = max((cum[j] - cum[k]) / syl[i - 1], 1e-6)
+                if band and not PACE_LO <= pace <= PACE_HI:
+                    continue
+                c = (best[i - 1][k] + math.log(pace / ref) ** 2
+                     + GAP_WEIGHT * (pen[j - 1] - pen[k]))
                 if c < best[i][j]:
                     best[i][j], back[i][j] = c, k
     if best[ns][nr] == INF:
@@ -199,9 +248,6 @@ def pace_report(sents, spans):
     return out
 
 
-PACE_LO, PACE_HI = 0.10, 0.45
-
-
 def by_sentence_pauses(a, paras, db, hop):
     """Align when the read has no splice map, off its pauses alone.
 
@@ -230,7 +276,11 @@ def by_sentence_pauses(a, paras, db, hop):
     elif n > len(sents):
         plan = assign(sents, runs)
         if plan is None:
-            raise SystemExit('could not fit the sentences to the runs')
+            plan = assign(sents, runs, band=False)
+            if plan is None:
+                raise SystemExit('could not fit the sentences to the runs')
+            print(f'   no arrangement of these runs reads at a possible '
+                  f'rate -- the script does not match what was said')
         print(f'   {n - len(sents)} sentence(s) span more than one run -- '
               f'the reader paused mid-sentence')
     else:
@@ -321,6 +371,8 @@ def main():
         if not rs:
             raise SystemExit(f'paragraph {k + 1} has no speech in it')
         plan = assign(sents, rs)
+        if plan is None:
+            plan = assign(sents, rs, band=False)
         if plan is None:
             flat += 1
             plan = [(0, len(rs))] * 1
