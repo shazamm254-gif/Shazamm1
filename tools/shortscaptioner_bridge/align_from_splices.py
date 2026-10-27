@@ -50,25 +50,59 @@ import numpy as np
 VOWELS = 'aeiouy'
 
 
+# Syllables in a spoken number, by how many digits it has. "200" is
+# "two hundred", three; "20" is "twen-ty", two. Rough on purpose -- the
+# point is only that 200 is not one syllable.
+DIGIT_SYL = {1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 5}
+
+
 def syllables(w):
     """Vowel groups, with a silent terminal 'e' discounted.
 
-    Crude, and it does not need to be better. It is only ever used to
-    divide a span whose length is already known between the words in it,
-    so a word being one syllable out moves a boundary by tens of
-    milliseconds."""
-    w = re.sub(r'[^a-z]', '', w.lower())
-    if not w:
+    Crude, and mostly it does not need to be better: it only divides a
+    span whose length is already known between the words in it, so being
+    one out moves a boundary by tens of milliseconds.
+
+    Two cases are not that forgiving, because they are wrong by whole
+    seconds rather than by one syllable, and both are ordinary in a
+    science script. An acronym is read out letter by letter, so DNA is
+    three syllables where the vowel rule sees one. Digits are read as
+    words, so BC200 is "bee see two hundred", five syllables, where the
+    vowel rule sees none at all and falls through to one. A sentence
+    built out of those -- "It's called BC200." -- then looks four times
+    faster than it was really read, which is enough to push it outside
+    the plausible band and have a correct alignment refused.
+
+    An all-capital token is taken to be an acronym. That assumes the
+    script is written in sentence case, which these are; the captions
+    are uppercased at render time, not here."""
+    raw = re.sub(r'[^A-Za-z0-9]', '', w)
+    if not raw:
         return 1
-    n, prev = 0, False
-    for c in w:
-        v = c in VOWELS
+
+    # Digits are spoken, not spelled: count each run of them as a number.
+    n = 0
+    for run in re.findall(r'\d+', raw):
+        n += DIGIT_SYL.get(len(run), len(run))
+    letters = re.sub(r'\d', '', raw)
+    if not letters:
+        return max(1, n)
+
+    if letters.isupper() and len(letters) > 1:
+        # Read letter by letter. W is the only one worth more than a
+        # syllable, at three.
+        return max(1, n + sum(3 if c == 'W' else 1 for c in letters))
+
+    letters = letters.lower()
+    c, prev = 0, False
+    for ch in letters:
+        v = ch in VOWELS
         if v and not prev:
-            n += 1
+            c += 1
         prev = v
-    if w.endswith('e') and n > 1:
-        n -= 1
-    return max(1, n)
+    if letters.endswith('e') and c > 1:
+        c -= 1
+    return max(1, n + c)
 
 
 def envelope(audio, sr=48000, win=0.02, hop=0.005):
