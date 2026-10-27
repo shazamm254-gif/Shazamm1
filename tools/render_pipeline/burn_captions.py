@@ -142,6 +142,22 @@ def detect_keywords(words, manual=(), superlatives=SUPERLATIVES,
     the first word after a full stop is only taken when it is a number or
     on a list."""
     hit = set()
+
+    # A manual entry may be several words -- "two sequences", "inside a
+    # virus". Matching those word by word would be wrong twice over: the
+    # single words would never equal the phrase, and listing them
+    # separately would light up every other "two" and the second
+    # "virus" in the script as well. So phrases are matched as runs.
+    bares = [w['text'].strip('.,;:!?"\'()-').lower() for w in words]
+    for phrase in manual:
+        toks = phrase.split()
+        if len(toks) < 2:
+            continue
+        n = len(toks)
+        for i in range(len(bares) - n + 1):
+            if bares[i:i + n] == toks:
+                hit.update(range(i, i + n))
+
     sentence_start = True
     for i, w in enumerate(words):
         raw = w['text']
