@@ -262,12 +262,30 @@ def by_sentence_pauses(a, paras, db, hop):
     the same dynamic program the paragraph path uses when there are more
     runs than sentences, and every sentence's pace is checked afterwards.
     An alignment that is seconds out still looks plausible in a JSON
-    file; it only shows up on screen."""
+    file; it only shows up on screen.
+
+    Stability is the right default, but it assumes the reader's pauses
+    fall into two clear groups. A commercial TTS voice reads to an even
+    metre and does not oblige: the gaps at a sentence end and the gaps
+    inside one differ by a tenth of a second, so no count holds over a
+    wide band and the most stable answer can be four runs for eleven
+    sentences. `--pause` names the threshold directly for that case.
+    It is not a way round the check -- the pace band still has to pass,
+    and that is a different test from the count, since a threshold that
+    splits in the wrong places leaves some sentence reading at an
+    impossible rate. Use it when the search cannot find the structure,
+    never to make a refusal go away."""
     sents = [s for p in paras for s in split_sentences(p)]
-    n, thr, runs, hist = stable_runs(db, hop)
-    print(f'{len(sents)} sentences; {n} speech runs hold across the widest '
-          f'band of thresholds (using {thr:.2f}s)')
-    if n != len(sents):
+    if a.pause is not None:
+        runs = speech_runs(db, hop, a.pause)
+        n, thr, hist = len(runs), a.pause, {}
+        print(f'{len(sents)} sentences; {n} speech runs at the given '
+              f'{thr:.2f}s threshold (stability search skipped)')
+    else:
+        n, thr, runs, hist = stable_runs(db, hop)
+        print(f'{len(sents)} sentences; {n} speech runs hold across the '
+              f'widest band of thresholds (using {thr:.2f}s)')
+    if n != len(sents) and hist:
         print(f'   run counts seen: '
               + ', '.join(f'{k}x{v}' for k, v in sorted(hist.items())))
 
@@ -337,6 +355,11 @@ def main():
     p.add_argument('--out', required=True)
     p.add_argument('--beats', default=None, help='also write a sentence SRT')
     p.add_argument('--min-pause', type=float, default=0.12)
+    p.add_argument('--pause', type=float, default=None,
+                   help='with --sentence-pauses, the silence that counts as '
+                        'a sentence break, instead of searching for the most '
+                        'stable one. For an even-metred TTS read where no '
+                        'count holds. The pace check still has to pass.')
     a = p.parse_args()
 
     paras = [q.strip() for q in open(a.script).read().split('\n\n') if q.strip()]
